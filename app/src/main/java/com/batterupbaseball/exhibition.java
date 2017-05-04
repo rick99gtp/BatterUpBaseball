@@ -18,6 +18,9 @@ public class exhibition extends Activity {
     String visitorTeamName, homeTeamName;
     String visitorPrimaryColor, homePrimaryColor;
     String visitorSecondaryColor, homeSecondaryColor;
+    int visitorBattingRating, homeBattingRating;
+    int visitorPitchingRating, homePitchingRating;
+    int visitorFieldingRating, homeFieldingRating;
 
     private static String TAG = "com.batterupbaseball";
 
@@ -48,7 +51,7 @@ public class exhibition extends Activity {
     private void getTeamInfo() {
         myDB = openOrCreateDatabase(seasonID, MODE_PRIVATE, null);
 
-        //cursor for the visitors
+        //cursor for the visiting team
         Cursor curSeason = myDB.query("teams", null, "_id=1", null, null, null, null);
 
         if(curSeason.moveToFirst()) {
@@ -64,9 +67,21 @@ public class exhibition extends Activity {
             int cSecondaryColor = curSeason.getColumnIndex("secondary_color");
             visitorSecondaryColor = curSeason.getString(cPrimaryColor);
 
+            // batting rating
+            int cBatting = curSeason.getColumnIndex("batting_rating");
+            visitorBattingRating = curSeason.getInt(cBatting);
+            
+            // pitching rating
+            int cPitching = curSeason.getColumnIndex("pitching_rating");
+            visitorPitchingRating = curSeason.getInt(cPitching);
+
+            // fielding rating
+            int cFielding = curSeason.getColumnIndex("fielding_rating");
+            visitorFieldingRating = curSeason.getInt(cFielding);
+
         }
 
-        //cursor for the visitors
+        //cursor for the home team
         curSeason = myDB.query("teams", null, "_id=2", null, null, null, null);
 
         if(curSeason.moveToFirst()) {
@@ -80,6 +95,18 @@ public class exhibition extends Activity {
             // secondary color
             int cSecondaryColor = curSeason.getColumnIndex("secondary_color");
             homeSecondaryColor = curSeason.getString(cPrimaryColor);
+
+            // batting rating
+            int cBatting = curSeason.getColumnIndex("batting_rating");
+            homeBattingRating = curSeason.getInt(cBatting);
+
+            // pitching rating
+            int cPitching = curSeason.getColumnIndex("pitching_rating");
+            homePitchingRating = curSeason.getInt(cPitching);
+
+            // fielding rating
+            int cFielding = curSeason.getColumnIndex("fielding_rating");
+            homeFieldingRating = curSeason.getInt(cFielding);
         }
 
         //close the cursor
@@ -87,10 +114,9 @@ public class exhibition extends Activity {
         //close the database
         myDB.close();
 
-        // populate textviews
+        // populate name
         TextView tvVisitorTeamName = (TextView) findViewById(R.id.tvVisitorTeamName);
         TextView tvHomeTeamName = (TextView) findViewById(R.id.tvHomeTeamName);
-
         tvVisitorTeamName.setText(visitorTeamName);
         tvHomeTeamName.setText(homeTeamName);
 
@@ -106,6 +132,22 @@ public class exhibition extends Activity {
 
         secondaryColor = Color.parseColor(homeSecondaryColor);
         tvHomeTeamName.setBackgroundColor(secondaryColor);
+
+        // show ratings
+        TextView tvVisitorBattingRating = (TextView) findViewById(R.id.tvVisitorBattingRating);
+        TextView tvVisitorPitchingRating = (TextView) findViewById(R.id.tvVisitorPitchingRating);
+        TextView tvVisitorFieldingRating = (TextView) findViewById(R.id.tvVisitorFieldingRating);
+
+        TextView tvHomeBattingRating = (TextView) findViewById(R.id.tvHomeBattingRating);
+        TextView tvHomePitchingRating = (TextView) findViewById(R.id.tvHomePitchingRating);
+        TextView tvHomeFieldingRating = (TextView) findViewById(R.id.tvHomeFieldingRating);
+        
+        tvVisitorBattingRating.setText("" + visitorBattingRating);
+        tvVisitorPitchingRating.setText("" + visitorPitchingRating);
+        tvVisitorFieldingRating.setText("" + visitorFieldingRating);
+        tvHomeBattingRating.setText("" + homeBattingRating);
+        tvHomePitchingRating.setText("" + homePitchingRating);
+        tvHomeFieldingRating.setText("" + homeFieldingRating);
 
     }
 

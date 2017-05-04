@@ -85,6 +85,7 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/tvVisitorBattingRating"
                         android:layout_alignParentEnd="true"
                         android:text="000"
                         android:layout_width="wrap_content"
@@ -103,6 +104,7 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/tvVisitorPitchingRating"
                         android:layout_alignParentEnd="true"
                         android:text="000"
                         android:layout_width="wrap_content"
@@ -121,6 +123,7 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/tvVisitorFieldingRating"
                         android:layout_alignParentEnd="true"
                         android:text="000"
                         android:layout_width="wrap_content"
@@ -178,6 +181,7 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/tvHomeBattingRating"
                         android:layout_alignParentEnd="true"
                         android:text="000"
                         android:layout_width="wrap_content"
@@ -196,6 +200,7 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/tvHomePitchingRating"
                         android:layout_alignParentEnd="true"
                         android:text="000"
                         android:layout_width="wrap_content"
@@ -214,6 +219,7 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/tvHomeFieldingRating"
                         android:layout_alignParentEnd="true"
                         android:text="000"
                         android:layout_width="wrap_content"
