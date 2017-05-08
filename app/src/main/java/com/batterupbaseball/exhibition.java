@@ -1,6 +1,7 @@
 package com.batterupbaseball;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -39,6 +40,26 @@ public class exhibition extends Activity {
         // get team names
         getVisitorTeamInfo();
         getHomeTeamInfo();
+
+        TextView tvVisitorTeamName = (TextView) findViewById(R.id.tvVisitorTeamName);
+        tvVisitorTeamName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // load Exhibition Team Select
+                Intent intent = new Intent(exhibition.this, exhibition_team_select.class);
+                startActivity(intent);
+            }
+        });
+
+        TextView tvHomeTeamName = (TextView) findViewById(R.id.tvHomeTeamName);
+        tvHomeTeamName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // load Exhibition Team Select
+                Intent intent = new Intent(exhibition.this, exhibition_team_select.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void getHomeTeamInfo() {

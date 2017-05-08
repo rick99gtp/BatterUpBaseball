@@ -16,4 +16,6 @@
     <string name="exhibition_fielding">Fielding</string>
     <string name="exhibition_game">Exhibition Game</string>
     <string name="exhibition_year">Year</string>
+    <string name="team_select">Team Select</string>
+    <string name="teams">Teams</string>
 </resources>

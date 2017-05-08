@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cvSeason"
+        card_view:cardUseCompatPadding="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        card_view:cardElevation="4dp"
+        card_view:cardCornerRadius="15dp">
+
+        <TextView
+            tools:text="SEASON NAME"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:id="@+id/tvSeason"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v7.widget.CardView>
+</RelativeLayout>
