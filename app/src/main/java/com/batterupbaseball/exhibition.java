@@ -2,6 +2,7 @@ package com.batterupbaseball;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -13,16 +14,14 @@ import android.widget.TextView;
 
 public class exhibition extends Activity {
     SQLiteDatabase myDB;
-    String visitorSeasonID, homeSeasonID;
-    String visitorYear, homeYear;
-    String visitorTeamName, homeTeamName;
-    String visitorPrimaryColor, homePrimaryColor;
-    String visitorSecondaryColor, homeSecondaryColor;
-    int visitorBattingRating, homeBattingRating;
-    int visitorPitchingRating, homePitchingRating;
-    int visitorFieldingRating, homeFieldingRating;
-
-    private static String TAG = "com.batterupbaseball";
+    String visitorSeasonFileName, homeSeasonFileName;
+    int visitorTeamID = 1, homeTeamID = 2;
+    String teamName;
+    String primaryColor;
+    String secondaryColor;
+    int battingRating;
+    int pitchingRating;
+    int fieldingRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +34,14 @@ public class exhibition extends Activity {
         decorView.setSystemUiVisibility(uiOptions);
 
         // get the current season
-        getSeasonID();
+        getVisitorSeasonFileName();
+        getHomeSeasonFileName();
 
         // get team names
-        getVisitorTeamInfo();
-        getHomeTeamInfo();
+        getTeamInfo(visitorSeasonFileName, visitorTeamID);
+        showVisitorViews();
+        getTeamInfo(homeSeasonFileName, homeTeamID);
+        showHomeViews();
 
         TextView tvVisitorTeamName = (TextView) findViewById(R.id.tvVisitorTeamName);
         tvVisitorTeamName.setOnClickListener(new View.OnClickListener() {
@@ -47,7 +49,9 @@ public class exhibition extends Activity {
             public void onClick(View v) {
                 // load Exhibition Team Select
                 Intent intent = new Intent(exhibition.this, exhibition_team_select.class);
-                startActivity(intent);
+                String strName = "V";
+                intent.putExtra("TEAM_SELECTED", strName);
+                startActivityForResult(intent, RESULT_OK);
             }
         });
 
@@ -57,128 +61,95 @@ public class exhibition extends Activity {
             public void onClick(View v) {
                 // load Exhibition Team Select
                 Intent intent = new Intent(exhibition.this, exhibition_team_select.class);
+                String strName = "H";
+                intent.putExtra("TEAM_SELECTED", strName);
                 startActivity(intent);
             }
         });
     }
 
-    private void getHomeTeamInfo() {
-        myDB = openOrCreateDatabase(homeSeasonID, MODE_PRIVATE, null);
+    private void getTeamInfo(String thisSeasonFileName, int teamID) {
+        myDB = openOrCreateDatabase(thisSeasonFileName, MODE_PRIVATE, null);
 
-        //cursor for the home team
-        Cursor curSeason = myDB.query("teams", null, "_id=8", null, null, null, null);
+        Cursor curSeason = myDB.query("teams", null, "_id='" + teamID + "'", null, null, null, null);
 
         if(curSeason.moveToFirst()) {
             int curTeamNameID = curSeason.getColumnIndex("team_name");
-            homeTeamName = curSeason.getString(curTeamNameID);
+            teamName = curSeason.getString(curTeamNameID);
 
             // primary color
             int cPrimaryColor = curSeason.getColumnIndex("primary_color");
-            homePrimaryColor = curSeason.getString(cPrimaryColor);
+            primaryColor = curSeason.getString(cPrimaryColor);
 
             // secondary color
             int cSecondaryColor = curSeason.getColumnIndex("secondary_color");
-            homeSecondaryColor = curSeason.getString(cSecondaryColor);
+            secondaryColor = curSeason.getString(cSecondaryColor);
 
             // batting rating
             int cBatting = curSeason.getColumnIndex("batting_rating");
-            homeBattingRating = curSeason.getInt(cBatting);
+            battingRating = curSeason.getInt(cBatting);
 
             // pitching rating
             int cPitching = curSeason.getColumnIndex("pitching_rating");
-            homePitchingRating = curSeason.getInt(cPitching);
+            pitchingRating = curSeason.getInt(cPitching);
 
             // fielding rating
             int cFielding = curSeason.getColumnIndex("fielding_rating");
-            homeFieldingRating = curSeason.getInt(cFielding);
+            fieldingRating = curSeason.getInt(cFielding);
         }
 
         //close the cursor
         curSeason.close();
         //close the database
         myDB.close();
-
-        // populate name
-        TextView tvHomeTeamName = (TextView) findViewById(R.id.tvHomeTeamName);
-        tvHomeTeamName.setText(homeTeamName);
-
-        // apply primary and secondary colors
-        int primaryColor = Color.parseColor(homePrimaryColor);
-        tvHomeTeamName.setBackgroundColor(primaryColor);
-
-        int secondaryColor = Color.parseColor(homeSecondaryColor);
-        tvHomeTeamName.setTextColor(secondaryColor);
-
-        // show ratings
-        TextView tvHomeBattingRating = (TextView) findViewById(R.id.tvHomeBattingRating);
-        TextView tvHomePitchingRating = (TextView) findViewById(R.id.tvHomePitchingRating);
-        TextView tvHomeFieldingRating = (TextView) findViewById(R.id.tvHomeFieldingRating);
-
-        tvHomeBattingRating.setText("" + homeBattingRating);
-        tvHomePitchingRating.setText("" + homePitchingRating);
-        tvHomeFieldingRating.setText("" + homeFieldingRating);
     }
 
-    private void getVisitorTeamInfo() {
-        myDB = openOrCreateDatabase(visitorSeasonID, MODE_PRIVATE, null);
-
-        //cursor for the visiting team
-        Cursor curSeason = myDB.query("teams", null, "_id=14", null, null, null, null);
-
-        if(curSeason.moveToFirst()) {
-            // team name
-            int curTeamNameID = curSeason.getColumnIndex("team_name");
-            visitorTeamName = curSeason.getString(curTeamNameID);
-
-            // primary color
-            int cPrimaryColor = curSeason.getColumnIndex("primary_color");
-            visitorPrimaryColor = curSeason.getString(cPrimaryColor);
-
-            // secondary color
-            int cSecondaryColor = curSeason.getColumnIndex("secondary_color");
-            visitorSecondaryColor = curSeason.getString(cSecondaryColor);
-
-            // batting rating
-            int cBatting = curSeason.getColumnIndex("batting_rating");
-            visitorBattingRating = curSeason.getInt(cBatting);
-            
-            // pitching rating
-            int cPitching = curSeason.getColumnIndex("pitching_rating");
-            visitorPitchingRating = curSeason.getInt(cPitching);
-
-            // fielding rating
-            int cFielding = curSeason.getColumnIndex("fielding_rating");
-            visitorFieldingRating = curSeason.getInt(cFielding);
-
-        }
-
-        //close the cursor
-        curSeason.close();
-        //close the database
-        myDB.close();
-
+    private void showVisitorViews() {
         // populate name
         TextView tvVisitorTeamName = (TextView) findViewById(R.id.tvVisitorTeamName);
-        tvVisitorTeamName.setText(visitorTeamName);
+        tvVisitorTeamName.setText(teamName);
 
         // apply primary and secondary colors
-        int primaryColor = Color.parseColor(visitorPrimaryColor);
-        tvVisitorTeamName.setBackgroundColor(primaryColor);
+        int primaryColorID = Color.parseColor(primaryColor);
+        tvVisitorTeamName.setBackgroundColor(primaryColorID);
 
-        int secondaryColor = Color.parseColor(visitorSecondaryColor);
-        tvVisitorTeamName.setTextColor(secondaryColor);
+        int secondaryColorID = Color.parseColor(secondaryColor);
+        tvVisitorTeamName.setTextColor(secondaryColorID);
 
         // show ratings
         TextView tvVisitorBattingRating = (TextView) findViewById(R.id.tvVisitorBattingRating);
         TextView tvVisitorPitchingRating = (TextView) findViewById(R.id.tvVisitorPitchingRating);
         TextView tvVisitorFieldingRating = (TextView) findViewById(R.id.tvVisitorFieldingRating);
 
-        tvVisitorBattingRating.setText("" + visitorBattingRating);
-        tvVisitorPitchingRating.setText("" + visitorPitchingRating);
-        tvVisitorFieldingRating.setText("" + visitorFieldingRating);
+        tvVisitorBattingRating.setText("" + battingRating);
+        tvVisitorPitchingRating.setText("" + pitchingRating);
+        tvVisitorFieldingRating.setText("" + fieldingRating);
     }
 
-    private void getSeasonID() {
+    private void showHomeViews() {
+        // populate name
+        TextView tvHomeTeamName = (TextView) findViewById(R.id.tvHomeTeamName);
+        tvHomeTeamName.setText(teamName);
+
+        // apply primary and secondary colors
+        int primaryColorID = Color.parseColor(primaryColor);
+        tvHomeTeamName.setBackgroundColor(primaryColorID);
+
+        int secondaryColorID = Color.parseColor(secondaryColor);
+        tvHomeTeamName.setTextColor(secondaryColorID);
+
+        // show ratings
+        TextView tvHomeBattingRating = (TextView) findViewById(R.id.tvHomeBattingRating);
+        TextView tvHomePitchingRating = (TextView) findViewById(R.id.tvHomePitchingRating);
+        TextView tvHomeFieldingRating = (TextView) findViewById(R.id.tvHomeFieldingRating);
+
+        tvHomeBattingRating.setText("" + battingRating);
+        tvHomePitchingRating.setText("" + pitchingRating);
+        tvHomeFieldingRating.setText("" + fieldingRating);
+    }
+
+    private void getVisitorSeasonFileName() {
+
         // open the season_owned database
         myDB = openOrCreateDatabase("seasons_owned.db", MODE_PRIVATE, null);
 
@@ -186,8 +157,7 @@ public class exhibition extends Activity {
 
         if(seasonOwned.moveToFirst()) {
             int colSeasonID = seasonOwned.getColumnIndex("seasonID");
-            visitorSeasonID = seasonOwned.getString(colSeasonID);
-            homeSeasonID = visitorSeasonID; // both teams are from the 2016 set onCreate.  Modify when user changes to another season.
+            visitorSeasonFileName = seasonOwned.getString(colSeasonID);
         }
 
         // close the cursor
@@ -196,4 +166,29 @@ public class exhibition extends Activity {
         myDB.close();
     }
 
+    private void getHomeSeasonFileName() {
+
+        // open the season_owned database
+        myDB = openOrCreateDatabase("seasons_owned.db", MODE_PRIVATE, null);
+
+        Cursor seasonOwned = myDB.query("seasons", null, "_id=1", null, null, null, null);
+
+        if(seasonOwned.moveToFirst()) {
+            int colSeasonID = seasonOwned.getColumnIndex("seasonID");
+            homeSeasonFileName = seasonOwned.getString(colSeasonID);
+        }
+
+        // close the cursor
+        seasonOwned.close();
+        // close the database
+        myDB.close();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            // update the correct team with the new info
+            SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
+        }
+    }
 }

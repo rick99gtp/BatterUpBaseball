@@ -18,4 +18,5 @@
     <string name="exhibition_year">Year</string>
     <string name="team_select">Team Select</string>
     <string name="teams">Teams</string>
+    <string name="default_db_name">players_2016.db</string>
 </resources>
