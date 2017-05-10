@@ -41,6 +41,7 @@
             card_view:cardCornerRadius="10dp">
 
             <ListView
+                android:choiceMode="singleChoice"
                 android:id="@+id/lvSeasons"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">

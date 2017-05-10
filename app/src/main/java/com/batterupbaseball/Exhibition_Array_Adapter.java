@@ -3,6 +3,7 @@ package com.batterupbaseball;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,12 +20,21 @@ public class Exhibition_Array_Adapter extends ArrayAdapter<teams>{
 
     private final Context context;
     private final ArrayList<teams> teamsArrayList;
+    private int selectedIndex;
+    private int selectedColor = Color.parseColor("#ff0000");
 
     public Exhibition_Array_Adapter(Context context, ArrayList<teams> teamsArrayList) {
         super(context, R.layout.exhibition_team_select_row, teamsArrayList);
 
         this.context = context;
         this.teamsArrayList = teamsArrayList;
+        selectedIndex = -1;
+    }
+
+    public void setSelectedIndex(int ind)
+    {
+        selectedIndex = ind;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -56,6 +66,15 @@ public class Exhibition_Array_Adapter extends ArrayAdapter<teams>{
 
         holder.teamname.setBackgroundColor(teamsArrayList.get(position).getTeamColor1());
         holder.teamname.setTextColor(teamsArrayList.get(position).getTeamColor2());
+
+        if(selectedIndex != -1 && position == selectedIndex)
+        {
+            //holder.cv.setBackgroundColor(Color.RED);
+        }
+        else
+        {
+            //holder.cv.setForeground(null);
+        }
 
         // 5. return rowView
         return convertView;

@@ -37,6 +37,15 @@ public class startup_activity extends Activity {
             e.printStackTrace();
         }
 
+        // create the 1927 database
+        final DataBaseHelper1927 myDbHelper1927 = new DataBaseHelper1927(this);
+
+        try {
+            myDbHelper1927.createDataBase();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         CardView season = (CardView) findViewById(R.id.card_view_1);
         season.setOnClickListener(new View.OnClickListener() {
             @Override
