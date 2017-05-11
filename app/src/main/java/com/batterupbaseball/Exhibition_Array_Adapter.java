@@ -13,6 +13,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,11 +48,11 @@ public class Exhibition_Array_Adapter extends ArrayAdapter<teams>{
             convertView = inflater.inflate(R.layout.exhibition_team_select_row, parent, false);
 
             holder = new Viewholder();
-            holder.cv = (CardView) convertView.findViewById(R.id.cvTeam);
             holder.teamname = (TextView) convertView.findViewById(R.id.tvTeamName);
             holder.batting_rating = (TextView) convertView.findViewById(R.id.tvBattingRating);
             holder.pitching_rating = (TextView) convertView.findViewById(R.id.tvPitchingRating);
             holder.fielding_rating = (TextView) convertView.findViewById(R.id.tvFieldingRating);
+            holder.rl = (RelativeLayout) convertView.findViewById(R.id.rlRow);
 
             convertView.setTag(holder);
         }
@@ -69,11 +70,11 @@ public class Exhibition_Array_Adapter extends ArrayAdapter<teams>{
 
         if(selectedIndex != -1 && position == selectedIndex)
         {
-            //holder.cv.setBackgroundColor(Color.RED);
+            holder.rl.setBackgroundColor(Color.RED);
         }
         else
         {
-            //holder.cv.setForeground(null);
+            holder.rl.setBackground(null);
         }
 
         // 5. return rowView
@@ -85,6 +86,6 @@ public class Exhibition_Array_Adapter extends ArrayAdapter<teams>{
         TextView batting_rating;
         TextView pitching_rating;
         TextView fielding_rating;
-        CardView cv;
+        RelativeLayout rl;
     }
 }

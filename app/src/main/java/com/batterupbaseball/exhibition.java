@@ -15,13 +15,15 @@ import android.widget.TextView;
 public class exhibition extends Activity {
     SQLiteDatabase myDB;
     String visitorSeasonFileName, homeSeasonFileName;
-    int visitorTeamID = 1, homeTeamID = 2;
+    int visitorTeamID, homeTeamID;
     String teamName;
     String primaryColor;
     String secondaryColor;
     int battingRating;
     int pitchingRating;
     int fieldingRating;
+    int vYear, hYear;
+    String TAG = "com.batterupbaseball";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,10 @@ public class exhibition extends Activity {
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
+
+        SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
+        visitorTeamID = myPrefs.getInt("vTeamID", 1);
+        homeTeamID = myPrefs.getInt("hTeamID", 2);
 
         // get the current season
         getVisitorSeasonFileName();
@@ -51,7 +57,7 @@ public class exhibition extends Activity {
                 Intent intent = new Intent(exhibition.this, exhibition_team_select.class);
                 String strName = "V";
                 intent.putExtra("TEAM_SELECTED", strName);
-                startActivityForResult(intent, RESULT_OK);
+                startActivityForResult(intent, 1);
             }
         });
 
@@ -63,7 +69,7 @@ public class exhibition extends Activity {
                 Intent intent = new Intent(exhibition.this, exhibition_team_select.class);
                 String strName = "H";
                 intent.putExtra("TEAM_SELECTED", strName);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         });
     }
@@ -107,7 +113,7 @@ public class exhibition extends Activity {
     private void showVisitorViews() {
         // populate name
         TextView tvVisitorTeamName = (TextView) findViewById(R.id.tvVisitorTeamName);
-        tvVisitorTeamName.setText(teamName);
+        tvVisitorTeamName.setText(vYear + " " + teamName);
 
         // apply primary and secondary colors
         int primaryColorID = Color.parseColor(primaryColor);
@@ -129,7 +135,7 @@ public class exhibition extends Activity {
     private void showHomeViews() {
         // populate name
         TextView tvHomeTeamName = (TextView) findViewById(R.id.tvHomeTeamName);
-        tvHomeTeamName.setText(teamName);
+        tvHomeTeamName.setText(hYear + " " + teamName);
 
         // apply primary and secondary colors
         int primaryColorID = Color.parseColor(primaryColor);
@@ -158,6 +164,8 @@ public class exhibition extends Activity {
         if(seasonOwned.moveToFirst()) {
             int colSeasonID = seasonOwned.getColumnIndex("seasonID");
             visitorSeasonFileName = seasonOwned.getString(colSeasonID);
+            int colYear = seasonOwned.getColumnIndex("year");
+            vYear = seasonOwned.getInt(colYear);
         }
 
         // close the cursor
@@ -176,6 +184,8 @@ public class exhibition extends Activity {
         if(seasonOwned.moveToFirst()) {
             int colSeasonID = seasonOwned.getColumnIndex("seasonID");
             homeSeasonFileName = seasonOwned.getString(colSeasonID);
+            int colYear = seasonOwned.getColumnIndex("year");
+            hYear = seasonOwned.getInt(colYear);
         }
 
         // close the cursor
@@ -186,9 +196,25 @@ public class exhibition extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            // update the correct team with the new info
-            SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
-        }
+        // Check which request we're responding to
+            if (resultCode == RESULT_OK) {
+                // The user picked a contact.
+                // The Intent's data Uri identifies which contact was selected.
+                // update the correct team with the new info
+                SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
+                visitorTeamID = myPrefs.getInt("vTeamID", 1);
+                homeTeamID = myPrefs.getInt("hTeamID", 2);
+
+                getVisitorSeasonFileName();
+                getHomeSeasonFileName();
+
+                // get team names
+                getTeamInfo(visitorSeasonFileName, visitorTeamID);
+                showVisitorViews();
+                getTeamInfo(homeSeasonFileName, homeTeamID);
+                showHomeViews();
+            }
     }
+
+
 }

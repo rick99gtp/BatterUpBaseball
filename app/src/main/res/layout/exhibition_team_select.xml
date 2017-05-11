@@ -59,6 +59,7 @@
             card_view:cardElevation="8dp"
             card_view:cardCornerRadius="10dp">
             <ListView
+                android:choiceMode="singleChoice"
                 android:id="@+id/lvTeams"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
