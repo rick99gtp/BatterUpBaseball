@@ -40,9 +40,16 @@ public class exhibition_team_select extends Activity {
         teamSelected = bundle.getString("TEAM_SELECTED");
 
         SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
-        seasonSelected = myPrefs.getString("seasonSelected", getString(R.string.default_db_name));
-        selectedSeasonListItem = myPrefs.getInt("seasonSelectedID", 0);
-        selectedTeamListItem = myPrefs.getInt("teamSelectedID", 0);
+        if(teamSelected.equals("V")) {
+            seasonSelected = myPrefs.getString("vSeasonSelected", getString(R.string.default_db_name));
+            selectedSeasonListItem = myPrefs.getInt("vSeasonSelectedID", 0);
+            selectedTeamListItem = myPrefs.getInt("visitorSelectedTeamID", 0);
+        }
+        else {
+            seasonSelected = myPrefs.getString("hSeasonSelected", getString(R.string.default_db_name));
+            selectedSeasonListItem = myPrefs.getInt("hSeasonSelectedID", 0);
+            selectedTeamListItem = myPrefs.getInt("homeSelectedTeamID", 0);
+        }
 
         getSeasons();
 
@@ -53,7 +60,12 @@ public class exhibition_team_select extends Activity {
                 selectedSeasonListItem = position;
                 SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
                 SharedPreferences.Editor Editor = myPrefs.edit();
-                Editor.putInt("seasonSelectedID", selectedSeasonListItem);
+                if(teamSelected.equals("V")) {
+                    Editor.putInt("vSeasonSelectedID", selectedSeasonListItem);
+                }
+                else {
+                    Editor.putInt("hSeasonSelectedID", selectedSeasonListItem);
+                }
                 Editor.apply();
 
                 seasonAdapter.setSelectedIndex(position);
@@ -76,19 +88,6 @@ public class exhibition_team_select extends Activity {
         ivOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "teamID: " + teamID[selectedTeamListItem]);
-                SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
-                SharedPreferences.Editor editor = myPrefs.edit();
-                // assign team selected to either visitor or home depending on condition
-                if(teamSelected.equals("V")) {
-                    // assign team to visitor
-                    editor.putInt("vTeamID", teamID[selectedTeamListItem]);
-                }
-                else {
-                    editor.putInt("hTeamID", teamID[selectedTeamListItem]);
-                }
-                editor.apply();
-
                 setResult(RESULT_OK);
                 finish();
             }
@@ -100,6 +99,7 @@ public class exhibition_team_select extends Activity {
         ListView lvTeams = (ListView) findViewById(R.id.lvTeams);
         teamAdapter.setSelectedIndex(selectedTeamListItem);
         lvTeams.setAdapter(teamAdapter);
+        lvTeams.smoothScrollToPosition(selectedTeamListItem);
 
         lvTeams.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -110,7 +110,15 @@ public class exhibition_team_select extends Activity {
                 SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
                 SharedPreferences.Editor Editor = myPrefs.edit();
                 Editor.putInt("teamSelectedID", selectedTeamListItem);
-                Editor.putInt("teamID", teamID[position]);
+                if(teamSelected.equals("V")) {
+                    Editor.putInt("visitorSelectedTeamID", position);
+                    Editor.putInt("vTeamID", teamID[position]);
+                }
+                else {
+                    Editor.putInt("homeSelectedTeamID", position);
+                    Editor.putInt("hTeamID", teamID[position]);
+                }
+
                 Editor.apply();
             }
         });
@@ -157,7 +165,6 @@ public class exhibition_team_select extends Activity {
 
         SQLiteDatabase myDB = openOrCreateDatabase(seasonSelected, MODE_PRIVATE, null);
 
-        Log.d("com.batterupbaseball", seasonSelected);
         Cursor cTeams = myDB.query("teams", null, null, null, null, null, null);
 
         teamID = new int[cTeams.getCount()];

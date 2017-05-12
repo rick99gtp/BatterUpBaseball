@@ -15,6 +15,7 @@ import android.widget.TextView;
 public class exhibition extends Activity {
     SQLiteDatabase myDB;
     String visitorSeasonFileName, homeSeasonFileName;
+    int visitorSeasonID, homeSeasonID; // _id of season in seasons_owned
     int visitorTeamID, homeTeamID;
     String teamName;
     String primaryColor;
@@ -35,6 +36,7 @@ public class exhibition extends Activity {
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
 
+        // get season ID
         SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
         visitorTeamID = myPrefs.getInt("vTeamID", 1);
         homeTeamID = myPrefs.getInt("hTeamID", 2);
@@ -155,15 +157,20 @@ public class exhibition extends Activity {
     }
 
     private void getVisitorSeasonFileName() {
+        SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
+        visitorSeasonID = myPrefs.getInt("vSeasonID", 1);
 
         // open the season_owned database
         myDB = openOrCreateDatabase("seasons_owned.db", MODE_PRIVATE, null);
 
-        Cursor seasonOwned = myDB.query("seasons", null, "_id=1", null, null, null, null);
+        Cursor seasonOwned = myDB.query("seasons", null, "_id='" + visitorSeasonID + "'", null, null, null, null);
 
         if(seasonOwned.moveToFirst()) {
+            // database file name
             int colSeasonID = seasonOwned.getColumnIndex("seasonID");
             visitorSeasonFileName = seasonOwned.getString(colSeasonID);
+
+            // season year
             int colYear = seasonOwned.getColumnIndex("year");
             vYear = seasonOwned.getInt(colYear);
         }
@@ -175,15 +182,18 @@ public class exhibition extends Activity {
     }
 
     private void getHomeSeasonFileName() {
+        SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
+        homeSeasonID = myPrefs.getInt("hSeasonID", 1);
 
         // open the season_owned database
         myDB = openOrCreateDatabase("seasons_owned.db", MODE_PRIVATE, null);
 
-        Cursor seasonOwned = myDB.query("seasons", null, "_id=1", null, null, null, null);
+        Cursor seasonOwned = myDB.query("seasons", null, "_id='" + homeSeasonID + "'", null, null, null, null);
 
         if(seasonOwned.moveToFirst()) {
             int colSeasonID = seasonOwned.getColumnIndex("seasonID");
             homeSeasonFileName = seasonOwned.getString(colSeasonID);
+
             int colYear = seasonOwned.getColumnIndex("year");
             hYear = seasonOwned.getInt(colYear);
         }
