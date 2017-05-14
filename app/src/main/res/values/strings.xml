@@ -7,7 +7,7 @@
     <string name="draft">Draft</string>
     <string name="new_season">New Season</string>
     <string name="continue_season">Continue Season</string>
-    <string name="exhibition_visitor">Visitor</string>
+    <string name="exhibition_away">Away</string>
     <string name="exhibition_home">Home</string>
     <string name="exhibition_visitor_teamname">Visitor Team Name</string>
     <string name="exhibition_home_teamname">Home Team Name</string>

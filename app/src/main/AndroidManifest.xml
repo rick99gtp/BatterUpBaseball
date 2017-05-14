@@ -25,6 +25,7 @@
         <activity android:name=".new_season" android:screenOrientation="landscape"></activity>
         <activity android:name=".continue_season" android:screenOrientation="landscape"></activity>
         <activity android:name=".exhibition_team_select" android:screenOrientation="landscape"></activity>
+        <activity android:name=".exhibition_select_pitcher" android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>

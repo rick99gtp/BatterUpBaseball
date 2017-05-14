@@ -74,6 +74,26 @@ public class exhibition extends Activity {
                 startActivityForResult(intent, 1);
             }
         });
+
+        TextView tvSelectVisitorTeam = (TextView) findViewById(R.id.tvSelectVisitorTeam);
+        tvSelectVisitorTeam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(exhibition.this, exhibition_select_pitcher.class);
+                intent.putExtra("USER_TEAM", "V");
+                startActivity(intent);
+            }
+        });
+
+        TextView tvSelectHomeTeam = (TextView) findViewById(R.id.tvSelectHomeTeam);
+        tvSelectHomeTeam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(exhibition.this, exhibition_select_pitcher.class);
+                intent.putExtra("USER_TEAM", "H");
+                startActivity(intent);
+            }
+        });
     }
 
     private void getTeamInfo(String thisSeasonFileName, int teamID) {
