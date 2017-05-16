@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
@@ -8,6 +8,9 @@
 
     <TextView
         android:id="@+id/tvTeamName"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+
         android:text="Team Name Rotation"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -15,9 +18,11 @@
         android:layout_height="wrap_content" />
 
     <android.support.v7.widget.CardView
-        android:layout_gravity="center_horizontal"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/tvTeamName"
+        android:layout_marginLeft="10dp"
         card_view:contentPadding="5dp"
-        android:layout_width="585dp"
+        android:layout_width="350dp"
         android:layout_height="285dp"
         card_view:cardElevation="8dp">
 
@@ -35,6 +40,7 @@
                 android:layout_height="0dp">
 
                 <TextView
+                    android:textSize="10sp"
                     android:textStyle="bold"
                     android:gravity="center"
                     android:text="Throws"
@@ -43,6 +49,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="10sp"
                     android:textStyle="bold"
                     android:gravity="center"
                     android:text="Player Name"
@@ -51,6 +58,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="10sp"
                     android:textStyle="bold"
                     android:gravity="center"
                     android:text="W-L, ERA"
@@ -59,6 +67,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="10sp"
                     android:textStyle="bold"
                     android:gravity="center"
                     android:text="vs. Left"
@@ -67,6 +76,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="10sp"
                     android:textStyle="bold"
                     android:gravity="center"
                     android:text="vs. Right"
@@ -75,6 +85,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="10sp"
                     android:textStyle="bold"
                     android:gravity="center"
                     android:text="Overall"
@@ -84,6 +95,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/llRow1"
                 android:weightSum="15"
                 android:orientation="horizontal"
                 android:layout_weight="2"
@@ -91,49 +103,58 @@
                 android:layout_height="0dp">
 
                 <TextView
+                    android:id="@+id/tvThrows1"
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="Throws"
+                    android:text="Throws"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
-                    android:gravity="center"
-                    tools:text="Player Name"
+                    android:id="@+id/tvName1"
+                    android:textSize="12sp"
+                    android:gravity="center_vertical"
+                    android:text="Player Name"
                     android:layout_weight="4"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="W-L, ERA"
+                    android:text="W-L, ERA"
                     android:layout_weight="3"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="vs. Left"
+                    android:text="vs. Left"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="vs. Right"
+                    android:text="vs. Right"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="Overall"
+                    android:text="Overall"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/llRow2"
                 android:weightSum="15"
                 android:orientation="horizontal"
                 android:layout_weight="2"
@@ -141,49 +162,58 @@
                 android:layout_height="0dp">
 
                 <TextView
+                    android:id="@+id/tvThrows2"
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="Throws"
+                    android:text="Throws"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
-                    android:gravity="center"
-                    tools:text="Player Name"
+                    android:id="@+id/tvName2"
+                    android:textSize="12sp"
+                    android:gravity="center_vertical"
+                    android:text="Player Name"
                     android:layout_weight="4"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="W-L, ERA"
+                    android:text="W-L, ERA"
                     android:layout_weight="3"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="vs. Left"
+                    android:text="vs. Left"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="vs. Right"
+                    android:text="vs. Right"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="Overall"
+                    android:text="Overall"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/llRow3"
                 android:weightSum="15"
                 android:orientation="horizontal"
                 android:layout_weight="2"
@@ -191,49 +221,58 @@
                 android:layout_height="0dp">
 
                 <TextView
+                    android:id="@+id/tvThrows3"
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="Throws"
+                    android:text="Throws"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
-                    android:gravity="center"
-                    tools:text="Player Name"
+                    android:id="@+id/tvName3"
+                    android:textSize="12sp"
+                    android:gravity="center_vertical"
+                    android:text="Player Name"
                     android:layout_weight="4"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="W-L, ERA"
+                    android:text="W-L, ERA"
                     android:layout_weight="3"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="vs. Left"
+                    android:text="vs. Left"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="vs. Right"
+                    android:text="vs. Right"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="Overall"
+                    android:text="Overall"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/llRow4"
                 android:weightSum="15"
                 android:orientation="horizontal"
                 android:layout_weight="2"
@@ -241,49 +280,58 @@
                 android:layout_height="0dp">
 
                 <TextView
+                    android:id="@+id/tvThrows4"
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="Throws"
+                    android:text="Throws"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
-                    android:gravity="center"
-                    tools:text="Player Name"
+                    android:id="@+id/tvName4"
+                    android:textSize="12sp"
+                    android:gravity="center_vertical"
+                    android:text="Player Name"
                     android:layout_weight="4"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="W-L, ERA"
+                    android:text="W-L, ERA"
                     android:layout_weight="3"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="vs. Left"
+                    android:text="vs. Left"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="vs. Right"
+                    android:text="vs. Right"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="Overall"
+                    android:text="Overall"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/llRow5"
                 android:weightSum="15"
                 android:orientation="horizontal"
                 android:layout_weight="2"
@@ -291,47 +339,91 @@
                 android:layout_height="0dp">
 
                 <TextView
+                    android:id="@+id/tvThrows5"
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="Throws"
+                    android:text="Throws"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
-                    android:gravity="center"
-                    tools:text="Player Name"
+                    android:id="@+id/tvName5"
+                    android:textSize="12sp"
+                    android:gravity="center_vertical"
+                    android:text="Player Name"
                     android:layout_weight="4"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="W-L, ERA"
+                    android:text="W-L, ERA"
                     android:layout_weight="3"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="vs. Left"
+                    android:text="vs. Left"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="vs. Right"
+                    android:text="vs. Right"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:text="Overall"
+                    android:text="Overall"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
-</LinearLayout>
+
+    <android.support.v7.widget.CardView
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/tvTeamName"
+        android:layout_marginRight="10dp"
+        card_view:contentPadding="5dp"
+        android:layout_width="225dp"
+        android:layout_height="285dp"
+        card_view:cardElevation="8dp">
+
+        <LinearLayout
+            android:weightSum="100"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/ivCard"
+                android:layout_weight="82"
+                android:src="@drawable/batter_up_baseball_card"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" />
+
+            <TextView
+                android:background="#ffffffff"
+                android:textColor="#ff000000"
+                android:gravity="center"
+                android:text="Select"
+                android:textSize="24sp"
+                android:id="@+id/tvSelect"
+                android:layout_weight="18"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+</RelativeLayout>
