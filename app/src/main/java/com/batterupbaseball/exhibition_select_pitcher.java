@@ -11,13 +11,19 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 public class exhibition_select_pitcher extends Activity implements View.OnClickListener {
     int[] llRow = {R.id.llRow1, R.id.llRow2, R.id.llRow3, R.id.llRow4, R.id.llRow5};
     int[] llThrows = {R.id.tvThrows1, R.id.tvThrows2, R.id.tvThrows3, R.id.tvThrows4, R.id.tvThrows5};
     int[] llName = {R.id.tvName1, R.id.tvName2, R.id.tvName3, R.id.tvName4, R.id.tvName5};
+    int[] llVsLeft = {R.id.tvVsLeft1, R.id.tvVsLeft2, R.id.tvVsLeft3, R.id.tvVsLeft4, R.id.tvVsLeft5};
+    int[] llVsRight = {R.id.tvVsRight1, R.id.tvVsRight2, R.id.tvVsRight3, R.id.tvVsRight4, R.id.tvVsRight5};
     LinearLayout[] llStarter = new LinearLayout[5];
     TextView[] tvThrows = new TextView[5];
     TextView[] tvName = new TextView[5];
+    TextView[] tvVsLeft = new TextView[5];
+    TextView[] tvVsRight = new TextView[5];
 
     int seasonID;
     String seasonFileName;
@@ -30,8 +36,9 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
     //int[] playerWins = new int[5];
     //int[] playerLosses = new int[5];
     //int[] playerPct = new int[5];
-    //int[] playerVsLeft = new int[5];
-    //int[] playerVsRight = new int[5];
+    int[] playerVsLeft = new int[5];
+    int[] playerVsRight = new int[5];
+    int selectedStarter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +55,8 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
             llStarter[i].setOnClickListener(this);
             tvThrows[i] = (TextView) findViewById(llThrows[i]);
             tvName[i] = (TextView) findViewById(llName[i]);
+            tvVsLeft[i] = (TextView) findViewById(llVsLeft[i]);
+            tvVsRight[i] = (TextView) findViewById(llVsRight[i]);
         }
 
         // get the season file name
@@ -55,6 +64,9 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
         // get rotation
         getRotation();
         showRotation();
+
+        // highlight starter selected
+        highlightStarter();
 
     }
 
@@ -65,22 +77,32 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
         switch(v.getId()) {
             case R.id.llRow1:
                 llStarter[0].setBackgroundColor(Color.RED);
+                selectedStarter = 0;
                 break;
             case R.id.llRow2:
                 llStarter[1].setBackgroundColor(Color.RED);
+                selectedStarter = 1;
                 break;
             case R.id.llRow3:
                 llStarter[2].setBackgroundColor(Color.RED);
+                selectedStarter = 2;
                 break;
             case R.id.llRow4:
                 llStarter[3].setBackgroundColor(Color.RED);
+                selectedStarter = 3;
                 break;
             case R.id.llRow5:
                 llStarter[4].setBackgroundColor(Color.RED);
+                selectedStarter = 4;
                 break;
             default:
                 break;
         }
+
+        SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
+        SharedPreferences.Editor editor = myPrefs.edit();
+        editor.putInt("exhibition_selected_starter", selectedStarter);
+        editor.apply();
     }
 
     private void resetColors() {
@@ -149,10 +171,14 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
 
                 playerName[i] = firstName + " " + lastName;
 
-                Log.d("com.batterupbaseball", playerName[i]);
-
                 col = cPlayer.getColumnIndex("throws");
                 playerThrows[i] = cPlayer.getString(col).toUpperCase();
+
+                col = cPlayer.getColumnIndex("vsl_rating");
+                playerVsLeft[i] = cPlayer.getInt(col);
+
+                col = cPlayer.getColumnIndex("vsr_rating");
+                playerVsRight[i] = cPlayer.getInt(col);
             }
         }
 
@@ -163,6 +189,18 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
         for(int i=0; i<5; i++) {
             tvThrows[i].setText(playerThrows[i]);
             tvName[i].setText(playerName[i]);
+            tvVsLeft[i].setText("" + playerVsLeft[i]);
+            tvVsRight[i].setText("" + playerVsRight[i]);
         }
+    }
+
+    private void highlightStarter() {
+        // get season ID
+        SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
+        selectedStarter = myPrefs.getInt("exhibition_selected_starter", 0);
+
+        resetColors();
+
+        llStarter[selectedStarter].setBackgroundColor(Color.RED);
     }
 }

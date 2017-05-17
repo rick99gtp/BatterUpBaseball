@@ -129,6 +129,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:id="@+id/tvVsLeft1"
                     android:textSize="12sp"
                     android:gravity="center"
                     android:text="vs. Left"
@@ -137,6 +138,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:id="@+id/tvVsRight1"
                     android:textSize="12sp"
                     android:gravity="center"
                     android:text="vs. Right"
@@ -188,6 +190,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:id="@+id/tvVsLeft2"
                     android:textSize="12sp"
                     android:gravity="center"
                     android:text="vs. Left"
@@ -196,6 +199,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:id="@+id/tvVsRight2"
                     android:textSize="12sp"
                     android:gravity="center"
                     android:text="vs. Right"
@@ -247,6 +251,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:id="@+id/tvVsLeft3"
                     android:textSize="12sp"
                     android:gravity="center"
                     android:text="vs. Left"
@@ -255,6 +260,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:id="@+id/tvVsRight3"
                     android:textSize="12sp"
                     android:gravity="center"
                     android:text="vs. Right"
@@ -306,6 +312,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:id="@+id/tvVsLeft4"
                     android:textSize="12sp"
                     android:gravity="center"
                     android:text="vs. Left"
@@ -314,6 +321,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:id="@+id/tvVsRight4"
                     android:textSize="12sp"
                     android:gravity="center"
                     android:text="vs. Right"
@@ -365,6 +373,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:id="@+id/tvVsLeft5"
                     android:textSize="12sp"
                     android:gravity="center"
                     android:text="vs. Left"
@@ -373,6 +382,7 @@
                     android:layout_height="match_parent" />
 
                 <TextView
+                    android:id="@+id/tvVsRight5"
                     android:textSize="12sp"
                     android:gravity="center"
                     android:text="vs. Right"
