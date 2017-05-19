@@ -1,6 +1,7 @@
 package com.batterupbaseball;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,8 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class exhibition_select_pitcher extends Activity implements View.OnClickListener {
     int[] llRow = {R.id.llRow1, R.id.llRow2, R.id.llRow3, R.id.llRow4, R.id.llRow5};
@@ -59,14 +58,14 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
             tvVsRight[i] = (TextView) findViewById(llVsRight[i]);
         }
 
-        // get the season file name
-        getSeasonFileName();
-        // get rotation
-        getRotation();
-        showRotation();
-
-        // highlight starter selected
-        highlightStarter();
+        TextView tvSelectPitcher = (TextView) findViewById(R.id.tvSelectPitcher);
+        tvSelectPitcher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(exhibition_select_pitcher.this, exhibition_lineup.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -202,5 +201,18 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
         resetColors();
 
         llStarter[selectedStarter].setBackgroundColor(Color.RED);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // get the season file name
+        getSeasonFileName();
+        // get rotation
+        getRotation();
+        showRotation();
+
+        // highlight starter selected
+        highlightStarter();
     }
 }
