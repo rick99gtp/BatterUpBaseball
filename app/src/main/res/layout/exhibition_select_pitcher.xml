@@ -42,7 +42,7 @@
                 android:layout_height="match_parent">
 
                 <LinearLayout
-                    android:weightSum="15"
+                    android:weightSum="13"
                     android:orientation="horizontal"
                     android:layout_weight="1"
                     android:layout_width="match_parent"
@@ -92,20 +92,11 @@
                         android:layout_weight="2"
                         android:layout_width="0dp"
                         android:layout_height="match_parent" />
-
-                    <TextView
-                        android:textSize="10sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:text="Overall"
-                        android:layout_weight="2"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/llRow1"
-                    android:weightSum="15"
+                    android:weightSum="13"
                     android:orientation="horizontal"
                     android:layout_weight="2"
                     android:layout_width="match_parent"
@@ -154,19 +145,11 @@
                         android:layout_weight="2"
                         android:layout_width="0dp"
                         android:layout_height="match_parent" />
-
-                    <TextView
-                        android:textSize="12sp"
-                        android:gravity="center"
-                        android:text="Overall"
-                        android:layout_weight="2"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/llRow2"
-                    android:weightSum="15"
+                    android:weightSum="13"
                     android:orientation="horizontal"
                     android:layout_weight="2"
                     android:layout_width="match_parent"
@@ -215,19 +198,11 @@
                         android:layout_weight="2"
                         android:layout_width="0dp"
                         android:layout_height="match_parent" />
-
-                    <TextView
-                        android:textSize="12sp"
-                        android:gravity="center"
-                        android:text="Overall"
-                        android:layout_weight="2"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/llRow3"
-                    android:weightSum="15"
+                    android:weightSum="13"
                     android:orientation="horizontal"
                     android:layout_weight="2"
                     android:layout_width="match_parent"
@@ -276,19 +251,11 @@
                         android:layout_weight="2"
                         android:layout_width="0dp"
                         android:layout_height="match_parent" />
-
-                    <TextView
-                        android:textSize="12sp"
-                        android:gravity="center"
-                        android:text="Overall"
-                        android:layout_weight="2"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/llRow4"
-                    android:weightSum="15"
+                    android:weightSum="13"
                     android:orientation="horizontal"
                     android:layout_weight="2"
                     android:layout_width="match_parent"
@@ -337,19 +304,11 @@
                         android:layout_weight="2"
                         android:layout_width="0dp"
                         android:layout_height="match_parent" />
-
-                    <TextView
-                        android:textSize="12sp"
-                        android:gravity="center"
-                        android:text="Overall"
-                        android:layout_weight="2"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/llRow5"
-                    android:weightSum="15"
+                    android:weightSum="13"
                     android:orientation="horizontal"
                     android:layout_weight="2"
                     android:layout_width="match_parent"
@@ -395,14 +354,6 @@
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="vs. Right"
-                        android:layout_weight="2"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent" />
-
-                    <TextView
-                        android:textSize="12sp"
-                        android:gravity="center"
-                        android:text="Overall"
                         android:layout_weight="2"
                         android:layout_width="0dp"
                         android:layout_height="match_parent" />
