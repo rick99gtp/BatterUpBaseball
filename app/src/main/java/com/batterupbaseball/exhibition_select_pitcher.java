@@ -1,11 +1,17 @@
 package com.batterupbaseball;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -42,6 +48,8 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
     //int[] playerPct = new int[5];
     int[] playerValueVsLeft = new int[5];
     int[] playerValueVsRight = new int[5];
+    int[] playerContactVsLeft = new int[5];
+    int[] playerContactVsRight = new int[5];
     int selectedStarter;
     boolean cardViewVsRight = true;
 
@@ -188,6 +196,12 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
 
                 col = cPlayer.getColumnIndex("defense_rating");
                 playerDefense[i] = cPlayer.getInt(col);
+
+                col = cPlayer.getColumnIndex("vsl_rating");
+                playerContactVsLeft[i] = cPlayer.getInt(col);
+
+                col = cPlayer.getColumnIndex("vsr_rating");
+                playerContactVsRight[i] = cPlayer.getInt(col);
             }
         }
 
@@ -217,9 +231,12 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
 
     private void getCardImage() {
         int[] cardValue = {R.drawable.value_1, R.drawable.value_2, R.drawable.value_3, R.drawable.value_4, R.drawable.value_5, R.drawable.value_6, R.drawable.value_7, R.drawable.value_8, R.drawable.value_9, R.drawable.value_10};
+        int[] cardDefense = {R.drawable.defense_1, R.drawable.defense_2, R.drawable.defense_3, R.drawable.defense_4, R.drawable.defense_5, R.drawable.defense_6, R.drawable.defense_7, R.drawable.defense_8, R.drawable.defense_9, R.drawable.defense_10};
+        int[] cardContact = {R.drawable.contact_1, R.drawable.contact_2, R.drawable.contact_3, R.drawable.contact_4, R.drawable.contact_5, R.drawable.contact_6, R.drawable.contact_7, R.drawable.contact_8, R.drawable.contact_9, R.drawable.contact_10};
+
         ImageView ivCard = (ImageView) findViewById(R.id.ivCard);
 
-        Drawable[] layers = new Drawable[2];
+        Drawable[] layers = new Drawable[5];
 
         switch(playerThrows[selectedStarter]) {
             case "R":
@@ -228,12 +245,15 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
                     layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_right);
                     // value
                     layers[1] = ContextCompat.getDrawable(this, cardValue[playerValueVsRight[selectedStarter]-1]);
+                    // contact
+                    layers[2] = ContextCompat.getDrawable(this, cardContact[playerContactVsRight[selectedStarter]-1]);
                 }
                 else {
                     // base
                     layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsl_as_right);
                     // value
                     layers[1] = ContextCompat.getDrawable(this, cardValue[playerValueVsLeft[selectedStarter]-1]);
+                    layers[2] = ContextCompat.getDrawable(this, cardContact[playerContactVsLeft[selectedStarter]-1]);
                 }
 
                 break;
@@ -243,18 +263,26 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
                     layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_left);
                     // value
                     layers[1] = ContextCompat.getDrawable(this, cardValue[playerValueVsRight[selectedStarter]-1]);
+                    layers[2] = ContextCompat.getDrawable(this, cardContact[playerContactVsRight[selectedStarter]-1]);
                 }
                 else {
                     // base
                     layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsl_as_left);
                     // value
                     layers[1] = ContextCompat.getDrawable(this, cardValue[playerValueVsLeft[selectedStarter]-1]);
+                    layers[2] = ContextCompat.getDrawable(this, cardContact[playerContactVsLeft[selectedStarter]-1]);
                 }
 
                 break;
             default:
                 break;
         }
+
+        // defense
+        layers[3] = ContextCompat.getDrawable(this, cardDefense[playerDefense[selectedStarter]-1]);
+
+        // position
+        layers[4] = ContextCompat.getDrawable(this, R.drawable.pos_sp);
 
         LayerDrawable layerDrawable = new LayerDrawable(layers);
         ivCard.setImageDrawable(layerDrawable);

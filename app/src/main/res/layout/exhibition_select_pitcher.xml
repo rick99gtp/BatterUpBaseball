@@ -60,7 +60,7 @@
                     <TextView
                         android:textSize="10sp"
                         android:textStyle="bold"
-                        android:gravity="center"
+                        android:gravity="center_vertical"
                         android:text="Player Name"
                         android:layout_weight="4"
                         android:layout_width="0dp"
