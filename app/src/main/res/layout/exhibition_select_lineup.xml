@@ -1,0 +1,876 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:weightSum="10"
+        android:id="@+id/llHeader"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:paddingStart="5dp"
+            android:id="@+id/tvTeamName"
+            android:text="Team Name Lineup"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_weight="7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:gravity="center_horizontal"
+            android:id="@+id/tvOppPitcherName"
+            android:text="Opponent Pitcher Name"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/llHeader"
+        android:layout_marginStart="10dp"
+        android:weightSum="100"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="70"
+            android:id="@+id/cvLeft"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            card_view:cardElevation="8dp"
+            card_view:cardCornerRadius="8dp">
+
+            <LinearLayout
+                android:weightSum="19"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:weightSum="16"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <TextView
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text=""
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="Bats"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:text="Player Name"
+                        android:layout_weight="4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="Pos"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="CON"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="PWR"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="SPD"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:layout_weight="2"
+                        android:layout_gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llRow1"
+                    android:weightSum="16"
+                    android:orientation="horizontal"
+                    android:layout_weight="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <TextView
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="1"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvBats1"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="R"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvName1"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:text="Player Name"
+                        android:layout_weight="4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPos1"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="CF"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsCON1"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPWR1"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsSPD1"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/ivSub1"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llRow2"
+                    android:weightSum="16"
+                    android:orientation="horizontal"
+                    android:layout_weight="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <TextView
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="2"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvBats2"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="R"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvName2"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:text="Player Name"
+                        android:layout_weight="4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPos2"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="CF"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsCON2"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPWR2"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsSPD2"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/ivSub2"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llRow3"
+                    android:weightSum="16"
+                    android:orientation="horizontal"
+                    android:layout_weight="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <TextView
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="3"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvBats3"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="R"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvName3"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:text="Player Name"
+                        android:layout_weight="4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPos3"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="CF"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsCON3"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPWR3"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsSPD3"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/ivSub3"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llRow4"
+                    android:weightSum="16"
+                    android:orientation="horizontal"
+                    android:layout_weight="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <TextView
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="4"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvBats4"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="R"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvName4"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:text="Player Name"
+                        android:layout_weight="4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPos4"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="CF"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsCON4"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPWR4"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsSPD4"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/ivSub4"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llRow5"
+                    android:weightSum="16"
+                    android:orientation="horizontal"
+                    android:layout_weight="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <TextView
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="5"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvBats5"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="R"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvName5"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:text="Player Name"
+                        android:layout_weight="4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPos5"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="CF"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsCON5"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPWR5"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsSPD5"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/ivSub5"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llRow6"
+                    android:weightSum="16"
+                    android:orientation="horizontal"
+                    android:layout_weight="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <TextView
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="6"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvBats6"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="R"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvName6"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:text="Player Name"
+                        android:layout_weight="4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPos6"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="CF"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsCON6"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPWR6"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsSPD6"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/ivSub6"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llRow7"
+                    android:weightSum="16"
+                    android:orientation="horizontal"
+                    android:layout_weight="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <TextView
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="7"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvBats7"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="R"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvName7"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:text="Player Name"
+                        android:layout_weight="4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPos7"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="CF"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsCON7"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPWR7"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsSPD7"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/ivSub7"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llRow8"
+                    android:weightSum="16"
+                    android:orientation="horizontal"
+                    android:layout_weight="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <TextView
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="8"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvBats8"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="R"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvName8"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:text="Player Name"
+                        android:layout_weight="4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPos8"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="CF"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsCON8"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPWR8"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsSPD8"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/ivSub8"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llRow9"
+                    android:weightSum="16"
+                    android:orientation="horizontal"
+                    android:layout_weight="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <TextView
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="9"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvBats9"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="R"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvName9"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        android:text="Player Name"
+                        android:layout_weight="4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPos9"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="CF"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsCON9"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsPWR9"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvVsSPD9"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="10"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/ivSub9"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                card_view:cardElevation="8dp"
+                card_view:cardCornerRadius="5dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="30"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:weightSum="100"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:scaleType="fitXY"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_horizontal"
+                        android:id="@+id/ivCard"
+                        android:src="@drawable/batter_up_baseball_card"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="80"
+                        android:layout_height="0dp" />
+
+                    <TextView
+                        android:id="@+id/tvPlayBall"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="20"
+                        android:background="@android:color/darker_gray"
+                        android:gravity="center"
+                        android:text="Play Ball"
+                        android:textColor="@android:color/black"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+</RelativeLayout>

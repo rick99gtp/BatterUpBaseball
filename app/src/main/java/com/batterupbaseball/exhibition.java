@@ -81,6 +81,15 @@ public class exhibition extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(exhibition.this, exhibition_select_pitcher.class);
                 intent.putExtra("USER_TEAM", "V");
+
+                SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
+                SharedPreferences.Editor editor = myPrefs.edit();
+                editor.putInt("userTeamID", visitorTeamID);
+                editor.putInt("oppTeamID", homeTeamID);
+                editor.putInt("userSeasonID", visitorSeasonID);
+                editor.putInt("oppSeasonID", homeSeasonID);
+                editor.apply();
+
                 startActivity(intent);
             }
         });
@@ -90,7 +99,15 @@ public class exhibition extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(exhibition.this, exhibition_select_pitcher.class);
-                intent.putExtra("USER_TEAM", "H");
+
+                SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
+                SharedPreferences.Editor editor = myPrefs.edit();
+                editor.putInt("userTeamID", homeTeamID);
+                editor.putInt("oppTeamID", visitorTeamID);
+                editor.putInt("userSeasonID", homeSeasonID);
+                editor.putInt("oppSeasonID", visitorSeasonID);
+                editor.apply();
+
                 startActivity(intent);
             }
         });

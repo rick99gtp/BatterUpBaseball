@@ -1,21 +1,16 @@
 package com.batterupbaseball;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -76,7 +71,7 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
         tvSelectPitcher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(exhibition_select_pitcher.this, exhibition_lineup.class);
+                Intent intent = new Intent(exhibition_select_pitcher.this, exhibition_select_lineup.class);
                 startActivity(intent);
             }
         });

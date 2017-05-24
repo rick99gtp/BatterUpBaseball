@@ -36,7 +36,7 @@ public class exhibition_team_select extends Activity {
         setContentView(R.layout.exhibition_team_select);
 
         // Did the user click on the Visitor or Home Team?
-        Bundle bundle=getIntent().getExtras();
+        Bundle bundle = getIntent().getExtras();
         teamSelected = bundle.getString("TEAM_SELECTED");
 
         SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
