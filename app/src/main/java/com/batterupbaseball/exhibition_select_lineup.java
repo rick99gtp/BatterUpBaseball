@@ -157,6 +157,48 @@ public class exhibition_select_lineup extends Activity {
     }
 
     private void getUserLineup() {
+        int[] tvPlayer = {R.id.tvName1, R.id.tvName2, R.id.tvName3, R.id.tvName4, R.id.tvName5, R.id.tvName6, R.id.tvName7, R.id.tvName8, R.id.tvName9};
+        int[] tvPos = {R.id.tvPos1, R.id.tvPos2, R.id.tvPos3, R.id.tvPos4, R.id.tvPos5, R.id.tvPos6, R.id.tvPos7, R.id.tvPos8, R.id.tvPos9};
 
+        myDB = openOrCreateDatabase(userSeasonFileName, MODE_PRIVATE, null);
+
+        Cursor cLineup = myDB.query("lineups", null, "team_id='" + userTeamID + "'", null, null, null, null);
+
+        if(cLineup.moveToFirst()) {
+            for(int i=0; i < 9; i++) {
+                int col = cLineup.getColumnIndex("bat_" + (i+1));
+                int player_id = cLineup.getInt(col);
+
+                // position
+                col = cLineup.getColumnIndex("def_" + (i+1));
+                String pos = cLineup.getString(col);
+
+                TextView tPos = (TextView) findViewById(tvPos[i]);
+                tPos.setText(pos);
+
+                Cursor cPlayer = myDB.query("players", null, "_id='" + player_id + "'", null, null, null, null);
+
+                if(cPlayer.moveToFirst()) {
+                    // name
+                    col = cPlayer.getColumnIndex("first_name");
+                    String fName = cPlayer.getString(col);
+
+                    col = cPlayer.getColumnIndex("last_name");
+                    String lName = cPlayer.getString(col);
+
+                    String playerName = fName + " " + lName;
+
+                    TextView tPlayer = (TextView) findViewById(tvPlayer[i]);
+                    tPlayer.setText(playerName);
+
+                }
+
+                cPlayer.close();
+            }
+        }
+
+        cLineup.close();
+
+        myDB.close();
     }
 }

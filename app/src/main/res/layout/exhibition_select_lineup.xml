@@ -170,7 +170,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPos1"
+                        android:id="@+id/tvPos1"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="CF"
@@ -179,7 +179,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsCON1"
+                        android:id="@+id/tvCON1"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -188,7 +188,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPWR1"
+                        android:id="@+id/tvPWR1"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -197,7 +197,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsSPD1"
+                        android:id="@+id/tvSPD1"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -247,7 +247,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPos2"
+                        android:id="@+id/tvPos2"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="CF"
@@ -256,7 +256,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsCON2"
+                        android:id="@+id/tvCON2"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -265,7 +265,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPWR2"
+                        android:id="@+id/tvPWR2"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -274,7 +274,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsSPD2"
+                        android:id="@+id/tvSPD2"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -324,7 +324,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPos3"
+                        android:id="@+id/tvPos3"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="CF"
@@ -333,7 +333,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsCON3"
+                        android:id="@+id/tvCON3"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -342,7 +342,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPWR3"
+                        android:id="@+id/tvPWR3"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -351,7 +351,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsSPD3"
+                        android:id="@+id/tvSPD3"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -401,7 +401,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPos4"
+                        android:id="@+id/tvPos4"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="CF"
@@ -410,7 +410,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsCON4"
+                        android:id="@+id/tvCON4"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -419,7 +419,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPWR4"
+                        android:id="@+id/tvPWR4"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -428,7 +428,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsSPD4"
+                        android:id="@+id/tvSPD4"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -478,7 +478,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPos5"
+                        android:id="@+id/tvPos5"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="CF"
@@ -487,7 +487,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsCON5"
+                        android:id="@+id/tvCON5"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -496,7 +496,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPWR5"
+                        android:id="@+id/tvPWR5"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -505,7 +505,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsSPD5"
+                        android:id="@+id/tvSPD5"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -555,7 +555,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPos6"
+                        android:id="@+id/tvPos6"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="CF"
@@ -564,7 +564,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsCON6"
+                        android:id="@+id/tvCON6"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -573,7 +573,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPWR6"
+                        android:id="@+id/tvPWR6"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -582,7 +582,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsSPD6"
+                        android:id="@+id/tvSPD6"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -632,7 +632,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPos7"
+                        android:id="@+id/tvPos7"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="CF"
@@ -641,7 +641,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsCON7"
+                        android:id="@+id/tvCON7"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -650,7 +650,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPWR7"
+                        android:id="@+id/tvPWR7"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -659,7 +659,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsSPD7"
+                        android:id="@+id/tvSPD7"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -709,7 +709,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPos8"
+                        android:id="@+id/tvPos8"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="CF"
@@ -718,7 +718,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsCON8"
+                        android:id="@+id/tvCON8"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -727,7 +727,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPWR8"
+                        android:id="@+id/tvPWR8"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -736,7 +736,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsSPD8"
+                        android:id="@+id/tvSPD8"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -786,7 +786,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPos9"
+                        android:id="@+id/tvPos9"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="CF"
@@ -795,7 +795,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsCON9"
+                        android:id="@+id/tvCON9"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -804,7 +804,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsPWR9"
+                        android:id="@+id/tvPWR9"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
@@ -813,7 +813,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
-                        android:id="@+id/tvVsSPD9"
+                        android:id="@+id/tvSPD9"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:text="10"
