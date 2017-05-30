@@ -18,7 +18,15 @@
             android:text="Team Name Lineup"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_weight="7"
+            android:layout_weight="5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <CheckBox
+            android:id="@+id/chkDH"
+            android:text="Use DH"
+            android:checked = "true"
+            android:layout_weight="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
 

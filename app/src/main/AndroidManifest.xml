@@ -27,6 +27,7 @@
         <activity android:name=".exhibition_team_select" android:screenOrientation="landscape"></activity>
         <activity android:name=".exhibition_select_pitcher" android:screenOrientation="landscape"></activity>
         <activity android:name=".exhibition_select_lineup" android:screenOrientation="landscape"></activity>
+        <activity android:name=".playball" android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>

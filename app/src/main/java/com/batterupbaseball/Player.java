@@ -1,0 +1,171 @@
+package com.batterupbaseball;
+
+public class Player {
+
+    // max number of each range
+    int[] pVsl = new int[7];
+    int[] pVsr = new int[7];
+    int[] sprayChart = new int[3];
+    int[] ballSpeed = new int[3];
+    int[] running = new int[2];
+    int[] defense = new int[2];
+    int maxRange_1b, maxRange_2b, maxRange_3b, maxRange_hr, maxRange_bb, maxRange_so, maxRange_hbp, maxRange_x, maxRange_out;
+    String pBats, pThrows, name, pPos;
+    int sac_bunt, pull, center, oppo, soft, med, hard, baserunning, stealing, avoid_dp, hold_rating, rsb, arm_rating, defense_rating, vsl_rating, vsr_rating, con_rating, pwr_rating, pValue;
+    String special_text;
+    String role; // starter, bullpen, bench
+
+    public void Player() {
+        
+    }
+
+    // setters
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setBats(String bats) {
+        this.pBats = bats;
+    }
+    public void setThrows(String pThrows) {
+        this.pThrows = pThrows;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void pPos(String pos) {
+        this.pPos = pos;
+    }
+    public void setVslRatings(int num_1b, int num_2b, int num_3b, int num_hr, int num_bb, int num_so, int num_hbp) {
+        this.pVsl[0] = num_1b;
+        this.pVsl[1] = num_2b;
+        this.pVsl[2] = num_3b;
+        this.pVsl[3] = num_hr;
+        this.pVsl[4] = num_bb;
+        this.pVsl[5] = num_so;
+        this.pVsl[6] = num_hbp;
+    }
+    public void setVsrRatings(int num_1b, int num_2b, int num_3b, int num_hr, int num_bb, int num_so, int num_hbp) {
+        this.pVsr[0] = num_1b;
+        this.pVsr[1] = num_2b;
+        this.pVsr[2] = num_3b;
+        this.pVsr[3] = num_hr;
+        this.pVsr[4] = num_bb;
+        this.pVsr[5] = num_so;
+        this.pVsr[6] = num_hbp;
+    }
+    public void setSac_bunt(int num) {
+        this.sac_bunt = num;
+    }
+    public void setSprayChart(int pull, int center, int oppo) {
+        sprayChart[0] = pull;
+        sprayChart[1] = center;
+        sprayChart[2] = oppo;
+    }
+    public void setBallSpeed(int soft, int med, int hard) {
+        ballSpeed[0] = soft;
+        ballSpeed[1] = med;
+        ballSpeed[2] = hard;
+    }
+    public void setRunning(int baserunning, int stealing) {
+        running[0] = baserunning;
+        running[1] = stealing;
+    }
+    public void setAvoid_dp(int num) {
+        this.avoid_dp = num;
+    }
+    public void setHold_rating(int num) {
+        this.hold_rating = num;
+    }
+    public void setRsb(int num) {
+        this.rsb = num;
+    }
+    public void setDefense(int arm_rating, int defense_rating) {
+        defense[0] = arm_rating;
+        defense[1] = defense_rating;
+    }
+    public void setRatings(int vsl_rating, int vsr_rating) {
+        this.vsl_rating = vsl_rating;
+        this.vsr_rating = vsr_rating;
+    }
+    public void setConRating(int con_rating) {
+        this.con_rating = con_rating;
+    }
+    public void setPwrRating(int pwr_rating) {
+        this.pwr_rating = pwr_rating;
+    }
+    public void setSpecialText(String text) {
+        this.special_text = text;
+    }
+    public void setValue(int value) {
+        this.pValue = value;
+    }
+
+    // getters
+    public String getRole() {
+        return this.role;
+    }
+
+    public String getBats() {
+        return this.pBats;
+    }
+    public String getThrows() {
+        return this.pThrows;
+    }
+    public String getName() {
+        return this.name;
+    }
+    public String pPos() {
+        return this.pPos;
+    }
+    public int[] getVslRatings() {
+        return this.pVsl;
+    }
+    public int[] getVsrRatings() {
+        return this.pVsr;
+    }
+    public int getSac_bunt() {
+        return this.sac_bunt;
+    }
+    public int[] getSprayChart() {
+        return this.sprayChart;
+    }
+    public int[] getBallSpeed() {
+        return this.ballSpeed;
+    }
+    public int[] getRunning() {
+        return this.running;
+    }
+    public int getAvoid_dp() {
+        return this.avoid_dp;
+    }
+    public int getHold_rating() {
+        return this.hold_rating;
+    }
+    public int setRsb() {
+        return this.rsb;
+    }
+    public int[] getDefense() {
+        return defense;
+    }
+    public int getRatings(int rating) {
+        if(rating==1) {
+            return vsl_rating;
+        }
+
+        return vsr_rating;
+    }
+    public int getConRating() {
+        return con_rating;
+    }
+    public int getPwrRating() {
+        return pwr_rating;
+    }
+    public String getSpecialText() {
+        return this.special_text;
+    }
+    public int getValue() {
+        return this.pValue;
+    }
+
+}

@@ -41,6 +41,10 @@ public class exhibition extends Activity {
         visitorTeamID = myPrefs.getInt("vTeamID", 1);
         homeTeamID = myPrefs.getInt("hTeamID", 2);
 
+        SharedPreferences.Editor editor = myPrefs.edit();
+        editor.putString("game_type", "x"); // x = exhibition game, s = season game
+        editor.apply();
+
         // get the current season
         getVisitorSeasonFileName();
         getHomeSeasonFileName();
@@ -262,6 +266,4 @@ public class exhibition extends Activity {
                 showHomeViews();
             }
     }
-
-
 }
