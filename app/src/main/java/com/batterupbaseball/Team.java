@@ -1,26 +1,29 @@
 package com.batterupbaseball;
 
-/**
- * Created by Rick on 5/29/2017.
- */
+import java.util.ArrayList;
 
 public class Team {
-    String Teamname;
-    Player[] vPlayer = new Player[25];
-    Player[] hPlayer = new Player[25];
+    String name;
+    ArrayList<Player> lineup;
+    int[] lineupID;
+    int[] benchID;
+    int[] bullpenID;
+    int[] startersID;
 
-    public void Team(String teamname) {
-        this.Teamname = teamname;
-        setupPlayers();
+    public Team() {
+        lineup = new ArrayList<Player>();
     }
 
-    private void setupPlayers() {
-        // allocate space and assign a Player object to the array
-        for(int i=0; i < 25; i++) {
-            Player thisPlayer = new Player();
-            vPlayer[i] = thisPlayer;
-            thisPlayer = new Player();
-            hPlayer[i] = thisPlayer;
+    public void addPlayerToLineup(Player aPlayer) {
+        lineup.add(aPlayer);
+    }
+
+    public Player getPlayer(int _id) {
+        Player target = lineup.get(0);
+        for(Player p : lineup) {
+            if(p._id == _id)
+                target = p;
         }
+        return target;
     }
 }

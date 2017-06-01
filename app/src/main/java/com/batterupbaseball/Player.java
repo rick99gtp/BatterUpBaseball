@@ -10,11 +10,23 @@ public class Player {
     int[] running = new int[2];
     int[] defense = new int[2];
     int maxRange_1b, maxRange_2b, maxRange_3b, maxRange_hr, maxRange_bb, maxRange_so, maxRange_hbp, maxRange_x, maxRange_out;
-    String pBats, pThrows, name, pPos;
-    int sac_bunt, pull, center, oppo, soft, med, hard, baserunning, stealing, avoid_dp, hold_rating, rsb, arm_rating, defense_rating, vsl_rating, vsr_rating, con_rating, pwr_rating, pValue;
+    String pBats, pThrows, name, pos;
+    int sac_bunt, pull, center, oppo, soft, med, hard, baserunning, stealing, spd_rating, avoid_dp, hold_rating, rsb, arm_rating, defense_rating, vsl_rating, vsr_rating, con_rating, pwr_rating, pValue;
     String special_text;
     String role; // starter, bullpen, bench
+    int _id = 0;
 
+    // game stats
+    double gameG, gamePA, gameAB, gameH, gameR, gameRBI, game1B, game2B, game3B, gameHR, gameBB, gameSO, gameHBP, gameSB, gameCS, gameGDP;
+    double gameIP, gameGS, gameER, gameP_BB, gameP_SO, gameP_1B, gameP_2B, gameP_3B, gameP_HR, gameP_HBP;
+    double gamePO, gameA, gameE, gameFLD_PCT;
+    
+    // season stats
+    double G, PA, AB, H, R, RBI, B1, B2, B3, HR, BB, SO, HBP, SB, CS, GDP, AVG, SLG, OBP, OPS;
+    double IP, GS, ER, P_BB, P_SO, P_1B, P_2B, P_3B, P_HR, P_HBP, P_H, W, L, S, BF, ERA;
+    double PO, A, E;
+    double fldPCT;
+    
     public void Player() {
         
     }
@@ -33,8 +45,11 @@ public class Player {
     public void setName(String name) {
         this.name = name;
     }
-    public void pPos(String pos) {
-        this.pPos = pos;
+    public void setPos(String pos) {
+        this.pos = pos;
+    }
+    public void setSpd_rating(int num) {
+        this.spd_rating = num;
     }
     public void setVslRatings(int num_1b, int num_2b, int num_3b, int num_hr, int num_bb, int num_so, int num_hbp) {
         this.pVsl[0] = num_1b;
@@ -102,6 +117,9 @@ public class Player {
     }
 
     // getters
+    public int getSpd_rating() {
+        return this.spd_rating;
+    }
     public String getRole() {
         return this.role;
     }
@@ -115,8 +133,8 @@ public class Player {
     public String getName() {
         return this.name;
     }
-    public String pPos() {
-        return this.pPos;
+    public String getPos() {
+        return this.pos;
     }
     public int[] getVslRatings() {
         return this.pVsl;
@@ -149,11 +167,10 @@ public class Player {
         return defense;
     }
     public int getRatings(int rating) {
-        if(rating==1) {
+        if(rating==1)
             return vsl_rating;
-        }
-
-        return vsr_rating;
+        else
+            return vsr_rating;
     }
     public int getConRating() {
         return con_rating;
@@ -168,4 +185,14 @@ public class Player {
         return this.pValue;
     }
 
+    public String toString() {
+        return name+ "(" + pos + ")";
+    }
+
+    public boolean hasSpeed() {
+        if(spd_rating > 5)
+            return true;
+        else
+            return false;
+    }
 }

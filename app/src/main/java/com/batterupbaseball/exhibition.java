@@ -84,10 +84,10 @@ public class exhibition extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(exhibition.this, exhibition_select_pitcher.class);
-                intent.putExtra("USER_TEAM", "V");
 
-                SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
-                SharedPreferences.Editor editor = myPrefs.edit();
+                SharedPreferences prefs = getSharedPreferences("prefsFile", 0);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("USER_TEAM", "V");
                 editor.putInt("userTeamID", visitorTeamID);
                 editor.putInt("oppTeamID", homeTeamID);
                 editor.putInt("userSeasonID", visitorSeasonID);
@@ -106,6 +106,7 @@ public class exhibition extends Activity {
 
                 SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
                 SharedPreferences.Editor editor = myPrefs.edit();
+                editor.putString("USER_TEAM", "H");
                 editor.putInt("userTeamID", homeTeamID);
                 editor.putInt("oppTeamID", visitorTeamID);
                 editor.putInt("userSeasonID", homeSeasonID);
@@ -255,6 +256,8 @@ public class exhibition extends Activity {
                 SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
                 visitorTeamID = myPrefs.getInt("vTeamID", 1);
                 homeTeamID = myPrefs.getInt("hTeamID", 2);
+
+
 
                 getVisitorSeasonFileName();
                 getHomeSeasonFileName();

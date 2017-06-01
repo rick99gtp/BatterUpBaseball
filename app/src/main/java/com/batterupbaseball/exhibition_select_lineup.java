@@ -22,14 +22,13 @@ public class exhibition_select_lineup extends Activity {
     SQLiteDatabase myDB;
     String userSeasonFileName;
     String oppSeasonFileName;
+    String homeSeasonFileName;
     int[] starterID = new int[5];
+    int userStarter, oppStarter;
     String oppPitcherName;
     String oppPitcherThrows;
-    int oppPitcherValueVsLeft;
-    int oppPitcherValueVsRight;
-    int oppPitcherDefense;
-    int oppPitcherContactVsLeft;
-    int oppPitcherContactVsRight;
+    int[] userBullpen = new int[8];
+    int[] oppBullpen = new int[8];
     int[] userLineup = new int[9];
     int[] userDefense = new int[9];
     int[] userBench = new int[6];
@@ -38,6 +37,8 @@ public class exhibition_select_lineup extends Activity {
     int[] oppBench = new int[6];
     String TAG = "com.batterupbaseball";
     boolean useDH = true;
+    String userTeam;
+    int hTeamID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +46,20 @@ public class exhibition_select_lineup extends Activity {
         setContentView(R.layout.exhibition_select_lineup);
 
         SharedPreferences prefs = getSharedPreferences("prefsFile", 0);
+        userStarter = prefs.getInt("exhibition_selected_starter", 0);
         useDH = prefs.getBoolean("exhibition_useDH", true);
+        hTeamID = prefs.getInt("hTeamID", 0);
+        userTeam = prefs.getString("USER_TEAM", "V");
 
         getMatchupIDs();
         getUserSeasonFileName();
         getOppSeasonFileName();
         getOpponentPitcher();
         getUserLineup();
-        
+        getUserBullpen();
+        getOppBullpen();
+
+
         TextView tvPlayBall = (TextView) findViewById(R.id.tvPlayBall);
         tvPlayBall.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +67,34 @@ public class exhibition_select_lineup extends Activity {
                 getOppLineup();
 
                 Intent intent = new Intent(exhibition_select_lineup.this, playball.class);
+
+                if(userTeam.equals("V")) {
+                    intent.putExtra("visLineup", userLineup);
+                    intent.putExtra("visBench", userBench);
+                    intent.putExtra("visBullpen", userBullpen);
+                    intent.putExtra("visStarter", userStarter);
+                    intent.putExtra("visDefense", userDefense);
+
+                    intent.putExtra("homeLineup", oppLineup);
+                    intent.putExtra("homeBench", oppBench);
+                    intent.putExtra("homeBullpen", oppBullpen);
+                    intent.putExtra("homeStarter", oppStarter);
+                    intent.putExtra("homeDefense", oppDefense);
+                }
+                else {
+                    intent.putExtra("visLineup", oppLineup);
+                    intent.putExtra("visBench", oppBench);
+                    intent.putExtra("visBullpen", oppBullpen);
+                    intent.putExtra("visStarter", oppStarter);
+                    intent.putExtra("visDefense", oppDefense);
+
+                    intent.putExtra("homeLineup", userLineup);
+                    intent.putExtra("homeBench", userBench);
+                    intent.putExtra("homeBullpen", userBullpen);
+                    intent.putExtra("homeStarter", userStarter);
+                    intent.putExtra("homeDefense", userDefense);
+                }
+
                 startActivity(intent);
             }
         });
@@ -105,6 +140,10 @@ public class exhibition_select_lineup extends Activity {
             // database file name
             int colSeasonID = seasonOwned.getColumnIndex("seasonID");
             userSeasonFileName = seasonOwned.getString(colSeasonID);
+            SharedPreferences prefs = getSharedPreferences("prefsFile", 0);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("USERSEASONFILENAME", userSeasonFileName);
+            editor.apply();
         }
 
         // close the cursor
@@ -124,6 +163,10 @@ public class exhibition_select_lineup extends Activity {
             // database file name
             int colSeasonID = seasonOwned.getColumnIndex("seasonID");
             oppSeasonFileName = seasonOwned.getString(colSeasonID);
+            SharedPreferences prefs = getSharedPreferences("prefsFile", 0);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("OPPSEASONFILENAME", oppSeasonFileName);
+            editor.apply();
         }
 
         // close the cursor
@@ -160,7 +203,9 @@ public class exhibition_select_lineup extends Activity {
         // get player names
         Cursor cPlayer = null;
 
-        cPlayer = myDB.query("players", null, "_id='" + starterID[iStarterID-1] + "'", null, null, null, null);
+        oppStarter = starterID[iStarterID-1];
+
+        cPlayer = myDB.query("players", null, "_id='" + oppStarter + "'", null, null, null, null);
 
         if(cPlayer.moveToFirst()) {
             int col = cPlayer.getColumnIndex("first_name");
@@ -173,21 +218,6 @@ public class exhibition_select_lineup extends Activity {
 
             col = cPlayer.getColumnIndex("throws");
             oppPitcherThrows = cPlayer.getString(col).toUpperCase();
-
-            col = cPlayer.getColumnIndex("vsl_rating");
-            oppPitcherValueVsLeft = cPlayer.getInt(col);
-
-            col = cPlayer.getColumnIndex("vsr_rating");
-            oppPitcherValueVsRight = cPlayer.getInt(col);
-
-            col = cPlayer.getColumnIndex("defense_rating");
-            oppPitcherDefense = cPlayer.getInt(col);
-
-            col = cPlayer.getColumnIndex("vsl_rating");
-            oppPitcherContactVsLeft = cPlayer.getInt(col);
-
-            col = cPlayer.getColumnIndex("vsr_rating");
-            oppPitcherContactVsRight = cPlayer.getInt(col);
         }
 
         cPlayer.close();
@@ -261,6 +291,44 @@ public class exhibition_select_lineup extends Activity {
         myDB.close();
     }
 
+    private void getUserBullpen() {
+        myDB = openOrCreateDatabase(userSeasonFileName, MODE_PRIVATE, null);
+
+        Cursor cBullpen = myDB.query("bullpen", null, "team_id='" + userTeamID + "'", null, null, null, null);
+
+        if(cBullpen.moveToFirst()) {
+            for (int i = 0; i < 8; i++) {
+                int col = cBullpen.getColumnIndex("bullpen_" + (i+1));
+                if(cBullpen.getInt(col) != 9999) {
+                    userBullpen[i] = cBullpen.getInt(col);
+                }
+            }
+        }
+
+        cBullpen.close();
+
+        myDB.close();
+    }
+
+    private void getOppBullpen() {
+        myDB = openOrCreateDatabase(oppSeasonFileName, MODE_PRIVATE, null);
+
+        Cursor cBullpen = myDB.query("bullpen", null, "team_id='" + oppTeamID + "'", null, null, null, null);
+
+        if(cBullpen.moveToFirst()) {
+            for (int i = 0; i < 8; i++) {
+                int col = cBullpen.getColumnIndex("bullpen_" + (i+1));
+                if(cBullpen.getInt(col) != 9999) {
+                    oppBullpen[i] = cBullpen.getInt(col);
+                }
+            }
+        }
+
+        cBullpen.close();
+
+        myDB.close();
+    }
+
     private void getOppLineup() {
 
         myDB = openOrCreateDatabase(oppSeasonFileName, MODE_PRIVATE, null);
@@ -271,8 +339,6 @@ public class exhibition_select_lineup extends Activity {
             for(int i=0; i < 9; i++) {
                 int col = cLineup.getColumnIndex("bat_" + (i+1));
                 oppLineup[i] = cLineup.getInt(col);
-
-                Log.d(TAG, "OPP Lineup" + oppLineup[i]);
 
                 // position
                 col = cLineup.getColumnIndex("def_" + (i+1));

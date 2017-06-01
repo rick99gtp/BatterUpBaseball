@@ -53,10 +53,6 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.exhibition_select_pitcher);
 
-        // Did the user click on the Visitor or Home Team?
-        Bundle bundle=getIntent().getExtras();
-        teamSelected = bundle.getString("USER_TEAM");
-
         // prepare the Views
         for(int i=0; i<5; i++) {
             llStarter[i] = (LinearLayout) findViewById(llRow[i]);
@@ -289,6 +285,7 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
         super.onResume();
 
         SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
+        teamSelected = myPrefs.getString("USER_TEAM", "V");
 
         if(teamSelected.equals("V")) {
             seasonID = myPrefs.getInt("vSeasonID", 1);
