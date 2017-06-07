@@ -5,15 +5,16 @@ public class Player {
     // max number of each range
     int[] pVsl = new int[7];
     int[] pVsr = new int[7];
-    int[] sprayChart = new int[3];
-    int[] ballSpeed = new int[3];
-    int[] running = new int[2];
-    int[] defense = new int[2];
-    int maxRange_1b, maxRange_2b, maxRange_3b, maxRange_hr, maxRange_bb, maxRange_so, maxRange_hbp, maxRange_x, maxRange_out;
+    int[] sprayChart = new int[3]; // pull, center, oppo
+    int[] ballSpeed = new int[3]; // soft, med, hard
+    int[] running = new int[2]; // baserunning, stealing
+    int[] defense = new int[4]; // arm_rating, defense_rating, fld_range, fld_error;
+
     String pBats, pThrows, name, pos;
-    int sac_bunt, pull, center, oppo, soft, med, hard, baserunning, stealing, spd_rating, avoid_dp, hold_rating, rsb, arm_rating, defense_rating, vsl_rating, vsr_rating, con_rating, pwr_rating, pValue;
+    int sac_bunt, spd_rating, avoid_dp, hold_rating, rsb, vsl_rating, vsr_rating, con_rating, pwr_rating, pValue;
     String special_text;
     String role; // starter, bullpen, bench
+
     int _id = 0;
 
     // game stats
