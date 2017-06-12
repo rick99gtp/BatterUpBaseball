@@ -22,7 +22,6 @@ public class exhibition_select_lineup extends Activity {
     SQLiteDatabase myDB;
     String userSeasonFileName;
     String oppSeasonFileName;
-    String homeSeasonFileName;
     int[] starterID = new int[5];
     int userStarter, oppStarter;
     String oppPitcherName;
@@ -58,7 +57,6 @@ public class exhibition_select_lineup extends Activity {
         getUserLineup();
         getUserBullpen();
         getOppBullpen();
-
 
         TextView tvPlayBall = (TextView) findViewById(R.id.tvPlayBall);
         tvPlayBall.setOnClickListener(new View.OnClickListener() {
@@ -282,7 +280,9 @@ public class exhibition_select_lineup extends Activity {
                 int col = cBench.getColumnIndex("bench_" + (i+1));
                 int bPlayer = cBench.getInt(col);
 
-                userBench[i] = (bPlayer==9999) ? 0 : bPlayer; // if ID = 9999, skip, not a player
+                if(bPlayer !=9999) {
+                    userBench[i] = bPlayer;
+                }
             }
         }
 
@@ -358,7 +358,9 @@ public class exhibition_select_lineup extends Activity {
                 int col = cBench.getColumnIndex("bench_" + (i+1));
                 int bPlayer = cBench.getInt(col);
 
-                oppBench[i] = (bPlayer==9999) ? 0 : bPlayer; // if ID = 9999, skip, not a player
+                if(bPlayer != 9999) {
+                    oppBench[i] = bPlayer;
+                }
             }
         }
 
