@@ -7,17 +7,17 @@ public class Team {
     ArrayList<Player> lineup;
     ArrayList<Player> bench;
     ArrayList<Player> bullpen;
-    ArrayList<Player> starters;
+    ArrayList<Player> starter;
     int[] lineupID;
     int[] benchID;
     int[] bullpenID;
-    int[] startersID;
+    int starterID;
 
     public Team() {
         lineup = new ArrayList<Player>();
         bench = new ArrayList<Player>();
         bullpen = new ArrayList<Player>();
-        starters = new ArrayList<Player>();
+        starter = new ArrayList<Player>();
     }
 
     public void addPlayerToLineup(Player aPlayer) {
@@ -33,7 +33,7 @@ public class Team {
     }
 
     public void addPlayerToStarters(Player aPlayer) {
-        starters.add(aPlayer);
+        starter.add(aPlayer);
     }
 
     public int getBenchCount() {

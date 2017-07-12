@@ -152,6 +152,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/tvVisitorTeamName"
                         android:gravity="center_vertical"
                         android:background="@color/cardview_light_background"
                         android:textSize="10sp"
@@ -163,6 +164,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
+                        android:id="@+id/tvVScore1"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -173,6 +175,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
+                        android:id="@+id/tvVScore2"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -182,6 +185,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvVScore3"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -191,6 +195,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvVScore4"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -200,6 +205,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvVScore5"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -209,6 +215,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvVScore6"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -218,6 +225,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvVScore7"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -227,6 +235,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvVScore8"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -236,6 +245,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvVScore9"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -245,6 +255,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvVScoreX"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -263,6 +274,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/tvHomeTeamName"
                         android:paddingLeft="2dp"
                         android:background="@color/cardview_light_background"
                         android:textSize="10sp"
@@ -273,6 +285,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
+                        android:id="@+id/tvHScore1"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -283,6 +296,7 @@
                         android:layout_height="match_parent" />
 
                     <TextView
+                        android:id="@+id/tvHScore2"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -292,6 +306,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvHScore3"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -301,6 +316,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvHScore4"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -310,6 +326,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvHScore5"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -319,6 +336,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvHScore6"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -328,6 +346,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvHScore7"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -337,6 +356,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvHScore8"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -346,6 +366,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvHScore9"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -355,6 +376,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent" />
                     <TextView
+                        android:id="@+id/tvHScoreX"
                         android:layout_margin="1dp"
                         tools:text="0"
                         android:textSize="10sp"
@@ -433,7 +455,7 @@
 
                     <TextView
                         android:layout_margin="1dp"
-                        android:id="@+id/textView"
+                        android:id="@+id/tvVRuns"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -443,6 +465,7 @@
                         tools:text="0" />
 
                     <TextView
+                        android:id="@+id/tvVHits"
                         android:layout_margin="1dp"
                         android:textSize="10sp"
                         android:background="@color/cardview_light_background"
@@ -453,6 +476,7 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/tvVErrors"
                         android:layout_margin="1dp"
                         android:textSize="10sp"
                         android:background="@color/cardview_light_background"
@@ -470,6 +494,7 @@
                     android:layout_weight="1">
 
                     <TextView
+                        android:id="@+id/tvHRuns"
                         android:layout_margin="1dp"
                         android:textSize="10sp"
                         android:background="@color/cardview_light_background"
@@ -480,6 +505,7 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/tvHHits"
                         android:layout_margin="1dp"
                         android:textSize="10sp"
                         android:background="@color/cardview_light_background"
@@ -490,6 +516,7 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/tvHErrors"
                         android:layout_margin="1dp"
                         android:textSize="10sp"
                         android:background="@color/cardview_light_background"
@@ -643,6 +670,12 @@
             android:layout_weight="2"
             android:layout_height="match_parent">
 
+            <TextView
+                android:id="@+id/tvResult"
+                tools:text="Result of die roll."
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
         </android.support.v7.widget.CardView>
 
         <LinearLayout
@@ -662,6 +695,7 @@
                 android:layout_weight="1">
 
                 <TextView
+                    android:id="@+id/tvStamina"
                     android:paddingLeft="3dp"
                     android:gravity="center_vertical"
                     android:layout_width="wrap_content"
@@ -687,6 +721,7 @@
                 android:layout_weight="3">
 
                 <TextView
+                    android:id="@+id/tvMenu"
                     android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -711,7 +746,228 @@
             android:layout_height="match_parent"
             android:layout_weight="7.5">
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
+                <LinearLayout
+                    android:background="@drawable/woodred"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2">
+
+                    <ImageView
+                        android:id="@+id/ivResult_1b"
+                        android:scaleType="fitXY"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:src="@drawable/result_1b"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/ivResult_2b"
+                        android:scaleType="fitXY"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:src="@drawable/result_2b"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/ivResult_3b"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:scaleType="fitXY"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/result_3b"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/ivResult_hr"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:scaleType="fitXY"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/result_hr"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/ivResult_bb"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:scaleType="fitXY"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/result_bb"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/ivResult_k"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:scaleType="fitXY"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/result_so"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/ivResult_hbp"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:scaleType="fitXY"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/result_hbp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/ivResult_glove"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:scaleType="fitXY"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/result_glove"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/ivResult_out"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:scaleType="fitXY"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/result_out"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:background="@drawable/woodred"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/tvResult_1b"
+                        android:textStyle="bold"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:textSize="10sp"
+                        android:gravity="center"
+                        tools:text="1-116"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tvResult_2b"
+                        android:textStyle="bold"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:textSize="10sp"
+                        android:gravity="center"
+                        tools:text="117-135"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+                    <TextView
+                        android:id="@+id/tvResult_3b"
+                        android:textStyle="bold"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:textSize="10sp"
+                        android:gravity="center"
+                        tools:text="136"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+                    <TextView
+                        android:id="@+id/tvResult_hr"
+                        android:textStyle="bold"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:textSize="10sp"
+                        android:gravity="center"
+                        tools:text="137-155"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+                    <TextView
+                        android:id="@+id/tvResult_bb"
+                        android:textStyle="bold"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:textSize="10sp"
+                        android:gravity="center"
+                        tools:text="156-165"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+                    <TextView
+                        android:id="@+id/tvResult_k"
+                        android:textStyle="bold"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:textSize="10sp"
+                        android:gravity="center"
+                        tools:text="166-200"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+                    <TextView
+                        android:id="@+id/tvResult_hbp"
+                        android:textStyle="bold"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:textSize="10sp"
+                        android:gravity="center"
+                        tools:text="201-209"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+                    <TextView
+                        android:id="@+id/tvResult_glove"
+                        android:textStyle="bold"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:textSize="10sp"
+                        android:gravity="center"
+                        tools:text="210-230"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+                    <TextView
+                        android:id="@+id/tvResult_out"
+                        android:textStyle="bold"
+                        android:background="@drawable/woodred_dark"
+                        android:layout_margin="1dp"
+                        android:textSize="10sp"
+                        android:gravity="center"
+                        tools:text="231-1000"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+            </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
@@ -733,7 +989,7 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/imageView"
+                    android:id="@+id/ivDie_1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="1dp"
@@ -742,24 +998,26 @@
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ten_sided_die" />
+                    android:src="@drawable/red_die_0" />
 
                 <ImageView
+                    android:id="@+id/ivDie_2"
                     android:layout_marginTop="1dp"
                     android:layout_marginBottom="1dp"
                     android:layout_marginStart="2dp"
                     android:layout_marginEnd="2dp"
-                    android:src="@drawable/ten_sided_die"
+                    android:src="@drawable/white_die_0"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:scaleType="fitXY"
                     android:adjustViewBounds="true"/>
                 <ImageView
+                    android:id="@+id/ivDie_3"
                     android:layout_marginTop="1dp"
                     android:layout_marginBottom="1dp"
                     android:layout_marginEnd="2dp"
-                    android:src="@drawable/ten_sided_die"
+                    android:src="@drawable/blue_die_0"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"

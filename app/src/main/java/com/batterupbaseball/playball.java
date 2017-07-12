@@ -64,6 +64,8 @@ public class playball extends Activity {
         for(int i = 0; i < vTeam.bullpen.size(); i++) {
             Log.d(TAG, "BULLPEN: " + vTeam.bullpen.get(i).getName());
         }
+
+        Log.d(TAG, "STARTER: " + vTeam.starter.get(0).getName());
     }
 
     private void listHomeTeam() {
@@ -78,6 +80,8 @@ public class playball extends Activity {
         for(int i = 0; i < hTeam.bullpen.size(); i++) {
             Log.d(TAG, "BULLPEN: " + hTeam.bullpen.get(i).getName());
         }
+
+        Log.d(TAG, "STARTER: " + hTeam.starter.get(0).getName());
     }
 
     private void buildVisTeam(String seasonName, int teamID) {
@@ -384,91 +388,88 @@ public class playball extends Activity {
         // STARTERS
         // *******************
         getVisStarters();
-/*
-        for(int i = 0; i < 5; i++) {
-            cPlayer = myDB.query("players", null, "_id='" + vTeam.startersID[i] + "'", null, null, null, null);
 
-            if(cPlayer.moveToFirst()) {
-                Player thisPlayer = new Player();
+        cPlayer = myDB.query("players", null, "_id='" + vTeam.starterID + "'", null, null, null, null);
 
-                int col1 = cPlayer.getColumnIndex("first_name");
-                int col2 = cPlayer.getColumnIndex("last_name");
+        if(cPlayer.moveToFirst()) {
+            Player thisPlayer = new Player();
 
-                thisPlayer.name = cPlayer.getString(col1) + " " + cPlayer.getString(col2);
+            int col1 = cPlayer.getColumnIndex("first_name");
+            int col2 = cPlayer.getColumnIndex("last_name");
 
-                col1 = cPlayer.getColumnIndex("pos");
-                thisPlayer.pos = cPlayer.getString(col1);
+            thisPlayer.name = cPlayer.getString(col1) + " " + cPlayer.getString(col2);
 
-                col1 = cPlayer.getColumnIndex("bats");
-                thisPlayer.pBats = cPlayer.getString(col1);
+            col1 = cPlayer.getColumnIndex("pos");
+            thisPlayer.pos = cPlayer.getString(col1);
 
-                col1 = cPlayer.getColumnIndex("throws");
-                thisPlayer.pThrows = cPlayer.getString(col1);
+            col1 = cPlayer.getColumnIndex("bats");
+            thisPlayer.pBats = cPlayer.getString(col1);
 
-                // vsl ratings
-                for(int j = 0; j < 7; j++) {
-                    col1 = cPlayer.getColumnIndex(sVsl[j]);
-                    thisPlayer.pVsl[j] = cPlayer.getInt(col1);
-                }
+            col1 = cPlayer.getColumnIndex("throws");
+            thisPlayer.pThrows = cPlayer.getString(col1);
 
-                // vsr ratings
-                for(int j = 0; j < 7; j++) {
-                    col1 = cPlayer.getColumnIndex(sVsr[j]);
-                    thisPlayer.pVsr[j] = cPlayer.getInt(col1);
-                }
-
-                // sac bunt
-                col1 = cPlayer.getColumnIndex("sac_bunt");
-                thisPlayer.sac_bunt = cPlayer.getInt(col1);
-
-                // spray chart
-                for(int j = 0; j < 3; j++) {
-                    col1 = cPlayer.getColumnIndex(sprayChart[j]);
-                    thisPlayer.sprayChart[j] = cPlayer.getInt(col1);
-                }
-
-                // ball speed
-                for(int j = 0; j < 3; j++) {
-                    col1 = cPlayer.getColumnIndex(ballSpeed[j]);
-                    thisPlayer.ballSpeed[j] = cPlayer.getInt(col1);
-                }
-
-                // running
-                for(int j = 0; j < 2; j++) {
-                    col1 = cPlayer.getColumnIndex(running[j]);
-                    thisPlayer.running[j] = cPlayer.getInt(col1);
-                }
-
-                // avoid dp
-                col1 = cPlayer.getColumnIndex("avoid_dp");
-                thisPlayer.avoid_dp = cPlayer.getInt(col1);
-
-                col1 = cPlayer.getColumnIndex("hold_rating");
-                thisPlayer.hold_rating = cPlayer.getInt(col1);
-
-                col1 = cPlayer.getColumnIndex("rsb");
-                thisPlayer.rsb = cPlayer.getInt(col1);
-
-                col1 = cPlayer.getColumnIndex("hold_rating");
-                thisPlayer.hold_rating = cPlayer.getInt(col1);
-
-                // arm_rating, defense_rating, fld_range, fld_error
-                for(int j = 0; j < 4; j++) {
-                    col1 = cPlayer.getColumnIndex(defense[j]);
-                    thisPlayer.defense[j] = cPlayer.getInt(col1);
-                }
-
-                // vsl_rating, vsr_rating
-                col1 = cPlayer.getColumnIndex("vsl_rating");
-                thisPlayer.vsl_rating = cPlayer.getInt(col1);
-
-                col1 = cPlayer.getColumnIndex("vsr_rating");
-                thisPlayer.vsr_rating = cPlayer.getInt(col1);
-
-                vTeam.addPlayerToStarters(thisPlayer);
+            // vsl ratings
+            for(int j = 0; j < 7; j++) {
+                col1 = cPlayer.getColumnIndex(sVsl[j]);
+                thisPlayer.pVsl[j] = cPlayer.getInt(col1);
             }
+
+            // vsr ratings
+            for(int j = 0; j < 7; j++) {
+                col1 = cPlayer.getColumnIndex(sVsr[j]);
+                thisPlayer.pVsr[j] = cPlayer.getInt(col1);
+            }
+
+            // sac bunt
+            col1 = cPlayer.getColumnIndex("sac_bunt");
+            thisPlayer.sac_bunt = cPlayer.getInt(col1);
+
+            // spray chart
+            for(int j = 0; j < 3; j++) {
+                col1 = cPlayer.getColumnIndex(sprayChart[j]);
+                thisPlayer.sprayChart[j] = cPlayer.getInt(col1);
+            }
+             // ball speed
+            for(int j = 0; j < 3; j++) {
+                col1 = cPlayer.getColumnIndex(ballSpeed[j]);
+                thisPlayer.ballSpeed[j] = cPlayer.getInt(col1);
+            }
+
+            // running
+            for(int j = 0; j < 2; j++) {
+                col1 = cPlayer.getColumnIndex(running[j]);
+                thisPlayer.running[j] = cPlayer.getInt(col1);
+            }
+
+            // avoid dp
+            col1 = cPlayer.getColumnIndex("avoid_dp");
+            thisPlayer.avoid_dp = cPlayer.getInt(col1);
+
+            col1 = cPlayer.getColumnIndex("hold_rating");
+            thisPlayer.hold_rating = cPlayer.getInt(col1);
+
+            col1 = cPlayer.getColumnIndex("rsb");
+            thisPlayer.rsb = cPlayer.getInt(col1);
+
+            col1 = cPlayer.getColumnIndex("hold_rating");
+            thisPlayer.hold_rating = cPlayer.getInt(col1);
+
+            // arm_rating, defense_rating, fld_range, fld_error
+            for(int j = 0; j < 4; j++) {
+                col1 = cPlayer.getColumnIndex(defense[j]);
+                thisPlayer.defense[j] = cPlayer.getInt(col1);
+            }
+
+            // vsl_rating, vsr_rating
+            col1 = cPlayer.getColumnIndex("vsl_rating");
+            thisPlayer.vsl_rating = cPlayer.getInt(col1);
+
+            col1 = cPlayer.getColumnIndex("vsr_rating");
+            thisPlayer.vsr_rating = cPlayer.getInt(col1);
+
+            vTeam.addPlayerToStarters(thisPlayer);
         }
-        */
+
         myDB.close();
     }
 
@@ -776,92 +777,89 @@ public class playball extends Activity {
         // STARTERS
         // *******************
         getHomeStarters();
-/*
-        for(int i = 0; i < 5; i++) {
-            cPlayer = myDB.query("players", null, "_id='" + hTeam.startersID[i] + "'", null, null, null, null);
 
-            if(cPlayer.moveToFirst()) {
-                Player thisPlayer = new Player();
+        cPlayer = myDB.query("players", null, "_id='" + hTeam.starterID + "'", null, null, null, null);
 
-                int col1 = cPlayer.getColumnIndex("first_name");
-                int col2 = cPlayer.getColumnIndex("last_name");
+        if(cPlayer.moveToFirst()) {
+            Player thisPlayer = new Player();
 
-                thisPlayer.name = cPlayer.getString(col1) + " " + cPlayer.getString(col2);
+            int col1 = cPlayer.getColumnIndex("first_name");
+            int col2 = cPlayer.getColumnIndex("last_name");
 
-                col1 = cPlayer.getColumnIndex("pos");
-                thisPlayer.pos = cPlayer.getString(col1);
+            thisPlayer.name = cPlayer.getString(col1) + " " + cPlayer.getString(col2);
 
-                col1 = cPlayer.getColumnIndex("bats");
-                thisPlayer.pBats = cPlayer.getString(col1);
+            col1 = cPlayer.getColumnIndex("pos");
+            thisPlayer.pos = cPlayer.getString(col1);
 
-                col1 = cPlayer.getColumnIndex("throws");
-                thisPlayer.pThrows = cPlayer.getString(col1);
+            col1 = cPlayer.getColumnIndex("bats");
+            thisPlayer.pBats = cPlayer.getString(col1);
 
-                // vsl ratings
-                for(int j = 0; j < 7; j++) {
-                    col1 = cPlayer.getColumnIndex(sVsl[j]);
-                    thisPlayer.pVsl[j] = cPlayer.getInt(col1);
-                }
+            col1 = cPlayer.getColumnIndex("throws");
+            thisPlayer.pThrows = cPlayer.getString(col1);
 
-                // vsr ratings
-                for(int j = 0; j < 7; j++) {
-                    col1 = cPlayer.getColumnIndex(sVsr[j]);
-                    thisPlayer.pVsr[j] = cPlayer.getInt(col1);
-                }
-
-                // sac bunt
-                col1 = cPlayer.getColumnIndex("sac_bunt");
-                thisPlayer.sac_bunt = cPlayer.getInt(col1);
-
-                // spray chart
-                for(int j = 0; j < 3; j++) {
-                    col1 = cPlayer.getColumnIndex(sprayChart[j]);
-                    thisPlayer.sprayChart[j] = cPlayer.getInt(col1);
-                }
-
-                // ball speed
-                for(int j = 0; j < 3; j++) {
-                    col1 = cPlayer.getColumnIndex(ballSpeed[j]);
-                    thisPlayer.ballSpeed[j] = cPlayer.getInt(col1);
-                }
-
-                // running
-                for(int j = 0; j < 2; j++) {
-                    col1 = cPlayer.getColumnIndex(running[j]);
-                    thisPlayer.running[j] = cPlayer.getInt(col1);
-                }
-
-                // avoid dp
-                col1 = cPlayer.getColumnIndex("avoid_dp");
-                thisPlayer.avoid_dp = cPlayer.getInt(col1);
-
-                col1 = cPlayer.getColumnIndex("hold_rating");
-                thisPlayer.hold_rating = cPlayer.getInt(col1);
-
-                col1 = cPlayer.getColumnIndex("rsb");
-                thisPlayer.rsb = cPlayer.getInt(col1);
-
-                col1 = cPlayer.getColumnIndex("hold_rating");
-                thisPlayer.hold_rating = cPlayer.getInt(col1);
-
-                // arm_rating, defense_rating, fld_range, fld_error
-                for(int j = 0; j < 4; j++) {
-                    col1 = cPlayer.getColumnIndex(defense[j]);
-                    thisPlayer.defense[j] = cPlayer.getInt(col1);
-                }
-
-                // vsl_rating, vsr_rating
-                col1 = cPlayer.getColumnIndex("vsl_rating");
-                thisPlayer.vsl_rating = cPlayer.getInt(col1);
-
-                col1 = cPlayer.getColumnIndex("vsr_rating");
-                thisPlayer.vsr_rating = cPlayer.getInt(col1);
-
-                hTeam.addPlayerToStarters(thisPlayer);
+            // vsl ratings
+            for(int j = 0; j < 7; j++) {
+                col1 = cPlayer.getColumnIndex(sVsl[j]);
+                thisPlayer.pVsl[j] = cPlayer.getInt(col1);
             }
+
+            // vsr ratings
+            for(int j = 0; j < 7; j++) {
+                col1 = cPlayer.getColumnIndex(sVsr[j]);
+                thisPlayer.pVsr[j] = cPlayer.getInt(col1);
+            }
+
+            // sac bunt
+            col1 = cPlayer.getColumnIndex("sac_bunt");
+            thisPlayer.sac_bunt = cPlayer.getInt(col1);
+
+            // spray chart
+            for(int j = 0; j < 3; j++) {
+                col1 = cPlayer.getColumnIndex(sprayChart[j]);
+                thisPlayer.sprayChart[j] = cPlayer.getInt(col1);
+            }
+
+            // ball speed
+            for(int j = 0; j < 3; j++) {
+                col1 = cPlayer.getColumnIndex(ballSpeed[j]);
+                thisPlayer.ballSpeed[j] = cPlayer.getInt(col1);
+            }
+
+            // running
+            for(int j = 0; j < 2; j++) {
+                col1 = cPlayer.getColumnIndex(running[j]);
+                thisPlayer.running[j] = cPlayer.getInt(col1);
+            }
+
+            // avoid dp
+            col1 = cPlayer.getColumnIndex("avoid_dp");
+            thisPlayer.avoid_dp = cPlayer.getInt(col1);
+
+            col1 = cPlayer.getColumnIndex("hold_rating");
+            thisPlayer.hold_rating = cPlayer.getInt(col1);
+
+            col1 = cPlayer.getColumnIndex("rsb");
+            thisPlayer.rsb = cPlayer.getInt(col1);
+
+            col1 = cPlayer.getColumnIndex("hold_rating");
+            thisPlayer.hold_rating = cPlayer.getInt(col1);
+
+            // arm_rating, defense_rating, fld_range, fld_error
+            for(int j = 0; j < 4; j++) {
+                col1 = cPlayer.getColumnIndex(defense[j]);
+                thisPlayer.defense[j] = cPlayer.getInt(col1);
+            }
+
+            // vsl_rating, vsr_rating
+            col1 = cPlayer.getColumnIndex("vsl_rating");
+            thisPlayer.vsl_rating = cPlayer.getInt(col1);
+
+            col1 = cPlayer.getColumnIndex("vsr_rating");
+            thisPlayer.vsr_rating = cPlayer.getInt(col1);
+
+            hTeam.addPlayerToStarters(thisPlayer);
         }
 
-        */
         myDB.close();
     }
 
@@ -890,11 +888,12 @@ public class playball extends Activity {
     }
 
     private void getVisStarters() {
-
+        vTeam.starterID = getIntent().getIntExtra("visStarter", 0);
+        Log.d(TAG, "VIS STARTER" + vTeam.starterID);
     }
 
     private void getHomeStarters() {
-
+        hTeam.starterID = getIntent().getIntExtra("homeStarter",0);
     }
 
 }

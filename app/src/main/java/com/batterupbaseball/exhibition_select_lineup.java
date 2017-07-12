@@ -45,7 +45,7 @@ public class exhibition_select_lineup extends Activity {
         setContentView(R.layout.exhibition_select_lineup);
 
         SharedPreferences prefs = getSharedPreferences("prefsFile", 0);
-        userStarter = prefs.getInt("exhibition_selected_starter", 0);
+        userStarter = prefs.getInt("exhibition_user_starter", 0);
         useDH = prefs.getBoolean("exhibition_useDH", true);
         hTeamID = prefs.getInt("hTeamID", 0);
         userTeam = prefs.getString("USER_TEAM", "V");
@@ -71,6 +71,7 @@ public class exhibition_select_lineup extends Activity {
                     intent.putExtra("visBench", userBench);
                     intent.putExtra("visBullpen", userBullpen);
                     intent.putExtra("visStarter", userStarter);
+                    Log.d(TAG, "VIS STARTER #1: " + userStarter);
                     intent.putExtra("visDefense", userDefense);
 
                     intent.putExtra("homeLineup", oppLineup);

@@ -114,7 +114,7 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
 
         SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
         SharedPreferences.Editor editor = myPrefs.edit();
-        editor.putInt("exhibition_selected_starter", selectedStarter);
+        editor.putInt("exhibition_user_starter", starterID[selectedStarter]);
         editor.apply();
 
         getCardImage();
@@ -304,6 +304,10 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
 
         // highlight starter selected
         highlightStarter();
+
+        SharedPreferences.Editor editor = myPrefs.edit();
+        editor.putInt("exhibition_user_starter", starterID[selectedStarter]);
+        editor.apply();
 
         // get the card image and put in imageview
         getCardImage();
