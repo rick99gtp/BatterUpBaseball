@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.TextView;
 
 import static android.content.ContentValues.TAG;
 
@@ -25,6 +27,10 @@ public class playball extends Activity {
         bundle = new Bundle();
 
         initGame();
+
+        game = new Game();
+
+        updateScreen();
     }
 
     private void initGame() {
@@ -47,6 +53,13 @@ public class playball extends Activity {
 
         buildVisTeam(vSeasonName, vTeamID);
         buildHomeTeam(hSeasonName, hTeamID);
+
+        // show team names on scoreboard
+        TextView tvVTeamName = (TextView) findViewById(R.id.tvVisitorTeamName);
+        TextView tvHTeamName = (TextView) findViewById(R.id.tvHomeTeamName);
+
+        tvVTeamName.setText(vTeam.name);
+        tvHTeamName.setText(hTeam.name);
 
         listVisTeam();
         listHomeTeam();
@@ -896,4 +909,127 @@ public class playball extends Activity {
         hTeam.starterID = getIntent().getIntExtra("homeStarter",0);
     }
 
+    private void updateScreen() {
+        updateInning();
+        highlightInning();
+        updateRunsHitsErrors();
+        updateOuts();
+        updateRunsByInning();
+    }
+
+    private void updateInning() {
+        String sInning = "";
+        String pInning = "";
+
+        TextView tvInning = (TextView) findViewById(R.id.tvInning);
+
+        switch(game.inning) {
+            case 1:
+            case 21:
+            case 31:
+                sInning = "st";
+                break;
+            case 2:
+            case 22:
+            case 32:
+                sInning = "nd";
+                break;
+            case 3:
+            case 23:
+            case 33:
+                sInning="rd";
+                break;
+            default:
+                sInning = "th";
+        }
+
+        if(game.teamAtBat==0)
+            pInning = "Top of the ";
+        else
+            pInning = "Bottom of the ";
+
+        tvInning.setText(pInning + game.inning + sInning);
+    }
+
+    private void highlightInning() {
+        int[] vInning = {R.id.tvVScore1, R.id.tvVScore2, R.id.tvVScore3, R.id.tvVScore4, R.id.tvVScore5, R.id.tvVScore6, R.id.tvVScore7, R.id.tvVScore8, R.id.tvVScore9, R.id.tvVScoreX};
+        int[] hInning = {R.id.tvHScore1, R.id.tvHScore2, R.id.tvHScore3, R.id.tvHScore4, R.id.tvHScore5, R.id.tvHScore6, R.id.tvHScore7, R.id.tvHScore8, R.id.tvHScore9, R.id.tvHScoreX};
+
+        // clear all innings
+        for(int i=0; i < 10; i++) {
+            TextView tvInning1 = (TextView) findViewById(vInning[i]);
+            tvInning1.setBackgroundColor(Color.GRAY);
+
+            TextView tvInning2 = (TextView) findViewById(hInning[i]);
+            tvInning2.setBackgroundColor(Color.GRAY);
+        }
+
+        TextView tvInning;
+
+        // set inning to highlight
+        if(game.teamAtBat==0) {
+            if(game.inning > 9) {
+                // extra innings
+                tvInning = (TextView) findViewById(R.id.tvVScoreX);
+            }
+            else {
+                // during the first 9 innings
+                tvInning = (TextView) findViewById(vInning[game.inning-1]);
+            }
+        }
+        else {
+            if(game.inning > 9) {
+                // extra innings
+                tvInning = (TextView) findViewById(R.id.tvHScoreX);
+            }
+            else {
+                // during the first 9 innings
+                tvInning = (TextView) findViewById(hInning[game.inning-1]);
+            }
+        }
+
+        tvInning.setBackgroundColor(Color.WHITE);
+    }
+
+    private void updateRunsHitsErrors() {
+        TextView tvVRuns = (TextView) findViewById(R.id.tvVRuns);
+        TextView tvHRuns = (TextView) findViewById(R.id.tvHRuns);
+
+        TextView tvVHits = (TextView) findViewById(R.id.tvVHits);
+        TextView tvHHits = (TextView) findViewById(R.id.tvHHits);
+
+        TextView tvVErrors = (TextView) findViewById(R.id.tvVErrors);
+        TextView tvHErrors = (TextView) findViewById(R.id.tvHErrors);
+
+        tvVRuns.setText("" + game.vRuns);
+        tvHRuns.setText("" + game.hRuns);
+
+        tvVHits.setText("" + game.vHits);
+        tvHHits.setText("" + game.hHits);
+
+        tvVErrors.setText("" + game.vErrors);
+        tvHErrors.setText("" + game.hErrors);
+    }
+
+    private void updateOuts() {
+        TextView tvOuts = (TextView) findViewById(R.id.tvOuts);
+        tvOuts.setText("" + game.outs);
+    }
+
+    private void updateRunsByInning() {
+        int[] vInning = {R.id.tvVScore1, R.id.tvVScore2, R.id.tvVScore3, R.id.tvVScore4, R.id.tvVScore5, R.id.tvVScore6, R.id.tvVScore7, R.id.tvVScore8, R.id.tvVScore9, R.id.tvVScoreX};
+        int[] hInning = {R.id.tvHScore1, R.id.tvHScore2, R.id.tvHScore3, R.id.tvHScore4, R.id.tvHScore5, R.id.tvHScore6, R.id.tvHScore7, R.id.tvHScore8, R.id.tvHScore9, R.id.tvHScoreX};
+
+        TextView tvInning;
+
+        for(int i=0; i < game.inning; i++) {
+            tvInning = (TextView) findViewById(vInning[i]);
+            tvInning.setText("" + game.vScoreByInning[i]);
+
+            if(game.teamAtBat==1) {
+                tvInning = (TextView) findViewById(hInning[i]);
+                tvInning.setText("" + game.hScoreByInning[i]);
+            }
+        }
+    }
 }
