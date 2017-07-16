@@ -1,5 +1,7 @@
 package com.batterupbaseball;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 public class Team {
@@ -12,6 +14,7 @@ public class Team {
     int[] benchID;
     int[] bullpenID;
     int starterID;
+    String TAG = "com.batterupbaseball";
 
     public Team() {
         lineup = new ArrayList<Player>();
