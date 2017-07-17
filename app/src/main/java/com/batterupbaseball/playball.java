@@ -1058,16 +1058,30 @@ public class playball extends Activity {
 
         Drawable[] layers = new Drawable[5];
 
-        String tmpName = vTeam.lineup.get(game.vBatter).getName();
-
-        Log.d(TAG, tmpName);
-
         // batter bats right or left? get correct bg image
         if(game.teamAtBat==0) {
             if(vTeam.lineup.get(game.vBatter).getBats().equals("r")) {
                 if(game.hPitcher.getThrows().equals("r")) {
                     // base
                     layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_right);
+
+                    // contact
+                    Log.d(TAG, "VSR RATING: " + vTeam.lineup.get(game.vBatter).getRatings(0));
+                    layers[2] = ContextCompat.getDrawable(this, cardContact[vTeam.lineup.get(game.vBatter).getRatings(0)-1]);
+                }
+                else {
+
+                    // contact
+                    Log.d(TAG, "VSL RATING: " + vTeam.lineup.get(game.vBatter).getRatings(1));
+                    layers[2] = ContextCompat.getDrawable(this, cardContact[vTeam.lineup.get(game.vBatter).getRatings(1)-1]);
+
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsl_as_right);
+                }
+            }
+            else if(vTeam.lineup.get(game.vBatter).getBats().equals("s")) {
+                if(game.hPitcher.getThrows().equals("r")) {
+                    // base
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_left);
                 }
                 else {
                     layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsl_as_right);
@@ -1075,14 +1089,16 @@ public class playball extends Activity {
 
                 // contact
                 layers[2] = ContextCompat.getDrawable(this, cardContact[vTeam.lineup.get(game.vBatter).getRatings(0)]);
+
+                int i = vTeam.lineup.get(game.vBatter).getRatings(0);
             }
             else {
                 if(game.hPitcher.getThrows().equals("r")) {
                     // base
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_right);
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_left);
                 }
                 else {
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsl_as_right);
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsl_as_left);
                 }
 
                 // contact
@@ -1091,6 +1107,14 @@ public class playball extends Activity {
 
             // value
             layers[1] = ContextCompat.getDrawable(this, cardValue[vTeam.lineup.get(game.vBatter).getValue()]);
+
+            // defense
+            int[] def = vTeam.lineup.get(game.vBatter).getDefense();
+            layers[3] = ContextCompat.getDrawable(this, cardDefense[def[1]-1]);
+
+            // position
+            int posNum = game.convertPos(vTeam.lineup.get(game.vBatter).getPos());
+            layers[4] = ContextCompat.getDrawable(this, cardPos[posNum]);
         }
         else {
             if(hTeam.lineup.get(game.hBatter).getBats().equals("r")) {
@@ -1105,13 +1129,25 @@ public class playball extends Activity {
                 // contact
                 layers[2] = ContextCompat.getDrawable(this, cardContact[hTeam.lineup.get(game.hBatter).getRatings(0)]);
             }
-            else {
+            else if(hTeam.lineup.get(game.hBatter).getBats().equals("s")) {
                 if(game.vPitcher.getThrows().equals("r")) {
                     // base
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_right);
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_left);
                 }
                 else {
                     layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsl_as_right);
+                }
+
+                // contact
+                layers[2] = ContextCompat.getDrawable(this, cardContact[vTeam.lineup.get(game.vBatter).getRatings(0)]);
+            }
+            else {
+                if(game.vPitcher.getThrows().equals("r")) {
+                    // base
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_left);
+                }
+                else {
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsl_as_left);
                 }
 
                 // contact
@@ -1119,15 +1155,15 @@ public class playball extends Activity {
             }
             // value
             layers[1] = ContextCompat.getDrawable(this, cardValue[hTeam.lineup.get(game.hBatter).getValue()]);
+
+            // defense
+            int[] def = hTeam.lineup.get(game.hBatter).getDefense();
+            layers[3] = ContextCompat.getDrawable(this, cardDefense[def[1]]);
+
+            // position
+            int posNum = game.convertPos(hTeam.lineup.get(game.hBatter).getPos());
+            layers[4] = ContextCompat.getDrawable(this, cardPos[posNum]);
         }
-
-        // defense
-        int[] def = vTeam.lineup.get(game.vBatter).getDefense();
-        layers[3] = ContextCompat.getDrawable(this, cardDefense[def[1]]);
-
-        // position
-        int posNum = game.convertPos(vTeam.lineup.get(game.vBatter).getPos());
-        layers[4] = ContextCompat.getDrawable(this, cardPos[posNum]);
 
         LayerDrawable layerDrawable = new LayerDrawable(layers);
         ivCard.setImageDrawable(layerDrawable);
@@ -1139,6 +1175,101 @@ public class playball extends Activity {
     }
 
     private void updatePitcherCard() {
+        int[] cardValue = {R.drawable.value_1, R.drawable.value_2, R.drawable.value_3, R.drawable.value_4, R.drawable.value_5, R.drawable.value_6, R.drawable.value_7, R.drawable.value_8, R.drawable.value_9, R.drawable.value_10};
+        int[] cardDefense = {R.drawable.defense_1, R.drawable.defense_2, R.drawable.defense_3, R.drawable.defense_4, R.drawable.defense_5, R.drawable.defense_6, R.drawable.defense_7, R.drawable.defense_8, R.drawable.defense_9, R.drawable.defense_10};
+        int[] cardContact = {R.drawable.contact_1, R.drawable.contact_2, R.drawable.contact_3, R.drawable.contact_4, R.drawable.contact_5, R.drawable.contact_6, R.drawable.contact_7, R.drawable.contact_8, R.drawable.contact_9, R.drawable.contact_10};
+        int[] cardPos = {R.drawable.pos_sp, R.drawable.pos_rp, R.drawable.pos_c, R.drawable.pos_1b, R.drawable.pos_2b, R.drawable.pos_3b, R.drawable.pos_ss, R.drawable.pos_lf, R.drawable.pos_cf, R.drawable.pos_rf};
+
+        ImageView ivCard = (ImageView) findViewById(R.id.ivPitcherCard);
+
+        Drawable[] layers = new Drawable[5];
+
+        // batter bats right or left? get correct bg image
+        if(game.teamAtBat==0) {
+            if(game.hPitcher.getThrows().equals("r")) {
+                if(vTeam.lineup.get(game.vBatter).getBats().equals("r")) {
+                    // base
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_right);
+                }
+                else {
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsl_as_right);
+                }
+
+                // contact
+                layers[2] = ContextCompat.getDrawable(this, cardContact[game.hPitcher.getRatings(0)-1]);
+            }
+            else {
+                if(vTeam.lineup.get(game.vBatter).getBats().equals("r")) {
+                    // base
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_left);
+                }
+                else if(vTeam.lineup.get(game.vBatter).getBats().equals("s")) {
+                    // base
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_left);
+                }
+                else {
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsl_as_left);
+                }
+
+                // contact
+                layers[2] = ContextCompat.getDrawable(this, cardContact[game.hPitcher.getRatings(1)-1]);
+            }
+
+            // value
+            layers[1] = ContextCompat.getDrawable(this, cardValue[game.hPitcher.getValue()]);
+
+            // defense
+            int[] def = game.hPitcher.getDefense();
+            layers[3] = ContextCompat.getDrawable(this, cardDefense[def[1]-1]);
+
+            // position
+            int posNum = game.convertPos(game.hPitcher.getPos());
+            layers[4] = ContextCompat.getDrawable(this, cardPos[posNum]);
+        }
+        else {
+            if(game.vPitcher.getThrows().equals("r")) {
+                if(hTeam.lineup.get(game.hBatter).getBats().equals("r")) {
+                    // base
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_right);
+                }
+                else {
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsl_as_right);
+                }
+
+                // contact
+                layers[2] = ContextCompat.getDrawable(this, cardContact[game.vPitcher.getRatings(0)-1]);
+            }
+            else {
+                if(hTeam.lineup.get(game.hBatter).getBats().equals("r")) {
+                    // base
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_left);
+                }
+                else if(vTeam.lineup.get(game.vBatter).getBats().equals("s")) {
+                    // base
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_left);
+                }
+                else {
+                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsl_as_left);
+                }
+
+                // contact
+                layers[2] = ContextCompat.getDrawable(this, cardContact[game.vPitcher.getRatings(1)-1]);
+            }
+
+            // value
+            layers[1] = ContextCompat.getDrawable(this, cardValue[hTeam.lineup.get(game.hBatter).getValue()]);
+
+            // defense
+            int[] def = game.vPitcher.getDefense();
+            layers[3] = ContextCompat.getDrawable(this, cardDefense[def[1]-1]);
+
+            // position
+            int posNum = game.convertPos(game.vPitcher.getPos());
+            layers[4] = ContextCompat.getDrawable(this, cardPos[posNum]);
+        }
+
+        LayerDrawable layerDrawable = new LayerDrawable(layers);
+        ivCard.setImageDrawable(layerDrawable);
 
     }
 

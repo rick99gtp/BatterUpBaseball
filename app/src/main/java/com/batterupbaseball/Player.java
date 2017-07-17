@@ -124,7 +124,6 @@ public class Player {
     public String getRole() {
         return this.role;
     }
-
     public String getBats() {
         return this.pBats;
     }

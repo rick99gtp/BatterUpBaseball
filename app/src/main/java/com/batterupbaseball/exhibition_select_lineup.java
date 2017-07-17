@@ -232,9 +232,19 @@ public class exhibition_select_lineup extends Activity {
         int[] tvPlayer = {R.id.tvName1, R.id.tvName2, R.id.tvName3, R.id.tvName4, R.id.tvName5, R.id.tvName6, R.id.tvName7, R.id.tvName8, R.id.tvName9};
         int[] tvPos = {R.id.tvPos1, R.id.tvPos2, R.id.tvPos3, R.id.tvPos4, R.id.tvPos5, R.id.tvPos6, R.id.tvPos7, R.id.tvPos8, R.id.tvPos9};
 
+        Cursor cLineup = null;
+        Cursor cBench = null;
+
         myDB = openOrCreateDatabase(userSeasonFileName, MODE_PRIVATE, null);
 
-        Cursor cLineup = myDB.query("lineups", null, "team_id='" + userTeamID + "'", null, null, null, null);
+        CheckBox chkDH = (CheckBox) findViewById(R.id.chkDH);
+
+        if(chkDH.isChecked()) {
+            cLineup = myDB.query("lineups_dh", null, "team_id='" + userTeamID + "'", null, null, null, null);
+        }
+        else {
+            cLineup = myDB.query("lineups_noDH", null, "team_id='" + userTeamID + "'", null, null, null, null);
+        }
 
         if(cLineup.moveToFirst()) {
             for(int i=0; i < 9; i++) {
@@ -273,7 +283,12 @@ public class exhibition_select_lineup extends Activity {
 
         cLineup.close();
 
-        Cursor cBench = myDB.query("bench", null, "team_id='" + userTeamID + "'", null, null, null, null);
+        if(chkDH.isChecked()) {
+            cBench = myDB.query("bench_dh", null, "team_id='" + userTeamID + "'", null, null, null, null);
+        }
+        else {
+            cBench = myDB.query("bench_noDH", null, "team_id='" + userTeamID + "'", null, null, null, null);
+        }
 
         if(cBench.moveToFirst()) {
             for (int i = 0; i < 6; i++) {
@@ -293,9 +308,17 @@ public class exhibition_select_lineup extends Activity {
     }
 
     private void getUserBullpen() {
+        Cursor cBullpen = null;
         myDB = openOrCreateDatabase(userSeasonFileName, MODE_PRIVATE, null);
 
-        Cursor cBullpen = myDB.query("bullpen", null, "team_id='" + userTeamID + "'", null, null, null, null);
+        CheckBox chkDH = (CheckBox) findViewById(R.id.chkDH);
+
+        if(chkDH.isChecked()) {
+            cBullpen = myDB.query("bullpen_dh", null, "team_id='" + userTeamID + "'", null, null, null, null);
+        }
+        else {
+            cBullpen = myDB.query("bullpen_noDH", null, "team_id='" + userTeamID + "'", null, null, null, null);
+        }
 
         if(cBullpen.moveToFirst()) {
             for (int i = 0; i < 8; i++) {
@@ -312,9 +335,17 @@ public class exhibition_select_lineup extends Activity {
     }
 
     private void getOppBullpen() {
+        Cursor cBullpen = null;
         myDB = openOrCreateDatabase(oppSeasonFileName, MODE_PRIVATE, null);
 
-        Cursor cBullpen = myDB.query("bullpen", null, "team_id='" + oppTeamID + "'", null, null, null, null);
+        CheckBox chkDH = (CheckBox) findViewById(R.id.chkDH);
+
+        if(chkDH.isChecked()) {
+            cBullpen = myDB.query("bullpen_dh", null, "team_id='" + oppTeamID + "'", null, null, null, null);
+        }
+        else {
+            cBullpen = myDB.query("bullpen_noDH", null, "team_id='" + oppTeamID + "'", null, null, null, null);
+        }
 
         if(cBullpen.moveToFirst()) {
             for (int i = 0; i < 8; i++) {
@@ -331,10 +362,19 @@ public class exhibition_select_lineup extends Activity {
     }
 
     private void getOppLineup() {
+        Cursor cLineup = null;
+        Cursor cBench = null;
 
         myDB = openOrCreateDatabase(oppSeasonFileName, MODE_PRIVATE, null);
 
-        Cursor cLineup = myDB.query("lineups", null, "team_id='" + oppTeamID + "'", null, null, null, null);
+        CheckBox chkDH = (CheckBox) findViewById(R.id.chkDH);
+
+        if(chkDH.isChecked()) {
+            cLineup = myDB.query("lineups_dh", null, "team_id='" + oppTeamID + "'", null, null, null, null);
+        }
+        else {
+            cLineup = myDB.query("lineups_noDH", null, "team_id='" + oppTeamID + "'", null, null, null, null);
+        }
 
         if(cLineup.moveToFirst()) {
             for(int i=0; i < 9; i++) {
@@ -351,7 +391,12 @@ public class exhibition_select_lineup extends Activity {
 
         cLineup.close();
 
-        Cursor cBench = myDB.query("bench", null, "team_id='" + oppTeamID + "'", null, null, null, null);
+        if(chkDH.isChecked()) {
+            cBench = myDB.query("bench_dh", null, "team_id='" + oppTeamID + "'", null, null, null, null);
+        }
+        else {
+            cBench = myDB.query("bench_noDH", null, "team_id='" + oppTeamID + "'", null, null, null, null);
+        }
 
         if(cBench.moveToFirst()) {
             for (int i = 0; i < 6; i++) {
