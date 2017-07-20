@@ -14,6 +14,7 @@ public class Player {
     int sac_bunt, spd_rating, avoid_dp, hold_rating, rsb, vsl_rating, vsr_rating, con_rating, pwr_rating, pValue;
     String special_text;
     String role; // starter, bullpen, bench
+    int stamina;
 
     int _id = 0;
 
@@ -33,6 +34,9 @@ public class Player {
     }
 
     // setters
+    public void setStamina(int stam) {
+        this.stamina = stam;
+    }
     public void setRole(String role) {
         this.role = role;
     }
@@ -118,6 +122,9 @@ public class Player {
     }
 
     // getters
+    public int getStamina() {
+        return this.stamina;
+    }
     public int getSpd_rating() {
         return this.spd_rating;
     }

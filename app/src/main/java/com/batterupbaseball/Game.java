@@ -20,6 +20,8 @@ public class Game {
     int outs = 0;
     int[] vScoreByInning = new int[10];
     int[] hScoreByInning = new int[10];
+    int vStamina = 0;
+    int hStamina = 0;
 
     int vBatter = 0; // visitor batter in lineup
     int hBatter = 0; // home batter in lineup

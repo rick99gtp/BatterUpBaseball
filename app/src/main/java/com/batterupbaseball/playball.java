@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import static android.content.ContentValues.TAG;
@@ -112,6 +113,7 @@ public class playball extends Activity {
         String[] ballSpeed = {"soft", "med", "hard"};
         String[] running = {"baserunning", "stealing"};
         String[] defense = {"arm_rating", "defense_rating", "fld_range", "fld_error"};
+        int stamina = 0;
 
         myDB = openOrCreateDatabase(seasonName, MODE_PRIVATE, null);
 
@@ -926,7 +928,7 @@ public class playball extends Activity {
         updateBaseRunners();
         updatePitcherCard();
         updateOnDeck();
-        updateInTheHold();
+        updateInTheHole();
         updateResult();
         updateStamina();
         updatePossibleOutcomes();
@@ -1274,11 +1276,75 @@ public class playball extends Activity {
     }
 
     private void updateOnDeck() {
+        TextView tvOnDeckBats = (TextView) findViewById(R.id.tvOnDeckBats);
+        TextView tvOnDeckName = (TextView) findViewById(R.id.tvOnDeckPlayerName);
 
+        String sBats = "";
+        String sName = "";
+
+        if(game.teamAtBat==0) {
+            if(game.vBatter == 9) {
+                sBats = vTeam.lineup.get(0).getBats();
+                sName = vTeam.lineup.get(0).getName();
+            }
+            else {
+                sBats = vTeam.lineup.get(game.vBatter + 1).getBats();
+                sName = vTeam.lineup.get(game.vBatter + 1).getName();
+            }
+        }
+        else {
+            if(game.hBatter == 9) {
+                sBats = hTeam.lineup.get(0).getBats();
+                sName = hTeam.lineup.get(0).getName();
+            }
+            else {
+                sBats = hTeam.lineup.get(game.hBatter + 1).getBats();
+                sName = hTeam.lineup.get(game.hBatter + 1).getName();
+            }
+        }
+
+        tvOnDeckBats.setText(sBats);
+        tvOnDeckName.setText(sName);
     }
 
-    private void updateInTheHold() {
+    private void updateInTheHole() {
+        TextView tvInTheHoleBats = (TextView) findViewById(R.id.tvInTheHoleBats);
+        TextView tvInTheHoleName = (TextView) findViewById(R.id.tvInTheHolePlayerName);
 
+        String sBats = "";
+        String sName = "";
+
+        if(game.teamAtBat==0) {
+            if(game.vBatter == 8) {
+                sBats = vTeam.lineup.get(0).getBats();
+                sName = vTeam.lineup.get(0).getName();
+            }
+            else if(game.vBatter == 9) {
+                sBats = vTeam.lineup.get(1).getBats();
+                sName = vTeam.lineup.get(1).getName();
+            }
+            else {
+                sBats = vTeam.lineup.get(game.vBatter + 2).getBats();
+                sName = vTeam.lineup.get(game.vBatter + 2).getName();
+            }
+        }
+        else {
+            if(game.hBatter == 8) {
+                sBats = hTeam.lineup.get(0).getBats();
+                sName = hTeam.lineup.get(0).getName();
+            }
+            else if(game.hBatter == 9) {
+                sBats = vTeam.lineup.get(1).getBats();
+                sName = vTeam.lineup.get(1).getName();
+            }
+            else {
+                sBats = hTeam.lineup.get(game.hBatter + 2).getBats();
+                sName = hTeam.lineup.get(game.hBatter + 2).getName();
+            }
+        }
+
+        tvInTheHoleBats.setText(sBats);
+        tvInTheHoleName.setText(sName);
     }
 
     private void updateResult() {
@@ -1286,7 +1352,24 @@ public class playball extends Activity {
     }
 
     private void updateStamina() {
+        ProgressBar pb = (ProgressBar) findViewById(R.id.pbStamina);
 
+        int iStamina = 0; // progress
+        int pStamina = 0; // pitcher
+        int gStamina = 0; // game
+
+        if(game.teamAtBat==0) {
+            pStamina = game.hPitcher.getStamina();
+            gStamina = game.hStamina;
+        }
+        else {
+            pStamina = game.vPitcher.getStamina();
+            gStamina = game.vStamina;
+        }
+
+        iStamina = ((gStamina / pStamina) * 100);
+
+        pb.setProgress(iStamina);
     }
 
     private void updatePossibleOutcomes() {

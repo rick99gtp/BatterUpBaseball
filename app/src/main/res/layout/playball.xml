@@ -697,30 +697,28 @@
             android:orientation="vertical"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/stamina"
-                card_view:cardElevation="8dp"
-                card_view:cardCornerRadius="2dp"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tvStamina"
-                    android:paddingLeft="3dp"
-                    android:gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_weight="3"
-                    android:text="Stamina"
                     android:textSize="10sp"
-                    android:layout_height="match_parent" />
+                    tools:text="Stamina"
+                    android:id="@+id/tvStamina"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_weight="7"
+                <ProgressBar
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    tools:progress="50"
+                    android:indeterminate="false"
+                    android:id="@+id/pbStamina"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent" />
-
-            </android.support.v7.widget.CardView>
+            </LinearLayout>
 
             <android.support.v7.widget.CardView
                 android:layout_marginTop="3dp"
