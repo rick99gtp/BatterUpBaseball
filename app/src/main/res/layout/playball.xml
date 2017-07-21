@@ -992,6 +992,7 @@
             android:layout_height="match_parent">
 
             <LinearLayout
+                android:onClick="roll_dice"
                 android:background="@drawable/green_felt"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"

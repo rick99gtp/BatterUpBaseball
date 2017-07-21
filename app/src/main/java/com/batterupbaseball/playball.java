@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -35,7 +36,30 @@ public class playball extends Activity {
 
         initGame();
 
+        getResultAverages();
+
         updateScreen();
+    }
+
+    public void roll_dice(View view) {
+        int[] dieImageRed = {R.drawable.red_die_0, R.drawable.red_die_1, R.drawable.red_die_2, R.drawable.red_die_3, R.drawable.red_die_4, R.drawable.red_die_5, R.drawable.red_die_6, R.drawable.red_die_7, R.drawable.red_die_8, R.drawable.red_die_9};
+        int[] dieImageWhite = {R.drawable.white_die_0, R.drawable.white_die_1, R.drawable.white_die_2, R.drawable.white_die_3, R.drawable.white_die_4, R.drawable.white_die_5, R.drawable.white_die_6, R.drawable.white_die_7, R.drawable.white_die_8, R.drawable.white_die_9};
+        int[] dieImageBlue = {R.drawable.blue_die_0, R.drawable.blue_die_1, R.drawable.blue_die_2, R.drawable.blue_die_3, R.drawable.blue_die_4, R.drawable.blue_die_5, R.drawable.blue_die_6, R.drawable.blue_die_7, R.drawable.blue_die_8, R.drawable.blue_die_9};
+
+        int dieRedResult = game.rollDie();
+        int dieWhiteResult = game.rollDie();
+        int dieBlueResult = game.rollDie();
+
+        ImageView ivRedDie = (ImageView) findViewById(R.id.ivDie_1);
+        ivRedDie.setImageResource(dieImageRed[dieRedResult]);
+
+        ImageView ivWhiteDie = (ImageView) findViewById(R.id.ivDie_2);
+        ivWhiteDie.setImageResource(dieImageWhite[dieWhiteResult]);
+
+        ImageView ivBlueDie = (ImageView) findViewById(R.id.ivDie_3);
+        ivBlueDie.setImageResource(dieImageBlue[dieBlueResult]);
+
+        game.dieResult = (dieRedResult*100) + (dieWhiteResult*10) + dieBlueResult;
     }
 
     private void initGame() {
@@ -55,6 +79,9 @@ public class playball extends Activity {
             vSeasonName = prefs.getString("oppSeasonFileName", current_year);
             hSeasonName = prefs.getString("userSeasonFileName", current_year);
         }
+
+        game.vSeasonName = vSeasonName;
+        game.hSeasonName = hSeasonName;
 
         buildVisTeam(vSeasonName, vTeamID);
         buildHomeTeam(hSeasonName, hTeamID);
@@ -1367,12 +1394,149 @@ public class playball extends Activity {
             gStamina = game.vStamina;
         }
 
+        if(pStamina==0) {
+            pStamina = 1;
+        }
         iStamina = ((gStamina / pStamina) * 100);
 
         pb.setProgress(iStamina);
     }
 
-    private void updatePossibleOutcomes() {
+    private void updatePossibleOutcomes(){
+        joinRanges();
 
+        game.minOutcome[0] = 1;
+        game.maxOutcome[0] = game.resultRange[0];
+
+        int[] tvPossibleOutcomes = {R.id.tvResult_1b, R.id.tvResult_2b, R.id.tvResult_3b, R.id.tvResult_hr, R.id.tvResult_bb, R.id.tvResult_k, R.id.tvResult_hbp, R.id.tvResult_glove, R.id.tvResult_out};
+
+        for(int i=0; i < 7; i++) {
+            TextView tvOutcome = (TextView) findViewById(tvPossibleOutcomes[i]);
+
+            if(game.minOutcome[i] == game.maxOutcome[i]) {
+                tvOutcome.setText("" + game.minOutcome[i]);
+            }
+            else if(game.minOutcome[i] > game.maxOutcome[i]) {
+                tvOutcome.setText("");
+            }
+            else {
+                tvOutcome.setText("" + game.minOutcome[i] + "-" + game.maxOutcome[i]);
+            }
+            
+            if((i+1)<7) {
+                game.minOutcome[i+1] = game.maxOutcome[i] + 1;
+                game.maxOutcome[i+1] = game.resultRange[i+1] + game.maxOutcome[i];
+            }
+        }
+
+        // glove
+        game.minOutcome[7] = game.maxOutcome[6] + 1;
+        game.maxOutcome[7] = game.maxOutcome[6] + 140;
+
+        TextView tvGlove = (TextView) findViewById(tvPossibleOutcomes[7]);
+        tvGlove.setText("" + game.minOutcome[7] + "-" + game.maxOutcome[7]);
+
+        // outs
+        game.minOutcome[8] = game.maxOutcome[7] + 1;
+        game.maxOutcome[8] = 1000;
+
+        TextView tvOuts = (TextView) findViewById(tvPossibleOutcomes[8]);
+        tvOuts.setText("" + game.minOutcome[8] + "-" + game.maxOutcome[8]);
+
+    }
+
+    private void joinRanges() {
+        game.minOutcome[0] = 1;
+
+        for(int i=0; i < 7; i++) {
+            if(game.teamAtBat==0) {
+                if (game.hPitcher.getThrows().equals("r")) {
+                    if(vTeam.lineup.get(game.vBatter).getBats().equals("r")) {
+                        game.resultRange[i] = calculateNewRange(vTeam.lineup.get(game.vBatter).pVsr[i], game.hPitcher.pVsr[i], i);
+                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
+                    }
+                    else {
+                        game.resultRange[i] = calculateNewRange(vTeam.lineup.get(game.vBatter).pVsr[i], game.hPitcher.pVsl[i], i);
+                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
+                    }
+                }
+                else {
+                    if(vTeam.lineup.get(game.vBatter).getBats().equals("l")) {
+                        game.resultRange[i] = calculateNewRange(vTeam.lineup.get(game.vBatter).pVsl[i], game.hPitcher.pVsl[i], i);
+                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
+                    }
+                    else {
+                        game.resultRange[i] = calculateNewRange(vTeam.lineup.get(game.vBatter).pVsl[i], game.hPitcher.pVsr[i], i);
+                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
+                    }
+                }
+            }
+            else {
+                if (game.vPitcher.getThrows().equals("r")) {
+                    if(hTeam.lineup.get(game.hBatter).getBats().equals("r")) {
+                        game.resultRange[i] = calculateNewRange(hTeam.lineup.get(game.hBatter).pVsr[i], game.vPitcher.pVsr[i], i);
+                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
+                    }
+                    else {
+                        game.resultRange[i] = calculateNewRange(hTeam.lineup.get(game.hBatter).pVsr[i], game.vPitcher.pVsl[i], i);
+                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
+                    }
+                }
+                else {
+                    if(hTeam.lineup.get(game.hBatter).getBats().equals("l")) {
+                        game.resultRange[i] = calculateNewRange(hTeam.lineup.get(game.hBatter).pVsl[i], game.vPitcher.pVsl[i], i);
+                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
+                    }
+                    else {
+                        game.resultRange[i] = calculateNewRange(hTeam.lineup.get(game.hBatter).pVsl[i], game.vPitcher.pVsr[i], i);
+                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
+                    }
+                }
+            }
+        }
+    }
+
+    private int calculateNewRange(double b, double p, int avg) {
+        double newValue = 0;
+
+        newValue = Math.ceil((p*b)/game.resultAverages[avg])/(((p*b)/game.resultAverages[avg])+(((1-p)*(1-b))/(1-game.resultAverages[avg])));
+
+        int newRange = (int) newValue;
+
+        return newRange;
+    }
+
+    private void getResultAverages() {
+        myDB = openOrCreateDatabase(game.hSeasonName, MODE_PRIVATE, null);
+
+        Cursor cTeam = myDB.query("league_average", null, null, null, null, null, null);
+        int cCur = 0;
+
+        if (cTeam.moveToFirst()) {
+            cCur = cTeam.getColumnIndex("singles");
+            game.resultAverages[0] = cTeam.getInt(cCur);
+
+            cCur = cTeam.getColumnIndex("doubles");
+            game.resultAverages[1] = cTeam.getInt(cCur);
+
+            cCur = cTeam.getColumnIndex("triples");
+            game.resultAverages[2] = cTeam.getInt(cCur);
+
+            cCur = cTeam.getColumnIndex("homeruns");
+            game.resultAverages[3] = cTeam.getInt(cCur);
+
+            cCur = cTeam.getColumnIndex("walks");
+            game.resultAverages[4] = cTeam.getInt(cCur);
+
+            cCur = cTeam.getColumnIndex("strikeouts");
+            game.resultAverages[5] = cTeam.getInt(cCur);
+
+            cCur = cTeam.getColumnIndex("hbp");
+            game.resultAverages[6] = cTeam.getInt(cCur);
+        }
+
+        cTeam.close();
+
+        myDB.close();
     }
 }

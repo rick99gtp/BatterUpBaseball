@@ -3,12 +3,15 @@ package com.batterupbaseball;
 import android.app.Activity;
 import android.content.SharedPreferences;
 
+import java.util.Random;
+
 public class Game {
+    Random rn = new Random();
     int[] visPlayerID, homePlayerID;
     Team vTeam, hTeam;
     Player[] vLineup, hLineup;
     Player vPitcher, hPitcher;
-    Die die1, die2;
+    Die die1, die2, die3;
     int inning = 1;
     int teamAtBat = 0;
     int vRuns = 0;
@@ -22,6 +25,15 @@ public class Game {
     int[] hScoreByInning = new int[10];
     int vStamina = 0;
     int hStamina = 0;
+    int dieResult = 0;
+
+    int[] resultRange = new int[9];
+    int[] minOutcome = new int[9];
+    int[] maxOutcome = new int[9];
+    int[] resultAverages = new int[7];
+
+    String vSeasonName = "";
+    String hSeasonName = "";
 
     int vBatter = 0; // visitor batter in lineup
     int hBatter = 0; // home batter in lineup
@@ -33,6 +45,15 @@ public class Game {
     private void setupNewDice() {
         die1 = new Die();
         die2 = new Die();
+        die3 = new Die();
+    }
+
+    public int rollDie() {
+        int result = 0;
+
+        result = rn.nextInt(10);
+
+        return result;
     }
 
     public int convertPos(String pos) {
