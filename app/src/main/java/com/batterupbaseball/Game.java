@@ -28,6 +28,7 @@ public class Game {
     int dieResult = 0;
 
     int[] resultRange = new int[9];
+    int[] resultID = new int[9]; // used to get whether it's a single, double, triple, homerun, walk, strikeout, hbp, glove, or out - some players don't have a triple, etc.
     int[] minOutcome = new int[9];
     int[] maxOutcome = new int[9];
     int[] resultAverages = new int[7];
@@ -93,6 +94,10 @@ public class Game {
         }
 
         return newPos;
+    }
+
+    public void updateOuts() {
+        this.outs += 1;
     }
 
 }

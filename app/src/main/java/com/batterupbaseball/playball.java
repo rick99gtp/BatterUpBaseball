@@ -39,6 +39,7 @@ public class playball extends Activity {
         getResultAverages();
 
         updateScreen();
+
     }
 
     public void roll_dice(View view) {
@@ -60,6 +61,85 @@ public class playball extends Activity {
         ivBlueDie.setImageResource(dieImageBlue[dieBlueResult]);
 
         game.dieResult = (dieRedResult*100) + (dieWhiteResult*10) + dieBlueResult;
+
+        highlightOutcome();
+    }
+
+    private void highlightOutcome() {
+        boolean found = false;
+        int iCount = 0;
+        int foundResult = 0;
+        ImageView ivHighlight = null;
+        TextView tvHighlight = null;
+        int[] ivOutcomeID = {R.id.ivResult_1b, R.id.ivResult_2b, R.id.ivResult_3b, R.id.ivResult_hr, R.id.ivResult_bb, R.id.ivResult_k, R.id.ivResult_hbp, R.id.ivResult_glove, R.id.ivResult_out};
+        int[] tvOutcomeID = {R.id.tvResult_1b, R.id.tvResult_2b, R.id.tvResult_3b, R.id.tvResult_hr, R.id.tvResult_bb, R.id.tvResult_k, R.id.tvResult_hbp, R.id.tvResult_glove, R.id.tvResult_out};
+
+        // reset all outcomes
+        for(int i=0; i < 9; i++) {
+            ivHighlight = (ImageView) findViewById(ivOutcomeID[i]);
+            ivHighlight.setBackgroundColor(Color.TRANSPARENT);
+
+            tvHighlight = (TextView) findViewById(tvOutcomeID[i]);
+            tvHighlight.setBackgroundColor(Color.TRANSPARENT);
+        }
+
+        while (found == false) {
+            if(game.dieResult >= game.minOutcome[iCount] && game.dieResult <= game.maxOutcome[iCount]) {
+                foundResult = iCount;
+                found = true;
+            }
+
+            iCount += 1;
+        }
+
+        if(foundResult==0) {
+            // single
+            ivHighlight = (ImageView) findViewById(R.id.ivResult_1b);
+            tvHighlight = (TextView) findViewById(R.id.tvResult_1b);
+        }
+        else if(foundResult==1) {
+            // double
+            ivHighlight = (ImageView) findViewById(R.id.ivResult_2b);
+            tvHighlight = (TextView) findViewById(R.id.tvResult_2b);
+        }
+        else if(foundResult==2) {
+            // triple
+            ivHighlight = (ImageView) findViewById(R.id.ivResult_3b);
+            tvHighlight = (TextView) findViewById(R.id.tvResult_3b);
+        }
+        else if(foundResult==3) {
+            // homerun
+            ivHighlight = (ImageView) findViewById(R.id.ivResult_hr);
+            tvHighlight = (TextView) findViewById(R.id.tvResult_hr);
+        }
+        else if(foundResult==4) {
+            // walk
+            ivHighlight = (ImageView) findViewById(R.id.ivResult_bb);
+            tvHighlight = (TextView) findViewById(R.id.tvResult_bb);
+        }
+        else if(foundResult==5) {
+            // strikeout
+            ivHighlight = (ImageView) findViewById(R.id.ivResult_k);
+            tvHighlight = (TextView) findViewById(R.id.tvResult_k);
+        }
+        else if(foundResult==6) {
+            // hbp
+            ivHighlight = (ImageView) findViewById(R.id.ivResult_hbp);
+            tvHighlight = (TextView) findViewById(R.id.tvResult_hbp);
+        }
+        else if(foundResult==7) {
+            // glove
+            ivHighlight = (ImageView) findViewById(R.id.ivResult_glove);
+            tvHighlight = (TextView) findViewById(R.id.tvResult_glove);
+        }
+        else if(foundResult==8) {
+            // out
+            ivHighlight = (ImageView) findViewById(R.id.ivResult_out);
+            tvHighlight = (TextView) findViewById(R.id.tvResult_out);
+        }
+
+        ivHighlight.setBackgroundColor(Color.RED);
+        tvHighlight.setBackgroundColor(Color.RED);
     }
 
     private void initGame() {
