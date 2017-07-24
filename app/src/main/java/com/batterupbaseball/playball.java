@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import static android.content.ContentValues.TAG;
 
@@ -63,6 +66,107 @@ public class playball extends Activity {
         game.dieResult = (dieRedResult*100) + (dieWhiteResult*10) + dieBlueResult;
 
         highlightOutcome();
+        showResultText();
+        moveBaseRunners();
+        checkEndOfInning();
+        updateScreen();
+    }
+
+    private void checkEndOfInning() {
+        if(game.outs < 3) {
+           nextBatter();
+        }
+    }
+
+    private void nextBatter() {
+        if(game.teamAtBat==0) {
+            game.vBatter += 1;
+
+            if(game.vBatter > 8) {
+                game.vBatter = 0;
+            }
+        }
+        else {
+            game.hBatter += 1;
+
+            if(game.hBatter > 8) {
+                game.hBatter = 0;
+            }
+        }
+
+
+    }
+
+    private void moveBaseRunners() {
+        switch(game.resultID) {
+            case 1:
+                // singles
+                moveBaseRunner(3,4); // runner scores
+                moveBaseRunner(2,3);
+                moveBaseRunner(1,2);
+                moveBaseRunner(0,1);
+                break;
+            case 2:
+                // doubles
+                moveBaseRunner(3,4);
+                moveBaseRunner(2,4);
+                moveBaseRunner(1,3);
+                moveBaseRunner(0,2);
+                break;
+            case 3:
+                // triples
+                moveBaseRunner(3,4);
+                moveBaseRunner(2,4);
+                moveBaseRunner(1,4);
+                moveBaseRunner(0,3);
+                break;
+            case 4:
+                // homeruns
+                moveBaseRunner(3,4);
+                moveBaseRunner(2,4);
+                moveBaseRunner(1,4);
+                moveBaseRunner(0,4);
+                break;
+            case 5:
+                // walks
+            case 7:
+                // hbp
+                if(game.baseRunner[1] > 0 && game.baseRunner[2] > 0 && game.baseRunner[3] > 0) {
+                    // bases loaded, forces in run
+                    moveBaseRunner(3,4);
+                    moveBaseRunner(2,3);
+                    moveBaseRunner(1,2);
+                    moveBaseRunner(0,1);
+                }
+                else if(game.baseRunner[1] > 0 && game.baseRunner[2] > 0 && game.baseRunner[3] == 0) {
+                    // runners on 1st and 2nd only
+                    moveBaseRunner(2,3);
+                    moveBaseRunner(1,2);
+                    moveBaseRunner(0,1);
+                }
+                else if(game.baseRunner[1] > 0) {
+                    moveBaseRunner(1,2);
+                    moveBaseRunner(0,1);
+                }
+                else {
+                    moveBaseRunner(0,1);
+                    Log.d(TAG, "MOVING RUNNER TO 1st");
+                }
+                break;
+        }
+    }
+
+    private void moveBaseRunner(int from, int to) {
+        game.baseRunner[to] = game.baseRunner[from];
+        game.baseRunnerSpeed[to] = game.baseRunnerSpeed[from];
+
+        game.baseRunner[from] = 0;
+        game.baseRunnerSpeed[from] = 0;
+    }
+
+    private void showResultText() {
+        TextView tvResultText = (TextView) findViewById(R.id.tvResult);
+        tvResultText.setText(game.resultText);
     }
 
     private void highlightOutcome() {
@@ -96,50 +200,79 @@ public class playball extends Activity {
             // single
             ivHighlight = (ImageView) findViewById(R.id.ivResult_1b);
             tvHighlight = (TextView) findViewById(R.id.tvResult_1b);
+
+            // get random explanation of a single
+            game.resultText = "Single!";
+            game.resultID = 1;
         }
         else if(foundResult==1) {
             // double
             ivHighlight = (ImageView) findViewById(R.id.ivResult_2b);
             tvHighlight = (TextView) findViewById(R.id.tvResult_2b);
+
+            game.resultText = "Double!";
+            game.resultID = 2;
         }
         else if(foundResult==2) {
             // triple
             ivHighlight = (ImageView) findViewById(R.id.ivResult_3b);
             tvHighlight = (TextView) findViewById(R.id.tvResult_3b);
+            game.resultText = "Triple!";
+            game.resultID = 3;
         }
         else if(foundResult==3) {
             // homerun
             ivHighlight = (ImageView) findViewById(R.id.ivResult_hr);
             tvHighlight = (TextView) findViewById(R.id.tvResult_hr);
+
+            game.resultText = "Homerun!";
+            game.resultID = 4;
         }
         else if(foundResult==4) {
             // walk
             ivHighlight = (ImageView) findViewById(R.id.ivResult_bb);
             tvHighlight = (TextView) findViewById(R.id.tvResult_bb);
+
+            game.resultText = "Walk!";
+            game.resultID = 5;
         }
         else if(foundResult==5) {
             // strikeout
             ivHighlight = (ImageView) findViewById(R.id.ivResult_k);
             tvHighlight = (TextView) findViewById(R.id.tvResult_k);
+
+            game.resultText = "Strikeout!";
+            game.resultID = 6;
         }
         else if(foundResult==6) {
             // hbp
             ivHighlight = (ImageView) findViewById(R.id.ivResult_hbp);
             tvHighlight = (TextView) findViewById(R.id.tvResult_hbp);
+
+            game.resultText = "Hit by pitch!";
+            game.resultID = 7;
         }
         else if(foundResult==7) {
             // glove
             ivHighlight = (ImageView) findViewById(R.id.ivResult_glove);
             tvHighlight = (TextView) findViewById(R.id.tvResult_glove);
+
+            game.resultText = "Tough Play!";
+            game.resultID = 8;
         }
         else if(foundResult==8) {
             // out
             ivHighlight = (ImageView) findViewById(R.id.ivResult_out);
             tvHighlight = (TextView) findViewById(R.id.tvResult_out);
+
+            game.resultText = "Out!";
+            game.resultID = 9;
         }
 
         ivHighlight.setBackgroundColor(Color.RED);
         tvHighlight.setBackgroundColor(Color.RED);
+
+        Log.d(TAG, "" + game.resultID);
     }
 
     private void initGame() {
@@ -178,6 +311,7 @@ public class playball extends Activity {
 
         game.vPitcher = vTeam.starter.get(0);
         game.hPitcher = hTeam.starter.get(0);
+
     }
 
     private void listVisTeam() {
@@ -257,6 +391,9 @@ public class playball extends Activity {
                 col1 = cPlayer.getColumnIndex("pos");
                 thisPlayer.pos = cPlayer.getString(col1);
 
+                col1 = cPlayer.getColumnIndex("_id");
+                thisPlayer._id = cPlayer.getInt(col1);
+
                 col1 = cPlayer.getColumnIndex("bats");
                 thisPlayer.pBats = cPlayer.getString(col1);
 
@@ -291,7 +428,7 @@ public class playball extends Activity {
                     thisPlayer.ballSpeed[j] = cPlayer.getInt(col1);
                 }
 
-                // running
+                // baserunning and stealing
                 for(int j = 0; j < 2; j++) {
                     col1 = cPlayer.getColumnIndex(running[j]);
                     thisPlayer.running[j] = cPlayer.getInt(col1);
@@ -348,6 +485,9 @@ public class playball extends Activity {
 
                     col1 = cPlayer.getColumnIndex("pos");
                     thisPlayer.pos = cPlayer.getString(col1);
+
+                    col1 = cPlayer.getColumnIndex("_id");
+                    thisPlayer._id = cPlayer.getInt(col1);
 
                     col1 = cPlayer.getColumnIndex("bats");
                     thisPlayer.pBats = cPlayer.getString(col1);
@@ -441,6 +581,9 @@ public class playball extends Activity {
                 col1 = cPlayer.getColumnIndex("pos");
                 thisPlayer.pos = cPlayer.getString(col1);
 
+                col1 = cPlayer.getColumnIndex("_id");
+                thisPlayer._id = cPlayer.getInt(col1);
+
                 col1 = cPlayer.getColumnIndex("bats");
                 thisPlayer.pBats = cPlayer.getString(col1);
 
@@ -530,6 +673,9 @@ public class playball extends Activity {
 
             col1 = cPlayer.getColumnIndex("pos");
             thisPlayer.pos = cPlayer.getString(col1);
+
+            col1 = cPlayer.getColumnIndex("_id");
+            thisPlayer._id = cPlayer.getInt(col1);
 
             col1 = cPlayer.getColumnIndex("bats");
             thisPlayer.pBats = cPlayer.getString(col1);
@@ -646,6 +792,9 @@ public class playball extends Activity {
                 col1 = cPlayer.getColumnIndex("pos");
                 thisPlayer.pos = cPlayer.getString(col1);
 
+                col1 = cPlayer.getColumnIndex("_id");
+                thisPlayer._id = cPlayer.getInt(col1);
+
                 col1 = cPlayer.getColumnIndex("bats");
                 thisPlayer.pBats = cPlayer.getString(col1);
 
@@ -737,6 +886,9 @@ public class playball extends Activity {
 
                     col1 = cPlayer.getColumnIndex("pos");
                     thisPlayer.pos = cPlayer.getString(col1);
+
+                    col1 = cPlayer.getColumnIndex("_id");
+                    thisPlayer._id = cPlayer.getInt(col1);
 
                     col1 = cPlayer.getColumnIndex("bats");
                     thisPlayer.pBats = cPlayer.getString(col1);
@@ -830,6 +982,9 @@ public class playball extends Activity {
                 col1 = cPlayer.getColumnIndex("pos");
                 thisPlayer.pos = cPlayer.getString(col1);
 
+                col1 = cPlayer.getColumnIndex("_id");
+                thisPlayer._id = cPlayer.getInt(col1);
+
                 col1 = cPlayer.getColumnIndex("bats");
                 thisPlayer.pBats = cPlayer.getString(col1);
 
@@ -919,6 +1074,9 @@ public class playball extends Activity {
 
             col1 = cPlayer.getColumnIndex("pos");
             thisPlayer.pos = cPlayer.getString(col1);
+
+            col1 = cPlayer.getColumnIndex("_id");
+            thisPlayer._id = cPlayer.getInt(col1);
 
             col1 = cPlayer.getColumnIndex("bats");
             thisPlayer.pBats = cPlayer.getString(col1);
@@ -1169,6 +1327,9 @@ public class playball extends Activity {
 
         // batter bats right or left? get correct bg image
         if(game.teamAtBat==0) {
+            game.baseRunner[0] = vTeam.lineup.get(game.vBatter)._id;
+            game.baseRunnerSpeed[0] = vTeam.lineup.get(game.vBatter).running[0];
+            Log.d(TAG, "BaseRunner: " + game.baseRunner[0]);
             if(vTeam.lineup.get(game.vBatter).getBats().equals("r")) {
                 if(game.hPitcher.getThrows().equals("r")) {
                     // base
@@ -1226,6 +1387,9 @@ public class playball extends Activity {
             layers[4] = ContextCompat.getDrawable(this, cardPos[posNum]);
         }
         else {
+            game.baseRunner[0] = hTeam.lineup.get(game.hBatter)._id;
+            game.baseRunnerSpeed[0] = hTeam.lineup.get(game.hBatter).running[0];
+
             if(hTeam.lineup.get(game.hBatter).getBats().equals("r")) {
                 if(game.vPitcher.getThrows().equals("r")) {
                     // base
@@ -1280,7 +1444,52 @@ public class playball extends Activity {
     }
 
     private void updateBaseRunners() {
+        ImageView ivRunner_1 = (ImageView) findViewById(R.id.ivBaserunner_1);
+        ImageView ivRunner_2 = (ImageView) findViewById(R.id.ivBaserunner_2);
+        ImageView ivRunner_3 = (ImageView) findViewById(R.id.ivBaserunner_3);
 
+        TextView tvRunnerSpeed_1 = (TextView) findViewById(R.id.tvBaserunnerSpeed_1);
+        TextView tvRunnerSpeed_2 = (TextView) findViewById(R.id.tvBaserunnerSpeed_2);
+        TextView tvRunnerSpeed_3 = (TextView) findViewById(R.id.tvBaserunnerSpeed_3);
+
+        if(game.baseRunner[1] > 0) {
+            Log.d(TAG, "RUNNER ON 1ST");
+            // runner on 1st
+            ivRunner_1.setVisibility(View.VISIBLE);
+            tvRunnerSpeed_1.setVisibility(View.VISIBLE);
+            tvRunnerSpeed_1.setText("" + game.baseRunnerSpeed[1]);
+        }
+        else {
+            Log.d(TAG, "NOBODY ON 1ST");
+            ivRunner_1.setVisibility(View.INVISIBLE);
+            tvRunnerSpeed_1.setVisibility(View.INVISIBLE);
+        }
+
+        if(game.baseRunner[2] > 0) {
+            Log.d(TAG, "RUNNER ON 2ND");
+            // runner on 2nd
+            ivRunner_2.setVisibility(View.VISIBLE);
+            tvRunnerSpeed_2.setVisibility(View.VISIBLE);
+            tvRunnerSpeed_2.setText("" + game.baseRunnerSpeed[2]);
+        }
+        else {
+            Log.d(TAG, "NOBODY ON 2ND");
+            ivRunner_2.setVisibility(View.INVISIBLE);
+            tvRunnerSpeed_2.setVisibility(View.INVISIBLE);
+        }
+
+        if(game.baseRunner[3] > 0) {
+            Log.d(TAG, "RUNNER ON 3RD");
+            // runner on 3rd
+            ivRunner_3.setVisibility(View.VISIBLE);
+            tvRunnerSpeed_3.setVisibility(View.VISIBLE);
+            tvRunnerSpeed_3.setText("" + game.baseRunnerSpeed[3]);
+        }
+        else {
+            Log.d(TAG, "NOBODY ON 3RD");
+            ivRunner_3.setVisibility(View.INVISIBLE);
+            tvRunnerSpeed_3.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void updatePitcherCard() {
@@ -1390,7 +1599,7 @@ public class playball extends Activity {
         String sName = "";
 
         if(game.teamAtBat==0) {
-            if(game.vBatter == 9) {
+            if(game.vBatter == 8) {
                 sBats = vTeam.lineup.get(0).getBats();
                 sName = vTeam.lineup.get(0).getName();
             }
@@ -1400,7 +1609,7 @@ public class playball extends Activity {
             }
         }
         else {
-            if(game.hBatter == 9) {
+            if(game.hBatter == 8) {
                 sBats = hTeam.lineup.get(0).getBats();
                 sName = hTeam.lineup.get(0).getName();
             }
@@ -1422,11 +1631,11 @@ public class playball extends Activity {
         String sName = "";
 
         if(game.teamAtBat==0) {
-            if(game.vBatter == 8) {
+            if(game.vBatter == 7) {
                 sBats = vTeam.lineup.get(0).getBats();
                 sName = vTeam.lineup.get(0).getName();
             }
-            else if(game.vBatter == 9) {
+            else if(game.vBatter == 8) {
                 sBats = vTeam.lineup.get(1).getBats();
                 sName = vTeam.lineup.get(1).getName();
             }
@@ -1436,11 +1645,11 @@ public class playball extends Activity {
             }
         }
         else {
-            if(game.hBatter == 8) {
+            if(game.hBatter == 7) {
                 sBats = hTeam.lineup.get(0).getBats();
                 sName = hTeam.lineup.get(0).getName();
             }
-            else if(game.hBatter == 9) {
+            else if(game.hBatter == 8) {
                 sBats = vTeam.lineup.get(1).getBats();
                 sName = vTeam.lineup.get(1).getName();
             }
@@ -1459,7 +1668,8 @@ public class playball extends Activity {
     }
 
     private void updateStamina() {
-        ProgressBar pb = (ProgressBar) findViewById(R.id.pbStamina);
+        //ImageView ivStamina = (ImageView) findViewById(R.id.ivStamina);
+        //ClipDrawable drawable = (ClipDrawable) ivStamina.getBackground();
 
         int iStamina = 0; // progress
         int pStamina = 0; // pitcher
@@ -1477,9 +1687,13 @@ public class playball extends Activity {
         if(pStamina==0) {
             pStamina = 1;
         }
-        iStamina = ((gStamina / pStamina) * 100);
 
-        pb.setProgress(iStamina);
+        iStamina = ((gStamina / pStamina) * 10000);
+
+        iStamina = 5000;
+
+        //drawable.setLevel(iStamina);
+
     }
 
     private void updatePossibleOutcomes(){

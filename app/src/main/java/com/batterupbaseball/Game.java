@@ -27,14 +27,19 @@ public class Game {
     int hStamina = 0;
     int dieResult = 0;
 
+    int[] baseRunner = {0, 0, 0, 0, 0}; // ID of baserunner  (batter, 1st, 2nd, 3rd, home)
+    int[] baseRunnerSpeed = {0, 0, 0, 0, 0}; // speed rating of baserunner (batter, 1st, 2nd, 3rd, home)
+
     int[] resultRange = new int[9];
-    int[] resultID = new int[9]; // used to get whether it's a single, double, triple, homerun, walk, strikeout, hbp, glove, or out - some players don't have a triple, etc.
+    int resultID = 0; // 1=single, 2=double, 3=triple, 4=homerun, 5=walk, 6=strikeout, 7=hbp, 8=glove, 9=out
     int[] minOutcome = new int[9];
     int[] maxOutcome = new int[9];
     int[] resultAverages = new int[7];
 
     String vSeasonName = "";
     String hSeasonName = "";
+
+    String resultText = "";
 
     int vBatter = 0; // visitor batter in lineup
     int hBatter = 0; // home batter in lineup
