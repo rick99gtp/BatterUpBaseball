@@ -202,7 +202,7 @@ public class playball extends Activity {
             tvHighlight = (TextView) findViewById(R.id.tvResult_1b);
 
             // get random explanation of a single
-            game.resultText = "Single!";
+            game.resultText = "Single to " + getHitDirection();
             game.resultID = 1;
         }
         else if(foundResult==1) {
@@ -210,14 +210,14 @@ public class playball extends Activity {
             ivHighlight = (ImageView) findViewById(R.id.ivResult_2b);
             tvHighlight = (TextView) findViewById(R.id.tvResult_2b);
 
-            game.resultText = "Double!";
+            game.resultText = "Double to " + getHitDirection();
             game.resultID = 2;
         }
         else if(foundResult==2) {
             // triple
             ivHighlight = (ImageView) findViewById(R.id.ivResult_3b);
             tvHighlight = (TextView) findViewById(R.id.tvResult_3b);
-            game.resultText = "Triple!";
+            game.resultText = "Triple to " + getHitDirection();
             game.resultID = 3;
         }
         else if(foundResult==3) {
@@ -225,7 +225,7 @@ public class playball extends Activity {
             ivHighlight = (ImageView) findViewById(R.id.ivResult_hr);
             tvHighlight = (TextView) findViewById(R.id.tvResult_hr);
 
-            game.resultText = "Homerun!";
+            game.resultText = "Homerun to " + getHitDirection();
             game.resultID = 4;
         }
         else if(foundResult==4) {
@@ -1668,8 +1668,8 @@ public class playball extends Activity {
     }
 
     private void updateStamina() {
-        //ImageView ivStamina = (ImageView) findViewById(R.id.ivStamina);
-        //ClipDrawable drawable = (ClipDrawable) ivStamina.getBackground();
+        ImageView ivStamina = (ImageView) findViewById(R.id.ivStamina);
+        ClipDrawable drawable = (ClipDrawable) ivStamina.getBackground();
 
         int iStamina = 0; // progress
         int pStamina = 0; // pitcher
@@ -1692,7 +1692,7 @@ public class playball extends Activity {
 
         iStamina = 5000;
 
-        //drawable.setLevel(iStamina);
+        drawable.setLevel(iStamina);
 
     }
 
@@ -1791,9 +1791,19 @@ public class playball extends Activity {
     }
 
     private int calculateNewRange(double b, double p, int avg) {
-        double newValue = 0;
+        double newValue;
 
         newValue = Math.ceil((p*b)/game.resultAverages[avg])/(((p*b)/game.resultAverages[avg])+(((1-p)*(1-b))/(1-game.resultAverages[avg])));
+
+        int newRange = (int) newValue;
+
+        return newRange;
+    }
+
+    private int calculateHitRange(double b, double p, int avg) {
+        double newValue;
+
+        newValue = Math.ceil((p*b)/avg)/(((p*b)/avg)+(((1-p)*(1-b))/(1-avg)));
 
         int newRange = (int) newValue;
 
@@ -1832,5 +1842,166 @@ public class playball extends Activity {
         cTeam.close();
 
         myDB.close();
+    }
+
+    private String getHitDirection() {
+
+        // get LF, CF, RF ranges
+        getHitDirectionRanges();
+
+        // roll dice
+        int dieRedResult = game.rollDie();
+        int dieWhiteResult = game.rollDie();
+        int dieBlueResult = game.rollDie();
+
+        int total = (dieRedResult*100) + (dieWhiteResult*10) + dieBlueResult;
+
+        if(total >= game.minHitDirection[0] && total <= game.maxHitDirection[0]) {
+            // left field
+            return "Left Field";
+        }
+        else if(total >= game.minHitDirection[1] && total <= game.maxHitDirection[1]) {
+            // center field
+            return "Center Field";
+        }
+        else {
+            // right field
+            return "Right Field";
+        }
+
+    }
+
+    private void getHitDirectionRanges() {
+        int[] b = new int[3]; // batter
+        int[] p = new int[3]; // pitcher
+        int[] a = new int[3]; // average
+
+        // batter
+        if(game.teamAtBat==0) {
+            if(vTeam.lineup.get(game.vBatter).getBats().equals("r")) {
+                b[0] = vTeam.lineup.get(game.vBatter).sprayChart[0];
+                b[1] = vTeam.lineup.get(game.vBatter).sprayChart[1];
+                b[2] = vTeam.lineup.get(game.vBatter).sprayChart[2];
+
+                p[0] = game.hPitcher.sprayChart[0];
+                p[1] = game.hPitcher.sprayChart[1];
+                p[2] = game.hPitcher.sprayChart[2];
+                
+                a[0] = 397;
+                a[1] = 347;
+                a[2] = 256;
+            }
+            else if(vTeam.lineup.get(game.vBatter).getBats().equals("l")) {
+                b[0] = vTeam.lineup.get(game.vBatter).sprayChart[2];
+                b[1] = vTeam.lineup.get(game.vBatter).sprayChart[1];
+                b[2] = vTeam.lineup.get(game.vBatter).sprayChart[0];
+
+                p[0] = game.hPitcher.sprayChart[2];
+                p[1] = game.hPitcher.sprayChart[1];
+                p[2] = game.hPitcher.sprayChart[0];
+
+                a[0] = 256;
+                a[1] = 347;
+                a[2] = 397;
+            }
+            else {
+                // switch hitter
+                if(game.hPitcher.getThrows().equals("r")) {
+                    b[0] = vTeam.lineup.get(game.vBatter).sprayChart[2];
+                    b[1] = vTeam.lineup.get(game.vBatter).sprayChart[1];
+                    b[2] = vTeam.lineup.get(game.vBatter).sprayChart[0];
+
+                    p[0] = game.hPitcher.sprayChart[2];
+                    p[1] = game.hPitcher.sprayChart[1];
+                    p[2] = game.hPitcher.sprayChart[0];
+
+                    a[0] = 256;
+                    a[1] = 347;
+                    a[2] = 397;
+                }
+                else {
+                    // throws left
+                    b[0] = vTeam.lineup.get(game.vBatter).sprayChart[0];
+                    b[1] = vTeam.lineup.get(game.vBatter).sprayChart[1];
+                    b[2] = vTeam.lineup.get(game.vBatter).sprayChart[2];
+
+                    p[0] = game.hPitcher.sprayChart[0];
+                    p[1] = game.hPitcher.sprayChart[1];
+                    p[2] = game.hPitcher.sprayChart[2];
+
+                    a[0] = 397;
+                    a[1] = 347;
+                    a[2] = 256;
+                }
+            }
+        }
+        else {
+            if(hTeam.lineup.get(game.hBatter).getBats().equals("r")) {
+                b[0] = hTeam.lineup.get(game.hBatter).sprayChart[0];
+                b[1] = hTeam.lineup.get(game.hBatter).sprayChart[1];
+                b[2] = hTeam.lineup.get(game.hBatter).sprayChart[2];
+
+                p[0] = game.hPitcher.sprayChart[0];
+                p[1] = game.hPitcher.sprayChart[1];
+                p[2] = game.hPitcher.sprayChart[2];
+
+                a[0] = 397;
+                a[1] = 347;
+                a[2] = 256;
+            }
+            else if(hTeam.lineup.get(game.hBatter).getBats().equals("l")) {
+                b[0] = hTeam.lineup.get(game.hBatter).sprayChart[2];
+                b[1] = hTeam.lineup.get(game.hBatter).sprayChart[1];
+                b[2] = hTeam.lineup.get(game.hBatter).sprayChart[0];
+
+                p[0] = game.hPitcher.sprayChart[2];
+                p[1] = game.hPitcher.sprayChart[1];
+                p[2] = game.hPitcher.sprayChart[0];
+
+                a[0] = 256;
+                a[1] = 347;
+                a[2] = 397;
+            }
+            else {
+                // switch hitter
+                if(game.hPitcher.getThrows().equals("r")) {
+                    b[0] = hTeam.lineup.get(game.hBatter).sprayChart[2];
+                    b[1] = hTeam.lineup.get(game.hBatter).sprayChart[1];
+                    b[2] = hTeam.lineup.get(game.hBatter).sprayChart[0];
+
+                    p[0] = game.hPitcher.sprayChart[2];
+                    p[1] = game.hPitcher.sprayChart[1];
+                    p[2] = game.hPitcher.sprayChart[0];
+
+                    a[0] = 256;
+                    a[1] = 347;
+                    a[2] = 397;
+                }
+                else {
+                    // throws left
+                    b[0] = hTeam.lineup.get(game.hBatter).sprayChart[0];
+                    b[1] = hTeam.lineup.get(game.hBatter).sprayChart[1];
+                    b[2] = hTeam.lineup.get(game.hBatter).sprayChart[2];
+
+                    p[0] = game.hPitcher.sprayChart[0];
+                    p[1] = game.hPitcher.sprayChart[1];
+                    p[2] = game.hPitcher.sprayChart[2];
+
+                    a[0] = 397;
+                    a[1] = 347;
+                    a[2] = 256;
+                }
+            }
+        }
+
+        for(int i=0; i< 2; i++) {
+            game.maxHitDirection[i] = calculateHitRange(b[i], p[i], a[i]);
+        }
+
+        game.minHitDirection[0] = 1;
+        game.minHitDirection[1] = game.maxHitDirection[0] + 1;
+        game.minHitDirection[2] = game.maxHitDirection[1] + game.maxHitDirection[0] + 1;
+        game.maxHitDirection[2] = 1000;
+
     }
 }

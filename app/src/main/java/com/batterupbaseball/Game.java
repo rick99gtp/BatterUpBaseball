@@ -27,6 +27,10 @@ public class Game {
     int hStamina = 0;
     int dieResult = 0;
 
+    int[] hitDirection = new int[3];
+    int[] minHitDirection = new int[3];
+    int[] maxHitDirection = new int[3];
+
     int[] baseRunner = {0, 0, 0, 0, 0}; // ID of baserunner  (batter, 1st, 2nd, 3rd, home)
     int[] baseRunnerSpeed = {0, 0, 0, 0, 0}; // speed rating of baserunner (batter, 1st, 2nd, 3rd, home)
 
