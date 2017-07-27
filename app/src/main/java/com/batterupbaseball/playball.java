@@ -68,7 +68,6 @@ public class playball extends Activity {
         highlightOutcome();
         showResultText();
         moveBaseRunners();
-        checkEndOfInning();
         updateScreen();
     }
 
@@ -76,6 +75,37 @@ public class playball extends Activity {
         if(game.outs < 3) {
            nextBatter();
         }
+        else {
+            // check for end of game
+            if(checkEndOfGame()) {
+                TextView tvResultText = (TextView) findViewById(R.id.tvResult);
+                tvResultText.setText("Game Over");
+            }
+            else {
+                game.outs=0;
+                game.clearTheBases();
+                game.nextHalfInning();
+                nextBatter();
+            }
+        }
+    }
+
+    private boolean checkEndOfGame() {
+
+        if(game.inning >= 9) {
+            if(game.teamAtBat==0) {
+                if(game.hRuns > game.vRuns)
+                    // game over
+                    return true;
+            }
+            else {
+                if(game.vRuns > game.hRuns)
+                    // game over
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     private void nextBatter() {
@@ -178,6 +208,15 @@ public class playball extends Activity {
         int[] ivOutcomeID = {R.id.ivResult_1b, R.id.ivResult_2b, R.id.ivResult_3b, R.id.ivResult_hr, R.id.ivResult_bb, R.id.ivResult_k, R.id.ivResult_hbp, R.id.ivResult_glove, R.id.ivResult_out};
         int[] tvOutcomeID = {R.id.tvResult_1b, R.id.tvResult_2b, R.id.tvResult_3b, R.id.tvResult_hr, R.id.tvResult_bb, R.id.tvResult_k, R.id.tvResult_hbp, R.id.tvResult_glove, R.id.tvResult_out};
 
+        // get the batter's name
+        String thisName = "";
+
+        if(game.teamAtBat==0) {
+            thisName = vTeam.lineup.get(game.vBatter).name;
+        }
+        else
+            thisName = hTeam.lineup.get(game.hBatter).name;
+
         // reset all outcomes
         for(int i=0; i < 9; i++) {
             ivHighlight = (ImageView) findViewById(ivOutcomeID[i]);
@@ -204,6 +243,7 @@ public class playball extends Activity {
             // get random explanation of a single
             game.resultText = "Single to " + getHitDirection();
             game.resultID = 1;
+            nextBatter();
         }
         else if(foundResult==1) {
             // double
@@ -212,6 +252,7 @@ public class playball extends Activity {
 
             game.resultText = "Double to " + getHitDirection();
             game.resultID = 2;
+            nextBatter();
         }
         else if(foundResult==2) {
             // triple
@@ -219,6 +260,7 @@ public class playball extends Activity {
             tvHighlight = (TextView) findViewById(R.id.tvResult_3b);
             game.resultText = "Triple to " + getHitDirection();
             game.resultID = 3;
+            nextBatter();
         }
         else if(foundResult==3) {
             // homerun
@@ -227,6 +269,7 @@ public class playball extends Activity {
 
             game.resultText = "Homerun to " + getHitDirection();
             game.resultID = 4;
+            nextBatter();
         }
         else if(foundResult==4) {
             // walk
@@ -235,14 +278,27 @@ public class playball extends Activity {
 
             game.resultText = "Walk!";
             game.resultID = 5;
+            nextBatter();
         }
         else if(foundResult==5) {
             // strikeout
             ivHighlight = (ImageView) findViewById(R.id.ivResult_k);
             tvHighlight = (TextView) findViewById(R.id.tvResult_k);
 
-            game.resultText = "Strikeout!";
             game.resultID = 6;
+
+            // swinging or looking?
+            // league average is 25%, so that's what we'll use
+            int newNum = game.rn.nextInt(100);
+
+            if(newNum <=25 )
+                game.resultText = thisName + " strikes out looking!";
+            else
+                game.resultText= thisName + " strikes out swinging!";
+
+            game.addOuts();
+
+            checkEndOfInning();
         }
         else if(foundResult==6) {
             // hbp
@@ -251,6 +307,7 @@ public class playball extends Activity {
 
             game.resultText = "Hit by pitch!";
             game.resultID = 7;
+            nextBatter();
         }
         else if(foundResult==7) {
             // glove
@@ -259,6 +316,15 @@ public class playball extends Activity {
 
             game.resultText = "Tough Play!";
             game.resultID = 8;
+
+            // ***********CHANGE TO ANOTHER DIE ROLL TO SEE WHETHER FIELDER GETS THE BALL CLEANLY
+            // *********** AND WHETHER OR NOT HE MAKES AN ERROR
+            game.resultText = "Out!";
+            game.resultID = 9;
+
+            game.addOuts();
+
+            checkEndOfInning();
         }
         else if(foundResult==8) {
             // out
@@ -267,6 +333,10 @@ public class playball extends Activity {
 
             game.resultText = "Out!";
             game.resultID = 9;
+
+            game.addOuts();
+
+            checkEndOfInning();
         }
 
         ivHighlight.setBackgroundColor(Color.RED);
@@ -1793,17 +1863,20 @@ public class playball extends Activity {
     private int calculateNewRange(double b, double p, int avg) {
         double newValue;
 
-        newValue = Math.ceil((p*b)/game.resultAverages[avg])/(((p*b)/game.resultAverages[avg])+(((1-p)*(1-b))/(1-game.resultAverages[avg])));
+        Log.d(TAG, "Batter: " + b + ", Pitcher: " + p + ", Average: " + game.resultAverages[avg]);
+        newValue = (((p*b)/game.resultAverages[avg])/(((p*b)/game.resultAverages[avg])+(((1000-p)*(1000-b))/(1000-game.resultAverages[avg]))))*1000;
 
         int newRange = (int) newValue;
+
+        Log.d(TAG, "newRange" + newRange);
 
         return newRange;
     }
 
-    private int calculateHitRange(double b, double p, int avg) {
+    private int calculateHitRange(double b, double p, double avg) {
         double newValue;
 
-        newValue = Math.ceil((p*b)/avg)/(((p*b)/avg)+(((1-p)*(1-b))/(1-avg)));
+        newValue = (((p*b)/avg)/(((p*b)/avg)+(((1000-p)*(1000-b))/(1000-avg))))*1000;
 
         int newRange = (int) newValue;
 
@@ -1850,6 +1923,7 @@ public class playball extends Activity {
         getHitDirectionRanges();
 
         // roll dice
+
         int dieRedResult = game.rollDie();
         int dieWhiteResult = game.rollDie();
         int dieBlueResult = game.rollDie();

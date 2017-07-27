@@ -105,8 +105,28 @@ public class Game {
         return newPos;
     }
 
-    public void updateOuts() {
+    public void addOuts() {
         this.outs += 1;
+    }
+
+    public void clearTheBases() {
+        baseRunner[1] = 0;
+        baseRunner[2] = 0;
+        baseRunner[3] = 0;
+        baseRunnerSpeed[1] = 0;
+        baseRunnerSpeed[2] = 0;
+        baseRunnerSpeed[3] = 0;
+    }
+
+    public void nextHalfInning() {
+        if (teamAtBat == 0) {
+            teamAtBat = 1;
+    }
+        else {
+            teamAtBat = 0;
+            inning += 1;
+    }
+
     }
 
 }
