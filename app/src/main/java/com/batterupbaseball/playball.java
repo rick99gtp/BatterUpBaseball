@@ -241,7 +241,7 @@ public class playball extends Activity {
             tvHighlight = (TextView) findViewById(R.id.tvResult_1b);
 
             // get random explanation of a single
-            game.resultText = "Single to " + getHitDirection();
+            game.resultText = thisName + " singles to " + getHitDirection() + " field.";
             game.resultID = 1;
             nextBatter();
         }
@@ -250,7 +250,7 @@ public class playball extends Activity {
             ivHighlight = (ImageView) findViewById(R.id.ivResult_2b);
             tvHighlight = (TextView) findViewById(R.id.tvResult_2b);
 
-            game.resultText = "Double to " + getHitDirection();
+            game.resultText = thisName + " doubles to " + getHitDirection() + " field.";
             game.resultID = 2;
             nextBatter();
         }
@@ -258,7 +258,7 @@ public class playball extends Activity {
             // triple
             ivHighlight = (ImageView) findViewById(R.id.ivResult_3b);
             tvHighlight = (TextView) findViewById(R.id.tvResult_3b);
-            game.resultText = "Triple to " + getHitDirection();
+            game.resultText = thisName + " triples to " + getHitDirection() + " field.";
             game.resultID = 3;
             nextBatter();
         }
@@ -267,7 +267,7 @@ public class playball extends Activity {
             ivHighlight = (ImageView) findViewById(R.id.ivResult_hr);
             tvHighlight = (TextView) findViewById(R.id.tvResult_hr);
 
-            game.resultText = "Homerun to " + getHitDirection();
+            game.resultText = thisName + " hits a homerun to " + getHitDirection();
             game.resultID = 4;
             nextBatter();
         }
@@ -276,7 +276,7 @@ public class playball extends Activity {
             ivHighlight = (ImageView) findViewById(R.id.ivResult_bb);
             tvHighlight = (TextView) findViewById(R.id.tvResult_bb);
 
-            game.resultText = "Walk!";
+            game.resultText = thisName + " draws a walk!";
             game.resultID = 5;
             nextBatter();
         }
@@ -305,7 +305,7 @@ public class playball extends Activity {
             ivHighlight = (ImageView) findViewById(R.id.ivResult_hbp);
             tvHighlight = (TextView) findViewById(R.id.tvResult_hbp);
 
-            game.resultText = "Hit by pitch!";
+            game.resultText = thisName + " is hit by the pitch!";
             game.resultID = 7;
             nextBatter();
         }
@@ -331,8 +331,13 @@ public class playball extends Activity {
             ivHighlight = (ImageView) findViewById(R.id.ivResult_out);
             tvHighlight = (TextView) findViewById(R.id.tvResult_out);
 
-            game.resultText = "Out!";
             game.resultID = 9;
+
+            int fielder = getOutDirection(); // 1, 3, 4, 5, 6, 7, 8, 9
+
+            int outType = getOutType(fielder); // gb, ld, flyball, popup
+
+            getOutResult();
 
             game.addOuts();
 
@@ -341,8 +346,49 @@ public class playball extends Activity {
 
         ivHighlight.setBackgroundColor(Color.RED);
         tvHighlight.setBackgroundColor(Color.RED);
+    }
 
-        Log.d(TAG, "" + game.resultID);
+    private int getOutType(int fielder) {
+        int dieRedResult = game.rollDie();
+        int dieWhiteResult = game.rollDie();
+        int dieBlueResult = game.rollDie();
+
+        int total = (dieRedResult*100) + (dieWhiteResult*10) + dieBlueResult;
+
+        if(fielder >= 1 && fielder <= 6) {
+            if(total >= 1 && total <= 450) {
+                // groundball
+                return 0;
+            }
+            else if(total > 450 && total <= 683) {
+                // linedrive (max outs)
+                return 4;
+            }
+            else if(total > 683 && total <= 710) {
+                // linedrive
+                return 1;
+            }
+            else {
+                // popup
+                return 2;
+            }
+        }
+        else {
+            return 1;
+        }
+    }
+
+    private void getOutResult() {
+        // get the batter's name
+        String thisName = "";
+
+        if(game.teamAtBat==0) {
+            thisName = vTeam.lineup.get(game.vBatter).name;
+        }
+        else
+            thisName = hTeam.lineup.get(game.hBatter).name;
+
+        game.resultText = thisName + " hits the ball to " + getOutDirection();
     }
 
     private void initGame() {
@@ -1945,6 +1991,79 @@ public class playball extends Activity {
 
     }
 
+    private int getOutDirection() {
+
+        // left, middle, right
+        getHitDirectionRanges();
+
+        // roll dice
+        int dieRedResult = game.rollDie();
+        int dieWhiteResult = game.rollDie();
+        int dieBlueResult = game.rollDie();
+
+        int total = (dieRedResult*100) + (dieWhiteResult*10) + dieBlueResult;
+
+        if(total <= 470) {
+            // infield out
+            dieRedResult = game.rollDie();
+            dieWhiteResult = game.rollDie();
+            dieBlueResult = game.rollDie();
+
+            total = (dieRedResult*100) + (dieWhiteResult*10) + dieBlueResult;
+
+            int thirdBaseMaxRange = (int)(game.maxHitDirection[0] *.25);
+            int shortstopMaxRange = game.maxHitDirection[0] + ((game.maxHitDirection[1] - game.maxHitDirection[0])/2) - 35;
+            int pitcherMaxRange = 70 + shortstopMaxRange;
+            int secondBaseMaxRange = 1000 - (int)(game.maxHitDirection[1]*.25);
+
+            if(total >= 1 && total <= thirdBaseMaxRange) {
+                // 3rd baseman
+                return 5;
+            }
+            else if(total > thirdBaseMaxRange && total <= shortstopMaxRange) {
+                // shortstop
+                return 6;
+            }
+            else if(total > shortstopMaxRange && total <= pitcherMaxRange) {
+                // pitcher
+                return 1;
+            }
+            else if(total > pitcherMaxRange && total <= secondBaseMaxRange) {
+                // 2nd baseman
+                return 4;
+            }
+            else if(total > (shortstopMaxRange + 70)) {
+                // pitcher
+                return 1;
+            }
+            else {
+                // 1st baseman
+                return 3;
+            }
+        }
+        else {
+            // outfield out
+            dieRedResult = game.rollDie();
+            dieWhiteResult = game.rollDie();
+            dieBlueResult = game.rollDie();
+
+            total = (dieRedResult*100) + (dieWhiteResult*10) + dieBlueResult;
+
+            if(total >= 1 && total <= game.maxHitDirection[0]) {
+                // left field
+                return 7;
+            }
+            else if(total >= game.minHitDirection[1] && total <= game.maxHitDirection[1]) {
+                // center field
+                return 8;
+            }
+            else {
+                // right field
+                return 9;
+            }
+        }
+    }
+
     private void getHitDirectionRanges() {
         int[] b = new int[3]; // batter
         int[] p = new int[3]; // pitcher
@@ -2074,8 +2193,8 @@ public class playball extends Activity {
 
         game.minHitDirection[0] = 1;
         game.minHitDirection[1] = game.maxHitDirection[0] + 1;
-        game.minHitDirection[2] = game.maxHitDirection[1] + game.maxHitDirection[0] + 1;
+        game.maxHitDirection[1] += game.maxHitDirection[0];
+        game.minHitDirection[2] = game.maxHitDirection[1] + 1;
         game.maxHitDirection[2] = 1000;
-
     }
 }
