@@ -14,6 +14,7 @@ public class Team {
     int[] benchID;
     int[] bullpenID;
     int starterID;
+    int[] defenseID;
     String TAG = "com.batterupbaseball";
 
     public Team() {

@@ -7,9 +7,6 @@ import java.util.Random;
 
 public class Game {
     Random rn = new Random();
-    int[] visPlayerID, homePlayerID;
-    Team vTeam, hTeam;
-    Player[] vLineup, hLineup;
     Player vPitcher, hPitcher;
     Die die1, die2, die3;
     int inning = 1;
@@ -26,8 +23,13 @@ public class Game {
     int vStamina = 0;
     int hStamina = 0;
     int dieResult = 0;
+    int[] vDefenseRange = new int[9];
+    int[] hDefenseRange = new int[9];
+    int[] vDefenseError = new int[9];
+    int[] hDefenseError = new int[9];
+    int[] vDefenseArm = new int[9];
+    int[] hDefenseArm = new int[9];
 
-    int[] hitDirection = new int[3];
     int[] minHitDirection = new int[3];
     int[] maxHitDirection = new int[3];
 

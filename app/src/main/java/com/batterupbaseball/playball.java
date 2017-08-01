@@ -14,7 +14,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -45,7 +44,57 @@ public class playball extends Activity {
 
     }
 
-    public void roll_dice(View view) {
+    public void getBatterResult(View view) {
+        int balkRating, passedBallRating, wildPitchRating;
+
+        if(game.teamAtBat==0) {
+            balkRating = game.hPitcher.balkRating;
+            wildPitchRating = game.hPitcher.wildPitchRating;
+
+            passedBallRating = hTeam.lineup.get(hTeam.defenseID[1]).passedBallRating;
+        }
+        else {
+            balkRating = game.vPitcher.balkRating;
+            wildPitchRating = game.vPitcher.wildPitchRating;
+
+            passedBallRating = vTeam.lineup.get(vTeam.defenseID[1]).passedBallRating;
+        }
+
+        int totalBaseRunners = game.baseRunner[1] + game.baseRunner[2] + game.baseRunner[3];
+
+        if(totalBaseRunners > 0) {
+            // baserunners, check for wild pitch, passed ball, and balk
+            roll_dice();
+
+            if (game.dieResult >= 1 && game.dieResult <= wildPitchRating) {
+                // wild pitch
+            }
+            else if (game.dieResult > wildPitchRating && game.dieResult <= (wildPitchRating + balkRating)) {
+                // balk
+            }
+            else if(game.dieResult > (wildPitchRating + balkRating) && game.dieResult <= (wildPitchRating + balkRating + passedBallRating)) {
+                // passed ball
+            }
+            else {
+                roll_dice();
+
+                highlightOutcome();
+                showResultText();
+                moveBaseRunners();
+                updateScreen();
+            }
+        }
+        else {
+            roll_dice();
+
+            highlightOutcome();
+            showResultText();
+            moveBaseRunners();
+            updateScreen();
+        }
+    }
+
+    private void roll_dice() {
         int[] dieImageRed = {R.drawable.red_die_0, R.drawable.red_die_1, R.drawable.red_die_2, R.drawable.red_die_3, R.drawable.red_die_4, R.drawable.red_die_5, R.drawable.red_die_6, R.drawable.red_die_7, R.drawable.red_die_8, R.drawable.red_die_9};
         int[] dieImageWhite = {R.drawable.white_die_0, R.drawable.white_die_1, R.drawable.white_die_2, R.drawable.white_die_3, R.drawable.white_die_4, R.drawable.white_die_5, R.drawable.white_die_6, R.drawable.white_die_7, R.drawable.white_die_8, R.drawable.white_die_9};
         int[] dieImageBlue = {R.drawable.blue_die_0, R.drawable.blue_die_1, R.drawable.blue_die_2, R.drawable.blue_die_3, R.drawable.blue_die_4, R.drawable.blue_die_5, R.drawable.blue_die_6, R.drawable.blue_die_7, R.drawable.blue_die_8, R.drawable.blue_die_9};
@@ -64,11 +113,6 @@ public class playball extends Activity {
         ivBlueDie.setImageResource(dieImageBlue[dieBlueResult]);
 
         game.dieResult = (dieRedResult*100) + (dieWhiteResult*10) + dieBlueResult;
-
-        highlightOutcome();
-        showResultText();
-        moveBaseRunners();
-        updateScreen();
     }
 
     private void checkEndOfInning() {
@@ -180,7 +224,6 @@ public class playball extends Activity {
                 }
                 else {
                     moveBaseRunner(0,1);
-                    Log.d(TAG, "MOVING RUNNER TO 1st");
                 }
                 break;
         }
@@ -422,12 +465,17 @@ public class playball extends Activity {
         tvVTeamName.setText(vTeam.name);
         tvHTeamName.setText(hTeam.name);
 
-        listVisTeam();
-        listHomeTeam();
+        //listVisTeam();
+        //listHomeTeam();
 
         game.vPitcher = vTeam.starter.get(0);
         game.hPitcher = hTeam.starter.get(0);
 
+        game.vDefenseRange[0] = game.vPitcher.defense[2];
+        game.vDefenseError[0] = game.vPitcher.defense[3];
+
+        game.hDefenseRange[0] = game.hPitcher.defense[2];
+        game.hDefenseError[0] = game.hPitcher.defense[3];
     }
 
     private void listVisTeam() {
@@ -470,6 +518,7 @@ public class playball extends Activity {
         String[] ballSpeed = {"soft", "med", "hard"};
         String[] running = {"baserunning", "stealing"};
         String[] defense = {"arm_rating", "defense_rating", "fld_range", "fld_error"};
+
         int stamina = 0;
 
         myDB = openOrCreateDatabase(seasonName, MODE_PRIVATE, null);
@@ -576,11 +625,24 @@ public class playball extends Activity {
                 col1 = cPlayer.getColumnIndex("vsr_rating");
                 thisPlayer.vsr_rating = cPlayer.getInt(col1);
 
+                col1 = cPlayer.getColumnIndex("pb_rating");
+                thisPlayer.passedBallRating = cPlayer.getInt(col1);
+
                 vTeam.addPlayerToLineup(thisPlayer);
             }
         }
 
         cPlayer.close();
+
+        // *******************
+        // DEFENSE
+        // *******************
+
+        for (int i=0; i < 9; i++) {
+            game.vDefenseArm[i] = vTeam.lineup.get(vTeam.defenseID[i]).defense[0];
+            game.vDefenseRange[i] = vTeam.lineup.get(vTeam.defenseID[i]).defense[2];
+            game.vDefenseError[i] = vTeam.lineup.get(vTeam.defenseID[i]).defense[3];
+        }
 
         // *******************
         // BENCH
@@ -671,6 +733,9 @@ public class playball extends Activity {
                     col1 = cPlayer.getColumnIndex("vsr_rating");
                     thisPlayer.vsr_rating = cPlayer.getInt(col1);
 
+                    col1 = cPlayer.getColumnIndex("pb_rating");
+                    thisPlayer.passedBallRating = cPlayer.getInt(col1);
+
                     vTeam.addPlayerToBench(thisPlayer);
                 }
             }
@@ -679,7 +744,7 @@ public class playball extends Activity {
         cPlayer.close();
 
         // *******************
-        // BUPPLEN
+        // BULLPEN
         // *******************
         getVisBullpen();
 
@@ -765,6 +830,13 @@ public class playball extends Activity {
 
                 col1 = cPlayer.getColumnIndex("vsr_rating");
                 thisPlayer.vsr_rating = cPlayer.getInt(col1);
+
+                col1 = cPlayer.getColumnIndex("balk_rating");
+                thisPlayer.balkRating = cPlayer.getInt(col1);
+
+                col1 = cPlayer.getColumnIndex("wild_pitch_rating");
+                thisPlayer.wildPitchRating = cPlayer.getInt(col1);
+
 
                 vTeam.addPlayerToBullpen(thisPlayer);
             }
@@ -857,6 +929,12 @@ public class playball extends Activity {
 
             col1 = cPlayer.getColumnIndex("vsr_rating");
             thisPlayer.vsr_rating = cPlayer.getInt(col1);
+
+            col1 = cPlayer.getColumnIndex("balk_rating");
+            thisPlayer.balkRating = cPlayer.getInt(col1);
+
+            col1 = cPlayer.getColumnIndex("wild_pitch_rating");
+            thisPlayer.wildPitchRating = cPlayer.getInt(col1);
 
             vTeam.addPlayerToStarters(thisPlayer);
         }
@@ -977,6 +1055,9 @@ public class playball extends Activity {
                 col1 = cPlayer.getColumnIndex("vsr_rating");
                 thisPlayer.vsr_rating = cPlayer.getInt(col1);
 
+                col1 = cPlayer.getColumnIndex("pb_rating");
+                thisPlayer.passedBallRating = cPlayer.getInt(col1);
+
                 hTeam.addPlayerToLineup(thisPlayer);
             }
         }
@@ -1072,12 +1153,25 @@ public class playball extends Activity {
                     col1 = cPlayer.getColumnIndex("vsr_rating");
                     thisPlayer.vsr_rating = cPlayer.getInt(col1);
 
+                    col1 = cPlayer.getColumnIndex("pb_rating");
+                    thisPlayer.passedBallRating = cPlayer.getInt(col1);
+
                     hTeam.addPlayerToBench(thisPlayer);
                 }
             }
         }
 
         cPlayer.close();
+
+        // *******************
+        // DEFENSE
+        // *******************
+
+        for (int i=0; i < 9; i++) {
+            game.hDefenseArm[i] = hTeam.lineup.get(hTeam.defenseID[i]).defense[0];
+            game.hDefenseRange[i] = hTeam.lineup.get(hTeam.defenseID[i]).defense[2];
+            game.hDefenseError[i] = hTeam.lineup.get(hTeam.defenseID[i]).defense[3];
+        }
 
         // *******************
         // BUPPLEN
@@ -1166,6 +1260,13 @@ public class playball extends Activity {
 
                 col1 = cPlayer.getColumnIndex("vsr_rating");
                 thisPlayer.vsr_rating = cPlayer.getInt(col1);
+
+                col1 = cPlayer.getColumnIndex("balk_rating");
+                thisPlayer.balkRating = cPlayer.getInt(col1);
+
+                col1 = cPlayer.getColumnIndex("wild_pitch_rating");
+                thisPlayer.wildPitchRating = cPlayer.getInt(col1);
+
 
                 hTeam.addPlayerToBullpen(thisPlayer);
             }
@@ -1260,6 +1361,12 @@ public class playball extends Activity {
             col1 = cPlayer.getColumnIndex("vsr_rating");
             thisPlayer.vsr_rating = cPlayer.getInt(col1);
 
+            col1 = cPlayer.getColumnIndex("balk_rating");
+            thisPlayer.balkRating = cPlayer.getInt(col1);
+
+            col1 = cPlayer.getColumnIndex("wild_pitch_rating");
+            thisPlayer.wildPitchRating = cPlayer.getInt(col1);
+
             hTeam.addPlayerToStarters(thisPlayer);
         }
 
@@ -1268,10 +1375,12 @@ public class playball extends Activity {
 
     private void getVisLineups() {
         vTeam.lineupID = getIntent().getIntArrayExtra("visLineup");
+        vTeam.defenseID = getIntent().getIntArrayExtra("visDefense");
     }
 
     private void getHomeLineups() {
         hTeam.lineupID = getIntent().getIntArrayExtra("homeLineup");
+        hTeam.defenseID = getIntent().getIntArrayExtra("homeDefense");
     }
 
     private void getVisBench() {
@@ -1292,7 +1401,6 @@ public class playball extends Activity {
 
     private void getVisStarters() {
         vTeam.starterID = getIntent().getIntExtra("visStarter", 0);
-        Log.d(TAG, "VIS STARTER" + vTeam.starterID);
     }
 
     private void getHomeStarters() {
@@ -1445,20 +1553,17 @@ public class playball extends Activity {
         if(game.teamAtBat==0) {
             game.baseRunner[0] = vTeam.lineup.get(game.vBatter)._id;
             game.baseRunnerSpeed[0] = vTeam.lineup.get(game.vBatter).running[0];
-            Log.d(TAG, "BaseRunner: " + game.baseRunner[0]);
             if(vTeam.lineup.get(game.vBatter).getBats().equals("r")) {
                 if(game.hPitcher.getThrows().equals("r")) {
                     // base
                     layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_right);
 
                     // contact
-                    Log.d(TAG, "VSR RATING: " + vTeam.lineup.get(game.vBatter).getRatings(0));
                     layers[2] = ContextCompat.getDrawable(this, cardContact[vTeam.lineup.get(game.vBatter).getRatings(0)-1]);
                 }
                 else {
 
                     // contact
-                    Log.d(TAG, "VSL RATING: " + vTeam.lineup.get(game.vBatter).getRatings(1));
                     layers[2] = ContextCompat.getDrawable(this, cardContact[vTeam.lineup.get(game.vBatter).getRatings(1)-1]);
 
                     layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsl_as_right);
@@ -1569,40 +1674,34 @@ public class playball extends Activity {
         TextView tvRunnerSpeed_3 = (TextView) findViewById(R.id.tvBaserunnerSpeed_3);
 
         if(game.baseRunner[1] > 0) {
-            Log.d(TAG, "RUNNER ON 1ST");
             // runner on 1st
             ivRunner_1.setVisibility(View.VISIBLE);
             tvRunnerSpeed_1.setVisibility(View.VISIBLE);
             tvRunnerSpeed_1.setText("" + game.baseRunnerSpeed[1]);
         }
         else {
-            Log.d(TAG, "NOBODY ON 1ST");
             ivRunner_1.setVisibility(View.INVISIBLE);
             tvRunnerSpeed_1.setVisibility(View.INVISIBLE);
         }
 
         if(game.baseRunner[2] > 0) {
-            Log.d(TAG, "RUNNER ON 2ND");
             // runner on 2nd
             ivRunner_2.setVisibility(View.VISIBLE);
             tvRunnerSpeed_2.setVisibility(View.VISIBLE);
             tvRunnerSpeed_2.setText("" + game.baseRunnerSpeed[2]);
         }
         else {
-            Log.d(TAG, "NOBODY ON 2ND");
             ivRunner_2.setVisibility(View.INVISIBLE);
             tvRunnerSpeed_2.setVisibility(View.INVISIBLE);
         }
 
         if(game.baseRunner[3] > 0) {
-            Log.d(TAG, "RUNNER ON 3RD");
             // runner on 3rd
             ivRunner_3.setVisibility(View.VISIBLE);
             tvRunnerSpeed_3.setVisibility(View.VISIBLE);
             tvRunnerSpeed_3.setText("" + game.baseRunnerSpeed[3]);
         }
         else {
-            Log.d(TAG, "NOBODY ON 3RD");
             ivRunner_3.setVisibility(View.INVISIBLE);
             tvRunnerSpeed_3.setVisibility(View.INVISIBLE);
         }
@@ -1863,21 +1962,17 @@ public class playball extends Activity {
                 if (game.hPitcher.getThrows().equals("r")) {
                     if(vTeam.lineup.get(game.vBatter).getBats().equals("r")) {
                         game.resultRange[i] = calculateNewRange(vTeam.lineup.get(game.vBatter).pVsr[i], game.hPitcher.pVsr[i], i);
-                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
                     }
                     else {
                         game.resultRange[i] = calculateNewRange(vTeam.lineup.get(game.vBatter).pVsr[i], game.hPitcher.pVsl[i], i);
-                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
                     }
                 }
                 else {
                     if(vTeam.lineup.get(game.vBatter).getBats().equals("l")) {
                         game.resultRange[i] = calculateNewRange(vTeam.lineup.get(game.vBatter).pVsl[i], game.hPitcher.pVsl[i], i);
-                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
                     }
                     else {
                         game.resultRange[i] = calculateNewRange(vTeam.lineup.get(game.vBatter).pVsl[i], game.hPitcher.pVsr[i], i);
-                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
                     }
                 }
             }
@@ -1885,21 +1980,17 @@ public class playball extends Activity {
                 if (game.vPitcher.getThrows().equals("r")) {
                     if(hTeam.lineup.get(game.hBatter).getBats().equals("r")) {
                         game.resultRange[i] = calculateNewRange(hTeam.lineup.get(game.hBatter).pVsr[i], game.vPitcher.pVsr[i], i);
-                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
                     }
                     else {
                         game.resultRange[i] = calculateNewRange(hTeam.lineup.get(game.hBatter).pVsr[i], game.vPitcher.pVsl[i], i);
-                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
                     }
                 }
                 else {
                     if(hTeam.lineup.get(game.hBatter).getBats().equals("l")) {
                         game.resultRange[i] = calculateNewRange(hTeam.lineup.get(game.hBatter).pVsl[i], game.vPitcher.pVsl[i], i);
-                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
                     }
                     else {
                         game.resultRange[i] = calculateNewRange(hTeam.lineup.get(game.hBatter).pVsl[i], game.vPitcher.pVsr[i], i);
-                        Log.d(TAG, "resultRange[" + i + "]: " + game.resultRange[i]);
                     }
                 }
             }
@@ -1909,12 +2000,9 @@ public class playball extends Activity {
     private int calculateNewRange(double b, double p, int avg) {
         double newValue;
 
-        Log.d(TAG, "Batter: " + b + ", Pitcher: " + p + ", Average: " + game.resultAverages[avg]);
         newValue = (((p*b)/game.resultAverages[avg])/(((p*b)/game.resultAverages[avg])+(((1000-p)*(1000-b))/(1000-game.resultAverages[avg]))))*1000;
 
         int newRange = (int) newValue;
-
-        Log.d(TAG, "newRange" + newRange);
 
         return newRange;
     }

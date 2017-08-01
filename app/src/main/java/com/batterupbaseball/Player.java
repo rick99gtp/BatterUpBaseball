@@ -15,6 +15,9 @@ public class Player {
     String special_text;
     String role; // starter, bullpen, bench
     int stamina;
+    int balkRating;
+    int wildPitchRating;
+    int passedBallRating;
 
     int _id = 0;
 

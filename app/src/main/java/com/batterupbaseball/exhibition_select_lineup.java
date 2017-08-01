@@ -255,7 +255,7 @@ public class exhibition_select_lineup extends Activity {
                 col = cLineup.getColumnIndex("def_" + (i+1));
                 String pos = cLineup.getString(col);
 
-                userDefense[setPos(pos)] = userLineup[i];
+                userDefense[setPos(pos)] = i;
 
                 TextView tPos = (TextView) findViewById(tvPos[i]);
                 tPos.setText(pos);
@@ -385,7 +385,7 @@ public class exhibition_select_lineup extends Activity {
                 col = cLineup.getColumnIndex("def_" + (i+1));
                 String pos = cLineup.getString(col);
 
-                oppDefense[setPos(pos)] = oppLineup[i];
+                oppDefense[setPos(pos)] = i;
             }
         }
 
