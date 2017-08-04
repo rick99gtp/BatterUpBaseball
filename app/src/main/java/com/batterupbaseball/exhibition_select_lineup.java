@@ -68,27 +68,23 @@ public class exhibition_select_lineup extends Activity {
 
                 if(userTeam.equals("V")) {
                     intent.putExtra("visLineup", userLineup);
-                    intent.putExtra("visBench", userBench);
                     intent.putExtra("visBullpen", userBullpen);
                     intent.putExtra("visStarter", userStarter);
                     Log.d(TAG, "VIS STARTER #1: " + userStarter);
                     intent.putExtra("visDefense", userDefense);
 
                     intent.putExtra("homeLineup", oppLineup);
-                    intent.putExtra("homeBench", oppBench);
                     intent.putExtra("homeBullpen", oppBullpen);
                     intent.putExtra("homeStarter", oppStarter);
                     intent.putExtra("homeDefense", oppDefense);
                 }
                 else {
                     intent.putExtra("visLineup", oppLineup);
-                    intent.putExtra("visBench", oppBench);
                     intent.putExtra("visBullpen", oppBullpen);
                     intent.putExtra("visStarter", oppStarter);
                     intent.putExtra("visDefense", oppDefense);
 
                     intent.putExtra("homeLineup", userLineup);
-                    intent.putExtra("homeBench", userBench);
                     intent.putExtra("homeBullpen", userBullpen);
                     intent.putExtra("homeStarter", userStarter);
                     intent.putExtra("homeDefense", userDefense);
@@ -139,6 +135,7 @@ public class exhibition_select_lineup extends Activity {
             // database file name
             int colSeasonID = seasonOwned.getColumnIndex("seasonID");
             userSeasonFileName = seasonOwned.getString(colSeasonID);
+
             SharedPreferences prefs = getSharedPreferences("prefsFile", 0);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("USERSEASONFILENAME", userSeasonFileName);
@@ -162,6 +159,7 @@ public class exhibition_select_lineup extends Activity {
             // database file name
             int colSeasonID = seasonOwned.getColumnIndex("seasonID");
             oppSeasonFileName = seasonOwned.getString(colSeasonID);
+
             SharedPreferences prefs = getSharedPreferences("prefsFile", 0);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("OPPSEASONFILENAME", oppSeasonFileName);
@@ -197,14 +195,14 @@ public class exhibition_select_lineup extends Activity {
 
         // get random number between 1 and numStarters
         Random r = new Random();
-        int iStarterID = r.nextInt(numStarters) + 1;
+        int iStarterID = r.nextInt(numStarters);
 
         // get player names
         Cursor cPlayer = null;
 
-        oppStarter = starterID[iStarterID-1];
+        oppStarter = starterID[iStarterID];
 
-        cPlayer = myDB.query("players", null, "_id='" + oppStarter + "'", null, null, null, null);
+        cPlayer = myDB.query("players", null, "_id='" + oppStarter + "' and team='" + oppTeamID + "'", null, null, null, null);
 
         if(cPlayer.moveToFirst()) {
             int col = cPlayer.getColumnIndex("first_name");
@@ -232,8 +230,8 @@ public class exhibition_select_lineup extends Activity {
         int[] tvPlayer = {R.id.tvName1, R.id.tvName2, R.id.tvName3, R.id.tvName4, R.id.tvName5, R.id.tvName6, R.id.tvName7, R.id.tvName8, R.id.tvName9};
         int[] tvPos = {R.id.tvPos1, R.id.tvPos2, R.id.tvPos3, R.id.tvPos4, R.id.tvPos5, R.id.tvPos6, R.id.tvPos7, R.id.tvPos8, R.id.tvPos9};
 
-        Cursor cLineup = null;
-        Cursor cBench = null;
+        Cursor cLineup;
+        Cursor cBench;
 
         myDB = openOrCreateDatabase(userSeasonFileName, MODE_PRIVATE, null);
 
@@ -260,7 +258,7 @@ public class exhibition_select_lineup extends Activity {
                 TextView tPos = (TextView) findViewById(tvPos[i]);
                 tPos.setText(pos);
 
-                Cursor cPlayer = myDB.query("players", null, "_id='" + userLineup[i] + "'", null, null, null, null);
+                Cursor cPlayer = myDB.query("players", null, "_id='" + userLineup[i] + "' and team='" + userTeamID + "'", null, null, null, null);
 
                 if(cPlayer.moveToFirst()) {
                     // name

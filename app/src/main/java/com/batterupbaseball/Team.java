@@ -6,47 +6,29 @@ import java.util.ArrayList;
 
 public class Team {
     String name;
-    ArrayList<Player> lineup;
-    ArrayList<Player> bench;
+    int year;
+
+    ArrayList<Player> roster;
     ArrayList<Player> bullpen;
-    ArrayList<Player> starter;
-    int[] lineupID;
-    int[] benchID;
-    int[] bullpenID;
-    int starterID;
-    int[] defenseID;
-    String TAG = "com.batterupbaseball";
+    ArrayList<Player> starters;
 
     public Team() {
-        lineup = new ArrayList<Player>();
-        bench = new ArrayList<Player>();
+        roster = new ArrayList<Player>();
         bullpen = new ArrayList<Player>();
-        starter = new ArrayList<Player>();
+        starters = new ArrayList<Player>();
     }
 
-    public void addPlayerToLineup(Player aPlayer) {
-        lineup.add(aPlayer);
-    }
-
-    public void addPlayerToBench(Player aPlayer) {
-        bench.add(aPlayer);
-    }
-
-    public void addPlayerToBullpen(Player aPlayer) {
-        bullpen.add(aPlayer);
-    }
-
-    public void addPlayerToStarters(Player aPlayer) {
-        starter.add(aPlayer);
-    }
-
-    public int getBenchCount() {
-        return benchID.length;
+    public void addPlayerToRoster(Player p) {
+        roster.add(p);
+        if(p.pos.equals("rp") || p.pos.equals("cl"))
+            bullpen.add(p);
+        else if(p.pos.equals("sp"))
+            starters.add(p);
     }
 
     public Player getPlayer(int _id) {
-        Player target = lineup.get(0);
-        for(Player p : lineup) {
+        Player target = roster.get(0);
+        for(Player p : roster) {
             if(p._id == _id)
                 target = p;
         }

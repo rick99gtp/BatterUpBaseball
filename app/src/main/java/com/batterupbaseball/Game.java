@@ -8,6 +8,7 @@ import java.util.Random;
 public class Game {
     Random rn = new Random();
     Player vPitcher, hPitcher;
+    Player vBatter, hBatter;
     Die die1, die2, die3;
     int inning = 1;
     int teamAtBat = 0;
@@ -23,18 +24,11 @@ public class Game {
     int vStamina = 0;
     int hStamina = 0;
     int dieResult = 0;
-    int[] vDefenseRange = new int[9];
-    int[] hDefenseRange = new int[9];
-    int[] vDefenseError = new int[9];
-    int[] hDefenseError = new int[9];
-    int[] vDefenseArm = new int[9];
-    int[] hDefenseArm = new int[9];
 
     int[] minHitDirection = new int[3];
     int[] maxHitDirection = new int[3];
 
-    int[] baseRunner = {0, 0, 0, 0, 0}; // ID of baserunner  (batter, 1st, 2nd, 3rd, home)
-    int[] baseRunnerSpeed = {0, 0, 0, 0, 0}; // speed rating of baserunner (batter, 1st, 2nd, 3rd, home)
+    Player[] runner = new Player[3];
 
     int[] resultRange = new int[9];
     int resultID = 0; // 1=single, 2=double, 3=triple, 4=homerun, 5=walk, 6=strikeout, 7=hbp, 8=glove, 9=out
@@ -47,10 +41,10 @@ public class Game {
 
     String resultText = "";
 
-    int vBatter = 0; // visitor batter in lineup
-    int hBatter = 0; // home batter in lineup
+    int vLineupBatter = 0; // visitor batter in lineup
+    int hLineupBatter = 0; // home batter in lineup
 
-    public void Game() {
+    public Game() {
         setupNewDice();
     }
 
@@ -61,7 +55,7 @@ public class Game {
     }
 
     public int rollDie() {
-        int result = 0;
+        int result;
 
         result = rn.nextInt(10);
 
@@ -112,23 +106,46 @@ public class Game {
     }
 
     public void clearTheBases() {
-        baseRunner[1] = 0;
-        baseRunner[2] = 0;
-        baseRunner[3] = 0;
-        baseRunnerSpeed[1] = 0;
-        baseRunnerSpeed[2] = 0;
-        baseRunnerSpeed[3] = 0;
+        for(int i=0; i < 3; i++)
+            runner[i] = null;
+    }
+
+    private void clearBase(int base) {
+        runner[base] = null;
+    }
+
+    private void placeRunner(int base, Player player) {
+        runner[base] = player;
     }
 
     public void nextHalfInning() {
-        if (teamAtBat == 0) {
-            teamAtBat = 1;
-    }
-        else {
-            teamAtBat = 0;
-            inning += 1;
+        teamAtBat ^= 1;
     }
 
+    public boolean manOnFirst() {
+        if (runner[1] != null)
+            return true;
+        else
+            return false;
+    }
+    public boolean manOnSecond() {
+        if (runner[2] != null)
+            return true;
+        else
+            return false;
+    }
+    public boolean manOnThird() {
+        if (runner[3] != null)
+            return true;
+        else
+            return false;
+    }
+
+    public boolean basesOccupied() {
+        if(manOnFirst() || manOnSecond() || manOnThird())
+            return true;
+
+        return false;
     }
 
 }

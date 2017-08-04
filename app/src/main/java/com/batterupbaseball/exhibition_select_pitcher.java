@@ -47,6 +47,7 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
     int[] playerContactVsRight = new int[5];
     int selectedStarter;
     boolean cardViewVsRight = true;
+    String TAG = "com.batterupbaseball";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +152,7 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
 
         // get player IDs
         Cursor cTeam = myDB.query("rotation", null, "team_id='" + teamID + "'", null, null, null, null);
+        Log.d(TAG, "teamID: " + teamID);
 
         if(cTeam.moveToFirst()) {
             for (int i = 0; i < 5; i++) {
@@ -164,8 +166,8 @@ public class exhibition_select_pitcher extends Activity implements View.OnClickL
         // get player names
         Cursor cPlayer = null;
 
-        for(int i=0; i<5; i++) {
-            cPlayer = myDB.query("players", null, "_id='" + starterID[i] + "'", null, null, null, null);
+        for(int i=0; i < 5; i++) {
+            cPlayer = myDB.query("players", null, "_id='" + starterID[i] + "' AND team='" + teamID + "'", null, null, null, null);
 
             if(cPlayer.moveToFirst()) {
                 int col = cPlayer.getColumnIndex("first_name");

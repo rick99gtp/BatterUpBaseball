@@ -250,14 +250,11 @@ public class exhibition extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
             if (resultCode == RESULT_OK) {
-                // The user picked a contact.
-                // The Intent's data Uri identifies which contact was selected.
+                // The user picked a team.
                 // update the correct team with the new info
                 SharedPreferences myPrefs = getSharedPreferences("prefsFile", 0);
                 visitorTeamID = myPrefs.getInt("vTeamID", 1);
                 homeTeamID = myPrefs.getInt("hTeamID", 2);
-
-
 
                 getVisitorSeasonFileName();
                 getHomeSeasonFileName();
