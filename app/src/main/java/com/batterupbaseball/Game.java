@@ -9,6 +9,14 @@ public class Game {
     Random rn = new Random();
     Player vPitcher, hPitcher;
     Player vBatter, hBatter;
+    Player[] vDefense;
+    Player[] hDefense;
+    Player batter;
+    Player pitcher;
+    Player[] defense;
+    Player onDeck;
+    Player inTheHole;
+
     Die die1, die2, die3;
     int inning = 1;
     int teamAtBat = 0;
@@ -28,7 +36,7 @@ public class Game {
     int[] minHitDirection = new int[3];
     int[] maxHitDirection = new int[3];
 
-    Player[] runner = new Player[3];
+    Player[] runner = new Player[4]; // 0 is used to move the runner home, then add up runs, etc.
 
     int[] resultRange = new int[9];
     int resultID = 0; // 1=single, 2=double, 3=triple, 4=homerun, 5=walk, 6=strikeout, 7=hbp, 8=glove, 9=out
@@ -123,19 +131,19 @@ public class Game {
     }
 
     public boolean manOnFirst() {
-        if (runner[1] != null)
+        if (runner[0] != null)
             return true;
         else
             return false;
     }
     public boolean manOnSecond() {
-        if (runner[2] != null)
+        if (runner[1] != null)
             return true;
         else
             return false;
     }
     public boolean manOnThird() {
-        if (runner[3] != null)
+        if (runner[2] != null)
             return true;
         else
             return false;

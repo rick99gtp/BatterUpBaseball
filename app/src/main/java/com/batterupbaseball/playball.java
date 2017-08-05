@@ -34,6 +34,7 @@ public class playball extends Activity {
         setContentView(R.layout.playball);
 
         bundle = new Bundle();
+        bundle = getIntent().getExtras();
 
         game = new Game();
 
@@ -77,7 +78,6 @@ public class playball extends Activity {
 
                 highlightOutcome();
                 showResultText();
-                moveBaseRunners();
                 updateScreen();
             }
         }
@@ -86,7 +86,6 @@ public class playball extends Activity {
 
             highlightOutcome();
             showResultText();
-            moveBaseRunners();
             updateScreen();
         }
     }
@@ -151,7 +150,7 @@ public class playball extends Activity {
 
     private void nextBatter() {
         if(game.teamAtBat==0) {
-            game.vLineupBatter += 1;
+            game.vLineupBatter++;
 
             if(game.vLineupBatter > 8) {
                 game.vLineupBatter = 0;
@@ -160,7 +159,7 @@ public class playball extends Activity {
             game.vBatter = vTeam.roster.get(game.vLineupBatter);
         }
         else {
-            game.hLineupBatter += 1;
+            game.hLineupBatter++;
 
             if(game.hLineupBatter > 8) {
                 game.hLineupBatter = 0;
@@ -170,70 +169,187 @@ public class playball extends Activity {
         }
     }
 
-    private void moveBaseRunners() {
+    private void updateResult(Player player) {
         switch(game.resultID) {
             case 1:
                 // singles
-                moveBaseRunner(3,4); // runner scores
-                moveBaseRunner(2,3);
-                moveBaseRunner(1,2);
-                moveBaseRunner(0,1);
+                game.pitcher.gameP_H++;
+                game.pitcher.gameP_1B++;
+                game.pitcher.gameP_PA++;
+
+                if(game.manOnThird()) {
+                    moveBaseRunnerFrom(3,1);
+                    player.gameRBI++;
+                    game.pitcher.gameP_R++;
+                }
+                if(game.manOnSecond()) {
+                    moveBaseRunnerFrom(2,1);
+                }
+                if(game.manOnFirst()) {
+                    moveBaseRunnerFrom(1,1);
+                }
+
+                moveBatter(1,player);
+
+                player.gameH++;
+                player.game1B++;
+                player.gamePA++;
+                player.gameAB++;
                 break;
             case 2:
                 // doubles
-                moveBaseRunner(3,4);
-                moveBaseRunner(2,4);
-                moveBaseRunner(1,3);
-                moveBaseRunner(0,2);
+                game.pitcher.gameP_H++;
+                game.pitcher.gameP_2B++;
+                game.pitcher.gameP_PA++;
+
+                if(game.manOnThird()) {
+                    moveBaseRunnerFrom(3,1);
+                    player.gameRBI++;
+                }
+                if(game.manOnSecond()) {
+                    moveBaseRunnerFrom(2,2);
+                    player.gameRBI++;
+                    game.pitcher.gameP_R++;
+                }
+                if(game.manOnFirst()) {
+                    moveBaseRunnerFrom(1,2);
+                }
+                moveBatter(2,player);
+                player.gameH++;
+                player.game2B++;
+                player.gamePA++;
+                player.gameAB++;
                 break;
             case 3:
                 // triples
-                moveBaseRunner(3,4);
-                moveBaseRunner(2,4);
-                moveBaseRunner(1,4);
-                moveBaseRunner(0,3);
+                game.pitcher.gameP_H++;
+                game.pitcher.gameP_3B++;
+                game.pitcher.gameP_PA++;
+
+                if(game.manOnThird()) {
+                    moveBaseRunnerFrom(3,1);
+                    player.gameRBI++;
+                    game.pitcher.gameP_R++;
+                }
+                if(game.manOnSecond()) {
+                    moveBaseRunnerFrom(2,2);
+                    game.pitcher.gameP_R++;
+                }
+                if(game.manOnFirst()) {
+                    moveBaseRunnerFrom(1,3);
+                    game.pitcher.gameP_R++;
+                }
+                moveBatter(3,player);
+                player.gameH++;
+                player.game3B++;
+                player.gamePA++;
+                player.gameAB++;
                 break;
             case 4:
                 // homeruns
-                moveBaseRunner(3,4);
-                moveBaseRunner(2,4);
-                moveBaseRunner(1,4);
-                moveBaseRunner(0,4);
+                game.pitcher.gameP_H++;
+                game.pitcher.gameP_HR++;
+                game.pitcher.gameP_PA++;
+
+                if(game.manOnThird()) {
+                    moveBaseRunnerFrom(3,1);
+                    player.gameRBI++;
+                    game.pitcher.gameP_R++;
+                }
+                if(game.manOnSecond()) {
+                    moveBaseRunnerFrom(2,2);
+                    game.pitcher.gameP_R++;
+                }
+                if(game.manOnFirst()) {
+                    moveBaseRunnerFrom(1,3);
+                    game.pitcher.gameP_R++;
+                }
+                player.gameH++;
+                player.game1B++;
+                player.gamePA++;
+                player.gameAB++;
+                player.gameR++;
+                game.pitcher.gameP_R++;
                 break;
             case 5:
                 // walks
+                game.pitcher.gameP_BB++;
+                game.pitcher.gameP_PA++;
+
+                if(game.manOnThird()) {
+                    if(game.manOnSecond() && game.manOnFirst()) {
+                        moveBaseRunnerFrom(3,1);
+                        player.gameRBI++;
+                        moveBaseRunnerFrom(2,1);
+                        moveBaseRunnerFrom(1,1);
+                        game.pitcher.gameP_R++;
+                    }
+                }
+                if(game.manOnSecond()) {
+                    if(game.manOnFirst()) {
+                        moveBaseRunnerFrom(2,1);
+                    }
+                }
+                if(game.manOnFirst()) {
+                    moveBaseRunnerFrom(1,1);
+                }
+
+                moveBatter(1,player);
+
+                player.gameBB++;
+                player.gamePA++;
+                player.gameAB++;
             case 7:
                 // hbp
-                if(game.baseRunner[1] > 0 && game.baseRunner[2] > 0 && game.baseRunner[3] > 0) {
-                    // bases loaded, forces in run
-                    moveBaseRunner(3,4);
-                    moveBaseRunner(2,3);
-                    moveBaseRunner(1,2);
-                    moveBaseRunner(0,1);
+                game.pitcher.gameP_HBP += 1;
+                game.pitcher.gameP_PA++;
+
+                if(game.manOnThird()) {
+                    if(game.manOnSecond() && game.manOnFirst()) {
+                        moveBaseRunnerFrom(3,1);
+                        player.gameRBI++;
+                        moveBaseRunnerFrom(2,1);
+                        moveBaseRunnerFrom(1,1);
+                        game.pitcher.gameP_R++;
+                    }
                 }
-                else if(game.baseRunner[1] > 0 && game.baseRunner[2] > 0 && game.baseRunner[3] == 0) {
-                    // runners on 1st and 2nd only
-                    moveBaseRunner(2,3);
-                    moveBaseRunner(1,2);
-                    moveBaseRunner(0,1);
+                if(game.manOnSecond()) {
+                    if(game.manOnFirst()) {
+                        moveBaseRunnerFrom(2,1);
+                    }
                 }
-                else if(game.baseRunner[1] > 0) {
-                    moveBaseRunner(1,2);
-                    moveBaseRunner(0,1);
+                if(game.manOnFirst()) {
+                    moveBaseRunnerFrom(1,1);
                 }
-                else {
-                    moveBaseRunner(0,1);
-                }
+
+                moveBatter(1,player);
+
+                player.gameHBP++;
+                player.gamePA++;
                 break;
         }
     }
 
-    private void moveBaseRunner(int from, int to) {
-        game.baseRunner[to] = game.baseRunner[from];
-        game.baseRunnerSpeed[to] = game.baseRunnerSpeed[from];
+    private void moveBatter(int bases, Player player) {
+        game.runner[bases] = player;
+    }
 
-        game.baseRunner[from] = 0;
-        game.baseRunnerSpeed[from] = 0;
+    private void moveBaseRunnerFrom(int base, int numBases) {
+        int runs = 0;
+
+        if((base + numBases) == 4) {
+            // move runner home
+            game.runner[0] = game.runner[base];
+            // clear runner at 3rd
+            game.runner[base] = null;
+            //  increment runs scored
+            runs++;
+            // increment runs scored for the player
+            game.runner[0].gameR++;
+        }
+        else {
+            game.runner[base+numBases] = game.runner[base];
+        }
     }
 
     private void showResultText() {
@@ -464,49 +580,9 @@ public class playball extends Activity {
         tvVTeamName.setText(vTeam.name);
         tvHTeamName.setText(hTeam.name);
 
-        //listVisTeam();
-        //listHomeTeam();
-
-        game.vPitcher = vTeam.roster.get(game.vPitcher);
-        game.hPitcher = hTeam.starter.get(0);
-
-        game.vDefenseRange[0] = game.vPitcher.defense[2];
-        game.vDefenseError[0] = game.vPitcher.defense[3];
-
-        game.hDefenseRange[0] = game.hPitcher.defense[2];
-        game.hDefenseError[0] = game.hPitcher.defense[3];
-    }
-
-    private void listVisTeam() {
-        for(int i = 0; i < 9; i++) {
-            Log.d(TAG, vTeam.lineup.get(i).getName());
-        }
-
-        for(int i = 0; i < vTeam.bench.size(); i++) {
-            Log.d(TAG, "BENCH: " + vTeam.bench.get(i).getName());
-        }
-
-        for(int i = 0; i < vTeam.bullpen.size(); i++) {
-            Log.d(TAG, "BULLPEN: " + vTeam.bullpen.get(i).getName());
-        }
-
-        Log.d(TAG, "STARTER: " + vTeam.starter.get(0).getName());
-    }
-
-    private void listHomeTeam() {
-        for(int i = 0; i < 9; i++) {
-            Log.d(TAG, hTeam.lineup.get(i).getName());
-        }
-
-        for(int i = 0; i < hTeam.bench.size(); i++) {
-            Log.d(TAG, "BENCH: " + hTeam.bench.get(i).getName());
-        }
-
-        for(int i = 0; i < hTeam.bullpen.size(); i++) {
-            Log.d(TAG, "BULLPEN: " + hTeam.bullpen.get(i).getName());
-        }
-
-        Log.d(TAG, "STARTER: " + hTeam.starter.get(0).getName());
+        game.batter = vTeam.roster.get(0);
+        game.onDeck = vTeam.roster.get(1);
+        game.inTheHole = vTeam.roster.get(2);
     }
 
     private void buildVisTeam(String seasonName, int teamID) {
@@ -630,6 +706,9 @@ public class playball extends Activity {
                 col1 = cPlayer.getColumnIndex("wild_pitch_rating");
                 thisPlayer.wildPitchRating = cPlayer.getInt(col1);
 
+                col1 = cPlayer.getColumnIndex("value");
+                thisPlayer.value = cPlayer.getInt(col1);
+
                 // player value
 
                 // special text
@@ -645,9 +724,29 @@ public class playball extends Activity {
         cPlayer.close();
 
         // get the pitcher
+        game.vPitcher = vTeam.roster.get(bundle.getInt("visStarter"));
 
+        buildVisDefense();
 
         myDB.close();
+    }
+
+    private void buildVisDefense() {
+        for(int i=0; i<9; i++) {
+            game.vDefense[vDefense[i]] = vTeam.roster.get(i);
+        }
+
+        // pitcher's defense
+        game.vDefense[0] = game.vPitcher;
+    }
+
+    private void buildHomeDefense() {
+        for(int i=0; i<9; i++) {
+            game.hDefense[hDefense[i]] = hTeam.roster.get(i);
+        }
+
+        // pitcher's defense
+        game.hDefense[0] = game.hPitcher;
     }
 
     private void buildHomeTeam(String seasonName, int teamID) {
@@ -831,9 +930,8 @@ public class playball extends Activity {
         updateBatterCard();
         updateBaseRunners();
         updatePitcherCard();
-        updateOnDeck();
-        updateInTheHole();
-        updateResult();
+        updateNextBatters();
+        updateResult(game.batter);
         updateStamina();
         updatePossibleOutcomes();
     }
@@ -965,114 +1063,47 @@ public class playball extends Activity {
         Drawable[] layers = new Drawable[5];
 
         // batter bats right or left? get correct bg image
-        if(game.teamAtBat==0) {
-            game.baseRunner[0] = vTeam.lineup.get(game.vBatter)._id;
-            game.baseRunnerSpeed[0] = vTeam.lineup.get(game.vBatter).running[0];
-            if(vTeam.lineup.get(game.vBatter).getBats().equals("r")) {
-                if(game.hPitcher.getThrows().equals("r")) {
-                    // base
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_right);
-
-                    // contact
-                    layers[2] = ContextCompat.getDrawable(this, cardContact[vTeam.lineup.get(game.vBatter).getRatings(0)-1]);
-                }
-                else {
-
-                    // contact
-                    layers[2] = ContextCompat.getDrawable(this, cardContact[vTeam.lineup.get(game.vBatter).getRatings(1)-1]);
-
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsl_as_right);
-                }
-            }
-            else if(vTeam.lineup.get(game.vBatter).getBats().equals("s")) {
-                if(game.hPitcher.getThrows().equals("r")) {
-                    // base
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_left);
-                }
-                else {
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsl_as_right);
-                }
+        if(game.batter.pBats.equals("r")) {
+            if(game.pitcher.pThrows.equals("r")) {
+                // base
+                layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_right);
 
                 // contact
-                layers[2] = ContextCompat.getDrawable(this, cardContact[vTeam.lineup.get(game.vBatter).getRatings(0)]);
-
-                int i = vTeam.lineup.get(game.vBatter).getRatings(0);
+                layers[2] = ContextCompat.getDrawable(this, cardContact[game.batter.vsr_rating]);
             }
             else {
-                if(game.hPitcher.getThrows().equals("r")) {
-                    // base
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_left);
-                }
-                else {
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsl_as_left);
-                }
-
+                // base
+                layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsl_as_right);
                 // contact
-                layers[2] = ContextCompat.getDrawable(this, cardContact[vTeam.lineup.get(game.vBatter).getRatings(1)]);
+                layers[2] = ContextCompat.getDrawable(this, cardContact[game.batter.vsl_rating]);
             }
-
-            // value
-            layers[1] = ContextCompat.getDrawable(this, cardValue[vTeam.lineup.get(game.vBatter).getValue()]);
-
-            // defense
-            int[] def = vTeam.lineup.get(game.vBatter).getDefense();
-            layers[3] = ContextCompat.getDrawable(this, cardDefense[def[1]-1]);
-
-            // position
-            int posNum = game.convertPos(vTeam.lineup.get(game.vBatter).getPos());
-            layers[4] = ContextCompat.getDrawable(this, cardPos[posNum]);
         }
-        else {
-            game.baseRunner[0] = hTeam.lineup.get(game.hBatter)._id;
-            game.baseRunnerSpeed[0] = hTeam.lineup.get(game.hBatter).running[0];
-
-            if(hTeam.lineup.get(game.hBatter).getBats().equals("r")) {
-                if(game.vPitcher.getThrows().equals("r")) {
-                    // base
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_right);
-                }
-                else {
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsl_as_right);
-                }
+        else if(game.batter.pBats.equals("l") || game.batter.pBats.equals("s")) {
+            // batter bats left
+            if(game.pitcher.pThrows.equals("r")) {
+                // base
+                layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_left);
 
                 // contact
-                layers[2] = ContextCompat.getDrawable(this, cardContact[hTeam.lineup.get(game.hBatter).getRatings(0)]);
-            }
-            else if(hTeam.lineup.get(game.hBatter).getBats().equals("s")) {
-                if(game.vPitcher.getThrows().equals("r")) {
-                    // base
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_left);
-                }
-                else {
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsl_as_right);
-                }
-
-                // contact
-                layers[2] = ContextCompat.getDrawable(this, cardContact[vTeam.lineup.get(game.vBatter).getRatings(0)]);
+                layers[2] = ContextCompat.getDrawable(this, cardContact[game.batter.vsr_rating]);
             }
             else {
-                if(game.vPitcher.getThrows().equals("r")) {
-                    // base
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsr_as_left);
-                }
-                else {
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsl_as_left);
-                }
-
+                // base
+                layers[0] = ContextCompat.getDrawable(this, R.drawable.card_vsl_as_left);
                 // contact
-                layers[2] = ContextCompat.getDrawable(this, cardContact[hTeam.lineup.get(game.hBatter).getRatings(1)]);
+                layers[2] = ContextCompat.getDrawable(this, cardContact[game.batter.vsl_rating]);
             }
-            // value
-            layers[1] = ContextCompat.getDrawable(this, cardValue[hTeam.lineup.get(game.hBatter).getValue()]);
-
-            // defense
-            int[] def = hTeam.lineup.get(game.hBatter).getDefense();
-            layers[3] = ContextCompat.getDrawable(this, cardDefense[def[1]]);
-
-            // position
-            int posNum = game.convertPos(hTeam.lineup.get(game.hBatter).getPos());
-            layers[4] = ContextCompat.getDrawable(this, cardPos[posNum]);
         }
+
+        // value
+        layers[1] = ContextCompat.getDrawable(this, cardValue[game.batter.value]);
+
+        // defense
+        layers[3] = ContextCompat.getDrawable(this, cardDefense[game.batter.defense_rating]);
+
+        // position
+        int posNum = game.convertPos(game.batter.pos);
+        layers[4] = ContextCompat.getDrawable(this, cardPos[posNum]);
 
         LayerDrawable layerDrawable = new LayerDrawable(layers);
         ivCard.setImageDrawable(layerDrawable);
@@ -1088,33 +1119,33 @@ public class playball extends Activity {
         TextView tvRunnerSpeed_2 = (TextView) findViewById(R.id.tvBaserunnerSpeed_2);
         TextView tvRunnerSpeed_3 = (TextView) findViewById(R.id.tvBaserunnerSpeed_3);
 
-        if(game.baseRunner[1] > 0) {
+        if(game.manOnFirst()) {
             // runner on 1st
             ivRunner_1.setVisibility(View.VISIBLE);
             tvRunnerSpeed_1.setVisibility(View.VISIBLE);
-            tvRunnerSpeed_1.setText("" + game.baseRunnerSpeed[1]);
+            tvRunnerSpeed_1.setText("" + game.runner[1].spd_rating);
         }
         else {
             ivRunner_1.setVisibility(View.INVISIBLE);
             tvRunnerSpeed_1.setVisibility(View.INVISIBLE);
         }
 
-        if(game.baseRunner[2] > 0) {
+        if(game.manOnSecond()) {
             // runner on 2nd
             ivRunner_2.setVisibility(View.VISIBLE);
             tvRunnerSpeed_2.setVisibility(View.VISIBLE);
-            tvRunnerSpeed_2.setText("" + game.baseRunnerSpeed[2]);
+            tvRunnerSpeed_2.setText("" + game.runner[2].spd_rating);
         }
         else {
             ivRunner_2.setVisibility(View.INVISIBLE);
             tvRunnerSpeed_2.setVisibility(View.INVISIBLE);
         }
 
-        if(game.baseRunner[3] > 0) {
+        if(game.manOnThird()) {
             // runner on 3rd
             ivRunner_3.setVisibility(View.VISIBLE);
             tvRunnerSpeed_3.setVisibility(View.VISIBLE);
-            tvRunnerSpeed_3.setText("" + game.baseRunnerSpeed[3]);
+            tvRunnerSpeed_3.setText("" + game.runner[3].spd_rating);
         }
         else {
             ivRunner_3.setVisibility(View.INVISIBLE);
@@ -1133,127 +1164,58 @@ public class playball extends Activity {
         Drawable[] layers = new Drawable[5];
 
         // batter bats right or left? get correct bg image
-        if(game.teamAtBat==0) {
-            if(game.hPitcher.getThrows().equals("r")) {
-                if(vTeam.lineup.get(game.vBatter).getBats().equals("r")) {
-                    // base
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_right);
-                }
-                else {
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsl_as_right);
-                }
+        if(game.pitcher.pThrows.equals("r")) {
+            if(game.batter.pBats.equals("r")) {
+                // base
+                layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_right);
 
                 // contact
-                layers[2] = ContextCompat.getDrawable(this, cardContact[game.hPitcher.getRatings(0)-1]);
+                layers[2] = ContextCompat.getDrawable(this, cardContact[game.batter.vsr_rating]);
             }
             else {
-                if(vTeam.lineup.get(game.vBatter).getBats().equals("r")) {
-                    // base
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_left);
-                }
-                else if(vTeam.lineup.get(game.vBatter).getBats().equals("s")) {
-                    // base
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_left);
-                }
-                else {
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsl_as_left);
-                }
+                layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsl_as_right);
 
                 // contact
-                layers[2] = ContextCompat.getDrawable(this, cardContact[game.hPitcher.getRatings(1)-1]);
+                layers[2] = ContextCompat.getDrawable(this, cardContact[game.batter.vsl_rating]);
             }
-
-            // value
-            layers[1] = ContextCompat.getDrawable(this, cardValue[game.hPitcher.getValue()]);
-
-            // defense
-            int[] def = game.hPitcher.getDefense();
-            layers[3] = ContextCompat.getDrawable(this, cardDefense[def[1]-1]);
-
-            // position
-            int posNum = game.convertPos(game.hPitcher.getPos());
-            layers[4] = ContextCompat.getDrawable(this, cardPos[posNum]);
         }
         else {
-            if(game.vPitcher.getThrows().equals("r")) {
-                if(hTeam.lineup.get(game.hBatter).getBats().equals("r")) {
-                    // base
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_right);
-                }
-                else {
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsl_as_right);
-                }
+            // pitcher throws left
+            if(game.batter.pBats.equals("r") || game.batter.pBats.equals("s")) {
+                // base
+                layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_left);
 
                 // contact
-                layers[2] = ContextCompat.getDrawable(this, cardContact[game.vPitcher.getRatings(0)-1]);
+                layers[2] = ContextCompat.getDrawable(this, cardContact[game.batter.vsr_rating]);
             }
             else {
-                if(hTeam.lineup.get(game.hBatter).getBats().equals("r")) {
-                    // base
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_left);
-                }
-                else if(vTeam.lineup.get(game.vBatter).getBats().equals("s")) {
-                    // base
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsr_as_left);
-                }
-                else {
-                    layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsl_as_left);
-                }
+                // base
+                layers[0] = ContextCompat.getDrawable(this, R.drawable.pitcher_card_vsl_as_left);
 
                 // contact
-                layers[2] = ContextCompat.getDrawable(this, cardContact[game.vPitcher.getRatings(1)-1]);
+                layers[2] = ContextCompat.getDrawable(this, cardContact[game.batter.vsl_rating]);
             }
-
-            // value
-            layers[1] = ContextCompat.getDrawable(this, cardValue[hTeam.lineup.get(game.hBatter).getValue()]);
-
-            // defense
-            int[] def = game.vPitcher.getDefense();
-            layers[3] = ContextCompat.getDrawable(this, cardDefense[def[1]-1]);
-
-            // position
-            int posNum = game.convertPos(game.vPitcher.getPos());
-            layers[4] = ContextCompat.getDrawable(this, cardPos[posNum]);
         }
+
+        // value
+        layers[1] = ContextCompat.getDrawable(this, cardValue[game.pitcher.value]);
+
+        // defense
+        int def = game.pitcher.defense_rating;
+        layers[3] = ContextCompat.getDrawable(this, cardDefense[def]);
+
+        // position
+        int posNum = game.convertPos(game.pitcher.pos);
+        layers[4] = ContextCompat.getDrawable(this, cardPos[posNum]);
 
         LayerDrawable layerDrawable = new LayerDrawable(layers);
         ivCard.setImageDrawable(layerDrawable);
 
     }
 
-    private void updateOnDeck() {
+    private void updateNextBatters() {
         TextView tvOnDeckBats = (TextView) findViewById(R.id.tvOnDeckBats);
         TextView tvOnDeckName = (TextView) findViewById(R.id.tvOnDeckPlayerName);
-
-        String sBats = "";
-        String sName = "";
-
-        if(game.teamAtBat==0) {
-            if(game.vBatter == 8) {
-                sBats = vTeam.lineup.get(0).getBats();
-                sName = vTeam.lineup.get(0).getName();
-            }
-            else {
-                sBats = vTeam.lineup.get(game.vBatter + 1).getBats();
-                sName = vTeam.lineup.get(game.vBatter + 1).getName();
-            }
-        }
-        else {
-            if(game.hBatter == 8) {
-                sBats = hTeam.lineup.get(0).getBats();
-                sName = hTeam.lineup.get(0).getName();
-            }
-            else {
-                sBats = hTeam.lineup.get(game.hBatter + 1).getBats();
-                sName = hTeam.lineup.get(game.hBatter + 1).getName();
-            }
-        }
-
-        tvOnDeckBats.setText(sBats);
-        tvOnDeckName.setText(sName);
-    }
-
-    private void updateInTheHole() {
         TextView tvInTheHoleBats = (TextView) findViewById(R.id.tvInTheHoleBats);
         TextView tvInTheHoleName = (TextView) findViewById(R.id.tvInTheHolePlayerName);
 
@@ -1261,40 +1223,41 @@ public class playball extends Activity {
         String sName = "";
 
         if(game.teamAtBat==0) {
-            if(game.vBatter == 7) {
-                sBats = vTeam.lineup.get(0).getBats();
-                sName = vTeam.lineup.get(0).getName();
+            if(game.vLineupBatter == 8) {
+                // flip to top of lineup
+                game.onDeck = vTeam.roster.get(vLineup[0]);
+                game.inTheHole = vTeam.roster.get(vLineup[1]);
             }
-            else if(game.vBatter == 8) {
-                sBats = vTeam.lineup.get(1).getBats();
-                sName = vTeam.lineup.get(1).getName();
+            else if(game.vLineupBatter == 7) {
+                game.onDeck = vTeam.roster.get(vLineup[8]);
+                game.inTheHole = vTeam.roster.get(vLineup[0]);
             }
             else {
-                sBats = vTeam.lineup.get(game.vBatter + 2).getBats();
-                sName = vTeam.lineup.get(game.vBatter + 2).getName();
+                game.onDeck = vTeam.roster.get(vLineup[game.vLineupBatter + 1]);
+                game.inTheHole = vTeam.roster.get(vLineup[game.vLineupBatter + 2]);
             }
         }
         else {
-            if(game.hBatter == 7) {
-                sBats = hTeam.lineup.get(0).getBats();
-                sName = hTeam.lineup.get(0).getName();
+            if(game.hLineupBatter == 8) {
+                // flip to top of lineup
+                game.onDeck = hTeam.roster.get(hLineup[0]);
+                game.inTheHole = hTeam.roster.get(hLineup[1]);
             }
-            else if(game.hBatter == 8) {
-                sBats = vTeam.lineup.get(1).getBats();
-                sName = vTeam.lineup.get(1).getName();
+            else if(game.hLineupBatter == 7) {
+                game.onDeck = hTeam.roster.get(hLineup[8]);
+                game.inTheHole = hTeam.roster.get(hLineup[0]);
             }
             else {
-                sBats = hTeam.lineup.get(game.hBatter + 2).getBats();
-                sName = hTeam.lineup.get(game.hBatter + 2).getName();
+                game.onDeck = hTeam.roster.get(hLineup[game.hLineupBatter + 1]);
+                game.inTheHole = hTeam.roster.get(hLineup[game.hLineupBatter + 2]);
             }
         }
 
-        tvInTheHoleBats.setText(sBats);
-        tvInTheHoleName.setText(sName);
-    }
+        tvOnDeckBats.setText(game.onDeck.pBats);
+        tvOnDeckName.setText(game.onDeck.name);
 
-    private void updateResult() {
-
+        tvInTheHoleBats.setText(game.inTheHole.pBats);
+        tvInTheHoleName.setText(game.inTheHole.name);
     }
 
     private void updateStamina() {
@@ -1306,11 +1269,11 @@ public class playball extends Activity {
         int gStamina = 0; // game
 
         if(game.teamAtBat==0) {
-            pStamina = game.hPitcher.getStamina();
+            pStamina = game.hPitcher.stamina;
             gStamina = game.hStamina;
         }
         else {
-            pStamina = game.vPitcher.getStamina();
+            pStamina = game.vPitcher.stamina;
             gStamina = game.vStamina;
         }
 
@@ -1373,40 +1336,21 @@ public class playball extends Activity {
         game.minOutcome[0] = 1;
 
         for(int i=0; i < 7; i++) {
-            if(game.teamAtBat==0) {
-                if (game.hPitcher.getThrows().equals("r")) {
-                    if(vTeam.lineup.get(game.vBatter).getBats().equals("r")) {
-                        game.resultRange[i] = calculateNewRange(vTeam.lineup.get(game.vBatter).pVsr[i], game.hPitcher.pVsr[i], i);
-                    }
-                    else {
-                        game.resultRange[i] = calculateNewRange(vTeam.lineup.get(game.vBatter).pVsr[i], game.hPitcher.pVsl[i], i);
-                    }
+            if (game.pitcher.pThrows.equals("r")) {
+                if(game.batter.pBats.equals("r")) {
+                    game.resultRange[i] = calculateNewRange(game.batter.pVsr[i], game.pitcher.pVsr[i], i);
                 }
                 else {
-                    if(vTeam.lineup.get(game.vBatter).getBats().equals("l")) {
-                        game.resultRange[i] = calculateNewRange(vTeam.lineup.get(game.vBatter).pVsl[i], game.hPitcher.pVsl[i], i);
-                    }
-                    else {
-                        game.resultRange[i] = calculateNewRange(vTeam.lineup.get(game.vBatter).pVsl[i], game.hPitcher.pVsr[i], i);
-                    }
+                    game.resultRange[i] = calculateNewRange(game.batter.pVsr[i], game.pitcher.pVsl[i], i);
                 }
             }
             else {
-                if (game.vPitcher.getThrows().equals("r")) {
-                    if(hTeam.lineup.get(game.hBatter).getBats().equals("r")) {
-                        game.resultRange[i] = calculateNewRange(hTeam.lineup.get(game.hBatter).pVsr[i], game.vPitcher.pVsr[i], i);
-                    }
-                    else {
-                        game.resultRange[i] = calculateNewRange(hTeam.lineup.get(game.hBatter).pVsr[i], game.vPitcher.pVsl[i], i);
-                    }
+                // pitcher throws left
+                if(game.batter.pBats.equals("l")) {
+                    game.resultRange[i] = calculateNewRange(game.batter.pVsl[i], game.pitcher.pVsl[i], i);
                 }
                 else {
-                    if(hTeam.lineup.get(game.hBatter).getBats().equals("l")) {
-                        game.resultRange[i] = calculateNewRange(hTeam.lineup.get(game.hBatter).pVsl[i], game.vPitcher.pVsl[i], i);
-                    }
-                    else {
-                        game.resultRange[i] = calculateNewRange(hTeam.lineup.get(game.hBatter).pVsl[i], game.vPitcher.pVsr[i], i);
-                    }
+                    game.resultRange[i] = calculateNewRange(game.batter.pVsl[i], game.hPitcher.pVsr[i], i);
                 }
             }
         }
@@ -1573,122 +1517,61 @@ public class playball extends Activity {
         int[] a = new int[3]; // average
 
         // batter
-        if(game.teamAtBat==0) {
-            if(vTeam.lineup.get(game.vBatter).getBats().equals("r")) {
-                b[0] = vTeam.lineup.get(game.vBatter).sprayChart[0];
-                b[1] = vTeam.lineup.get(game.vBatter).sprayChart[1];
-                b[2] = vTeam.lineup.get(game.vBatter).sprayChart[2];
+        if(game.batter.pBats.equals("r")) {
+            b[0] = game.batter.sprayChart[0];
+            b[1] = game.batter.sprayChart[1];
+            b[2] = game.batter.sprayChart[2];
 
-                p[0] = game.hPitcher.sprayChart[0];
-                p[1] = game.hPitcher.sprayChart[1];
-                p[2] = game.hPitcher.sprayChart[2];
+            p[0] = game.hPitcher.sprayChart[0];
+            p[1] = game.hPitcher.sprayChart[1];
+            p[2] = game.hPitcher.sprayChart[2];
                 
-                a[0] = 397;
-                a[1] = 347;
-                a[2] = 256;
-            }
-            else if(vTeam.lineup.get(game.vBatter).getBats().equals("l")) {
-                b[0] = vTeam.lineup.get(game.vBatter).sprayChart[2];
-                b[1] = vTeam.lineup.get(game.vBatter).sprayChart[1];
-                b[2] = vTeam.lineup.get(game.vBatter).sprayChart[0];
+            a[0] = 397;
+            a[1] = 347;
+            a[2] = 256;
+        }
+        else if(game.batter.pBats.equals("l")) {
+            b[0] = game.batter.sprayChart[2];
+            b[1] = game.batter.sprayChart[1];
+            b[2] = game.batter.sprayChart[0];
 
-                p[0] = game.hPitcher.sprayChart[2];
-                p[1] = game.hPitcher.sprayChart[1];
-                p[2] = game.hPitcher.sprayChart[0];
+            p[0] = game.hPitcher.sprayChart[2];
+            p[1] = game.hPitcher.sprayChart[1];
+            p[2] = game.hPitcher.sprayChart[0];
 
-                a[0] = 256;
-                a[1] = 347;
-                a[2] = 397;
-            }
-            else {
-                // switch hitter
-                if(game.hPitcher.getThrows().equals("r")) {
-                    b[0] = vTeam.lineup.get(game.vBatter).sprayChart[2];
-                    b[1] = vTeam.lineup.get(game.vBatter).sprayChart[1];
-                    b[2] = vTeam.lineup.get(game.vBatter).sprayChart[0];
+            a[0] = 256;
+            a[1] = 347;
+            a[2] = 397;
+        }
+        else if(game.pitcher.pThrows.equals("r")) {
+            // switch hitter
+            b[0] = game.batter.sprayChart[2];
+            b[1] = game.batter.sprayChart[1];
+            b[2] = game.batter.sprayChart[0];
 
-                    p[0] = game.hPitcher.sprayChart[2];
-                    p[1] = game.hPitcher.sprayChart[1];
-                    p[2] = game.hPitcher.sprayChart[0];
+            p[0] = game.hPitcher.sprayChart[2];
+            p[1] = game.hPitcher.sprayChart[1];
+            p[2] = game.hPitcher.sprayChart[0];
 
-                    a[0] = 256;
-                    a[1] = 347;
-                    a[2] = 397;
-                }
-                else {
-                    // throws left
-                    b[0] = vTeam.lineup.get(game.vBatter).sprayChart[0];
-                    b[1] = vTeam.lineup.get(game.vBatter).sprayChart[1];
-                    b[2] = vTeam.lineup.get(game.vBatter).sprayChart[2];
-
-                    p[0] = game.hPitcher.sprayChart[0];
-                    p[1] = game.hPitcher.sprayChart[1];
-                    p[2] = game.hPitcher.sprayChart[2];
-
-                    a[0] = 397;
-                    a[1] = 347;
-                    a[2] = 256;
-                }
-            }
+            a[0] = 256;
+            a[1] = 347;
+            a[2] = 397;
         }
         else {
-            if(hTeam.lineup.get(game.hBatter).getBats().equals("r")) {
-                b[0] = hTeam.lineup.get(game.hBatter).sprayChart[0];
-                b[1] = hTeam.lineup.get(game.hBatter).sprayChart[1];
-                b[2] = hTeam.lineup.get(game.hBatter).sprayChart[2];
+            // throws left
+            b[0] = game.batter.sprayChart[0];
+            b[1] = game.batter.sprayChart[1];
+            b[2] = game.batter.sprayChart[2];
 
-                p[0] = game.hPitcher.sprayChart[0];
-                p[1] = game.hPitcher.sprayChart[1];
-                p[2] = game.hPitcher.sprayChart[2];
+            p[0] = game.hPitcher.sprayChart[0];
+            p[1] = game.hPitcher.sprayChart[1];
+            p[2] = game.hPitcher.sprayChart[2];
 
-                a[0] = 397;
-                a[1] = 347;
-                a[2] = 256;
-            }
-            else if(hTeam.lineup.get(game.hBatter).getBats().equals("l")) {
-                b[0] = hTeam.lineup.get(game.hBatter).sprayChart[2];
-                b[1] = hTeam.lineup.get(game.hBatter).sprayChart[1];
-                b[2] = hTeam.lineup.get(game.hBatter).sprayChart[0];
-
-                p[0] = game.hPitcher.sprayChart[2];
-                p[1] = game.hPitcher.sprayChart[1];
-                p[2] = game.hPitcher.sprayChart[0];
-
-                a[0] = 256;
-                a[1] = 347;
-                a[2] = 397;
-            }
-            else {
-                // switch hitter
-                if(game.hPitcher.getThrows().equals("r")) {
-                    b[0] = hTeam.lineup.get(game.hBatter).sprayChart[2];
-                    b[1] = hTeam.lineup.get(game.hBatter).sprayChart[1];
-                    b[2] = hTeam.lineup.get(game.hBatter).sprayChart[0];
-
-                    p[0] = game.hPitcher.sprayChart[2];
-                    p[1] = game.hPitcher.sprayChart[1];
-                    p[2] = game.hPitcher.sprayChart[0];
-
-                    a[0] = 256;
-                    a[1] = 347;
-                    a[2] = 397;
-                }
-                else {
-                    // throws left
-                    b[0] = hTeam.lineup.get(game.hBatter).sprayChart[0];
-                    b[1] = hTeam.lineup.get(game.hBatter).sprayChart[1];
-                    b[2] = hTeam.lineup.get(game.hBatter).sprayChart[2];
-
-                    p[0] = game.hPitcher.sprayChart[0];
-                    p[1] = game.hPitcher.sprayChart[1];
-                    p[2] = game.hPitcher.sprayChart[2];
-
-                    a[0] = 397;
-                    a[1] = 347;
-                    a[2] = 256;
-                }
-            }
+            a[0] = 397;
+            a[1] = 347;
+            a[2] = 256;
         }
+
 
         for(int i=0; i< 2; i++) {
             game.maxHitDirection[i] = calculateHitRange(b[i], p[i], a[i]);

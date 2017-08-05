@@ -13,6 +13,7 @@ public class Player {
     int defense_rating;
     int fld_range;
     int fld_error;
+    int value;
 
     String pBats, pThrows, name, pos;
     int sac_bunt, spd_rating, avoid_dp, hold_rating, rsb, vsl_rating, vsr_rating, con_rating, pwr_rating;
@@ -27,7 +28,7 @@ public class Player {
 
     // game stats
     double gameG, gamePA, gameAB, gameH, gameR, gameRBI, game1B, game2B, game3B, gameHR, gameBB, gameSO, gameHBP, gameSB, gameCS, gameGDP;
-    double gameIP, gameGS, gameER, gameP_BB, gameP_SO, gameP_1B, gameP_2B, gameP_3B, gameP_HR, gameP_HBP;
+    double gameIP, gameGS, gameER, gameP_R, gameP_BB, gameP_SO, gameP_1B, gameP_2B, gameP_3B, gameP_HR, gameP_HBP, gameP_PA, gameP_H;
     double gamePO, gameA, gameE, gameFLD_PCT;
     
     // season stats
