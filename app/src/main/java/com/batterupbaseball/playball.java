@@ -50,28 +50,42 @@ public class playball extends Activity {
         int balkRating, passedBallRating, wildPitchRating;
 
         if(game.basesOccupied()) {
-            if(game.teamAtBat == 0) {
-                balkRating = game.hPitcher.balkRating;
-                wildPitchRating = game.hPitcher.wildPitchRating;
-                passedBallRating = hTeam.roster.get(hDefense[1]).passedBallRating;
-            }
-            else {
-                balkRating = game.vPitcher.balkRating;
-                wildPitchRating = game.vPitcher.wildPitchRating;
-                passedBallRating = vTeam.roster.get(vDefense[1]).passedBallRating;
-            }
+            balkRating = game.pitcher.balkRating;
+            wildPitchRating = game.pitcher.wildPitchRating;
+            passedBallRating = game.defense[1].passedBallRating;
 
             // baserunners, check for wild pitch, passed ball, and balk
             roll_dice();
 
-            if (game.dieResult >= 1 && game.dieResult <= wildPitchRating) {
+            if (game.dieResult <= 50) {
                 // wild pitch
+                Log.d(TAG, "Possibility of a wild pitch.");
+                roll_dice();
+
+                if(game.dieResult <= wildPitchRating) {
+                    updateWildPitch();
+                    Log.d(TAG, "WILD PITCH");
+                }
             }
-            else if (game.dieResult > wildPitchRating && game.dieResult <= (wildPitchRating + balkRating)) {
+            else if (game.dieResult > 50 && game.dieResult <= 100) {
                 // balk
+                Log.d(TAG, "Possibility of a balk.");
+                roll_dice();
+
+                if(game.dieResult <= balkRating) {
+                    updateBalk();
+                    Log.d(TAG, "BALK");
+                }
             }
-            else if(game.dieResult > (wildPitchRating + balkRating) && game.dieResult <= (wildPitchRating + balkRating + passedBallRating)) {
+            else if(game.dieResult > 100 && game.dieResult <= 150) {
                 // passed ball
+                Log.d(TAG, "Possibility of a passed ball.");
+                roll_dice();
+
+                if(game.dieResult <= passedBallRating) {
+                    updatePassedBall();
+                    Log.d(TAG, "BALK");
+                }
             }
             else {
                 roll_dice();
@@ -83,10 +97,68 @@ public class playball extends Activity {
         }
         else {
             roll_dice();
+            Log.d(TAG, "Runner on 1st: " + game.manOnFirst());
+            Log.d(TAG, "Runner on 2nd: " + game.manOnSecond());
+            Log.d(TAG, "Runner on 3rd: " + game.manOnThird());
 
             highlightOutcome();
             showResultText();
             updateScreen();
+        }
+    }
+
+    private void updateWildPitch() {
+        game.resultText = game.pitcher.name + " throws a wild pitch!";
+        game.pitcher.gameWP++;
+
+        if(game.manOnThird()) {
+            moveBaseRunnerFrom(3,1);
+            game.resultText += " " + game.runner[0].name + " scores!";
+        }
+        if(game.manOnSecond()) {
+            moveBaseRunnerFrom(2,1);
+            Log.d(TAG, "Runner on 2nd goes to 3rd.");
+        }
+        if(game.manOnFirst()) {
+            moveBaseRunnerFrom(1,1);
+            Log.d(TAG, "Runner on 1st goes to 2nd.");
+        }
+    }
+
+    private void updateBalk() {
+        game.resultText = game.pitcher.name + " is called for a balk!";
+        game.pitcher.gameBALK++;
+
+        if(game.manOnThird()) {
+            moveBaseRunnerFrom(3,1);
+            game.resultText += " " + game.runner[0].name + " scores!";
+        }
+        if(game.manOnSecond()) {
+            moveBaseRunnerFrom(2,1);
+            Log.d(TAG, "Runner on 2nd goes to 3rd.");
+
+        }
+        if(game.manOnFirst()) {
+            moveBaseRunnerFrom(1,1);
+            Log.d(TAG, "Runner on 1st goes to 2nd.");
+        }
+    }
+
+    private void updatePassedBall() {
+        game.resultText = "The ball gets passed " + game.defense[1].name + " for a passed ball!";
+        game.defense[1].gamePASSEDBALL++;
+
+        if(game.manOnThird()) {
+            moveBaseRunnerFrom(3,1);
+            game.resultText += " " + game.runner[0].name + " scores!";
+        }
+        if(game.manOnSecond()) {
+            moveBaseRunnerFrom(2,1);
+            Log.d(TAG, "Runner on 2nd goes to 3rd.");
+        }
+        if(game.manOnFirst()) {
+            moveBaseRunnerFrom(1,1);
+            Log.d(TAG, "Runner on 1st goes to 2nd.");
         }
     }
 
@@ -124,6 +196,7 @@ public class playball extends Activity {
             else {
                 game.outs=0;
                 game.clearTheBases();
+                updateBaseRunners();
                 game.nextHalfInning();
                 nextBatter();
             }
@@ -156,7 +229,7 @@ public class playball extends Activity {
                 game.vLineupBatter = 0;
             }
 
-            game.vBatter = vTeam.roster.get(game.vLineupBatter);
+            game.batter = vTeam.roster.get(game.vLineupBatter);
         }
         else {
             game.hLineupBatter++;
@@ -165,7 +238,7 @@ public class playball extends Activity {
                 game.hLineupBatter = 0;
             }
 
-            game.hBatter = hTeam.roster.get(game.hLineupBatter);
+            game.batter = hTeam.roster.get(game.hLineupBatter);
         }
     }
 
@@ -174,8 +247,11 @@ public class playball extends Activity {
             case 1:
                 // singles
                 game.pitcher.gameP_H++;
+                Log.d(TAG, "Pitcher Hits Given Up: " + game.pitcher.gameP_H);
                 game.pitcher.gameP_1B++;
+                Log.d(TAG, "Pitcher Singles Given Up: " + game.pitcher.gameP_1B);
                 game.pitcher.gameP_PA++;
+                Log.d(TAG, "Pitcher Plate Appearances: " + game.pitcher.gameP_PA);
 
                 if(game.manOnThird()) {
                     moveBaseRunnerFrom(3,1);
@@ -195,12 +271,17 @@ public class playball extends Activity {
                 player.game1B++;
                 player.gamePA++;
                 player.gameAB++;
+
+                updateBaseRunners();
                 break;
             case 2:
                 // doubles
                 game.pitcher.gameP_H++;
+                Log.d(TAG, "Pitcher Hits Given Up: " + game.pitcher.gameP_H);
                 game.pitcher.gameP_2B++;
+                Log.d(TAG, "Pitcher Doubles Given Up: " + game.pitcher.gameP_2B);
                 game.pitcher.gameP_PA++;
+                Log.d(TAG, "Pitcher Plate Appearances: " + game.pitcher.gameP_PA);
 
                 if(game.manOnThird()) {
                     moveBaseRunnerFrom(3,1);
@@ -219,12 +300,17 @@ public class playball extends Activity {
                 player.game2B++;
                 player.gamePA++;
                 player.gameAB++;
+
+                updateBaseRunners();
                 break;
             case 3:
                 // triples
                 game.pitcher.gameP_H++;
+                Log.d(TAG, "Pitcher Hits Given Up: " + game.pitcher.gameP_H);
                 game.pitcher.gameP_3B++;
+                Log.d(TAG, "Pitcher Triples Given Up: " + game.pitcher.gameP_3B);
                 game.pitcher.gameP_PA++;
+                Log.d(TAG, "Pitcher Plate Appearances: " + game.pitcher.gameP_PA);
 
                 if(game.manOnThird()) {
                     moveBaseRunnerFrom(3,1);
@@ -244,12 +330,17 @@ public class playball extends Activity {
                 player.game3B++;
                 player.gamePA++;
                 player.gameAB++;
+
+                updateBaseRunners();
                 break;
             case 4:
                 // homeruns
                 game.pitcher.gameP_H++;
+                Log.d(TAG, "Pitcher Hits Given Up: " + game.pitcher.gameP_H);
                 game.pitcher.gameP_HR++;
+                Log.d(TAG, "Pitcher Homeruns Given Up: " + game.pitcher.gameP_HR);
                 game.pitcher.gameP_PA++;
+                Log.d(TAG, "Pitcher Plate Appearances: " + game.pitcher.gameP_PA);
 
                 if(game.manOnThird()) {
                     moveBaseRunnerFrom(3,1);
@@ -270,11 +361,15 @@ public class playball extends Activity {
                 player.gameAB++;
                 player.gameR++;
                 game.pitcher.gameP_R++;
+
+                updateBaseRunners();
                 break;
             case 5:
                 // walks
                 game.pitcher.gameP_BB++;
+                Log.d(TAG, "Pitcher Walks Given Up: " + game.pitcher.gameP_BB);
                 game.pitcher.gameP_PA++;
+                Log.d(TAG, "Pitcher Plate Appearances: " + game.pitcher.gameP_PA);
 
                 if(game.manOnThird()) {
                     if(game.manOnSecond() && game.manOnFirst()) {
@@ -299,10 +394,14 @@ public class playball extends Activity {
                 player.gameBB++;
                 player.gamePA++;
                 player.gameAB++;
+
+                updateBaseRunners();
             case 7:
                 // hbp
                 game.pitcher.gameP_HBP += 1;
+                Log.d(TAG, "Batters hit by pitch: " + game.pitcher.gameP_HBP);
                 game.pitcher.gameP_PA++;
+                Log.d(TAG, "Pitcher Plate Appearances: " + game.pitcher.gameP_PA);
 
                 if(game.manOnThird()) {
                     if(game.manOnSecond() && game.manOnFirst()) {
@@ -326,8 +425,12 @@ public class playball extends Activity {
 
                 player.gameHBP++;
                 player.gamePA++;
+
+                updateBaseRunners();
                 break;
         }
+
+        nextBatter();
     }
 
     private void moveBatter(int bases, Player player) {
@@ -349,6 +452,7 @@ public class playball extends Activity {
         }
         else {
             game.runner[base+numBases] = game.runner[base];
+            game.runner[base] = null;
         }
     }
 
@@ -367,7 +471,7 @@ public class playball extends Activity {
         int[] tvOutcomeID = {R.id.tvResult_1b, R.id.tvResult_2b, R.id.tvResult_3b, R.id.tvResult_hr, R.id.tvResult_bb, R.id.tvResult_k, R.id.tvResult_hbp, R.id.tvResult_glove, R.id.tvResult_out};
 
         // get the batter's name
-        String thisName = getPlayerName();
+        String thisName = game.batter.name;
 
         // reset all outcomes
         for(int i=0; i < 9; i++) {
@@ -395,7 +499,6 @@ public class playball extends Activity {
             // get random explanation of a single
             game.resultText = thisName + " singles to " + getHitDirection() + " field.";
             game.resultID = 1;
-            nextBatter();
         }
         else if(foundResult==1) {
             // double
@@ -404,7 +507,6 @@ public class playball extends Activity {
 
             game.resultText = thisName + " doubles to " + getHitDirection() + " field.";
             game.resultID = 2;
-            nextBatter();
         }
         else if(foundResult==2) {
             // triple
@@ -412,7 +514,6 @@ public class playball extends Activity {
             tvHighlight = (TextView) findViewById(R.id.tvResult_3b);
             game.resultText = thisName + " triples to " + getHitDirection() + " field.";
             game.resultID = 3;
-            nextBatter();
         }
         else if(foundResult==3) {
             // homerun
@@ -421,7 +522,6 @@ public class playball extends Activity {
 
             game.resultText = thisName + " hits a homerun to " + getHitDirection();
             game.resultID = 4;
-            nextBatter();
         }
         else if(foundResult==4) {
             // walk
@@ -430,7 +530,6 @@ public class playball extends Activity {
 
             game.resultText = thisName + " draws a walk!";
             game.resultID = 5;
-            nextBatter();
         }
         else if(foundResult==5) {
             // strikeout
@@ -459,7 +558,6 @@ public class playball extends Activity {
 
             game.resultText = thisName + " is hit by the pitch!";
             game.resultID = 7;
-            nextBatter();
         }
         else if(foundResult==7) {
             // glove
@@ -532,21 +630,34 @@ public class playball extends Activity {
 
     private void getOutResult() {
         // get the batter's name
-        String thisName = getPlayerName();
+        String thisName = game.batter.name;
 
-        game.resultText = thisName + " hits the ball to " + getOutDirection();
+        game.resultText = thisName + " hits the ball to " + convertPosToString(getOutDirection());
     }
 
-    private String getPlayerName() {
-        String name;
-
-        if(game.teamAtBat==0) {
-            name = game.vBatter.name;
+    private String convertPosToString(int pos) {
+        switch(pos) {
+            case 0:
+                return "the pitcher.";
+            case 1:
+                return "the catcher.";
+            case 2:
+                return "the first baseman.";
+            case 3:
+                return "the second baseman.";
+            case 4:
+                return "the third baseman.";
+            case 5:
+                return "the shortstop.";
+            case 6:
+                return "the left fielder.";
+            case 7:
+                return "the center fielder.";
+            case 8:
+                return "the right fielder.";
+            default:
+                return "null";
         }
-        else
-            name = game.hBatter.name;
-
-        return name;
     }
 
     private void initGame() {
@@ -575,8 +686,6 @@ public class playball extends Activity {
         game.batter = new Player();
         game.vPitcher = new Player();
         game.hPitcher = new Player();
-        game.hBatter = new Player();
-        game.vBatter = new Player();
         game.vDefense = new Player[9];
         game.hDefense = new Player[9];
 
@@ -584,6 +693,7 @@ public class playball extends Activity {
         buildHomeTeam(hSeasonName, hTeamID);
 
         game.pitcher = game.hPitcher;
+        setupDefense();
 
         // show team names on scoreboard
         TextView tvVTeamName = (TextView) findViewById(R.id.tvVisitorTeamName);
@@ -592,9 +702,21 @@ public class playball extends Activity {
         tvVTeamName.setText(vTeam.name);
         tvHTeamName.setText(hTeam.name);
 
-        game.batter = vTeam.roster.get(0);
-        game.onDeck = vTeam.roster.get(1);
-        game.inTheHole = vTeam.roster.get(2);
+        game.batter = vTeam.roster.get(vLineup[0]);
+        game.onDeck = vTeam.roster.get(vLineup[1]);
+        game.inTheHole = vTeam.roster.get(vLineup[2]);
+
+        updateBaseRunners();
+
+    }
+
+    private void setupDefense() {
+        if(game.teamAtBat==0) {
+            game.defense = game.vDefense;
+        }
+        else {
+            game.defense = game.hDefense;
+        }
     }
 
     private void buildVisTeam(String seasonName, int teamID) {
@@ -957,7 +1079,6 @@ public class playball extends Activity {
         updateOuts();
         updateRunsByInning();
         updateBatterCard();
-        updateBaseRunners();
         updatePitcherCard();
         updateNextBatters();
         updateResult(game.batter);
@@ -1128,7 +1249,7 @@ public class playball extends Activity {
         layers[1] = ContextCompat.getDrawable(this, cardValue[0]);
 
         // defense
-        layers[3] = ContextCompat.getDrawable(this, cardDefense[game.batter.defense_rating]);
+        layers[3] = ContextCompat.getDrawable(this, cardDefense[game.batter.defense_rating-1]);
 
         // position
         int posNum = game.convertPos(game.batter.pos);
@@ -1152,7 +1273,7 @@ public class playball extends Activity {
             // runner on 1st
             ivRunner_1.setVisibility(View.VISIBLE);
             tvRunnerSpeed_1.setVisibility(View.VISIBLE);
-            tvRunnerSpeed_1.setText("" + game.runner[1].spd_rating);
+            tvRunnerSpeed_1.setText("" + game.runner[1].baseRunning);
         }
         else {
             ivRunner_1.setVisibility(View.INVISIBLE);
@@ -1163,7 +1284,7 @@ public class playball extends Activity {
             // runner on 2nd
             ivRunner_2.setVisibility(View.VISIBLE);
             tvRunnerSpeed_2.setVisibility(View.VISIBLE);
-            tvRunnerSpeed_2.setText("" + game.runner[2].spd_rating);
+            tvRunnerSpeed_2.setText("" + game.runner[2].baseRunning);
         }
         else {
             ivRunner_2.setVisibility(View.INVISIBLE);
@@ -1174,7 +1295,7 @@ public class playball extends Activity {
             // runner on 3rd
             ivRunner_3.setVisibility(View.VISIBLE);
             tvRunnerSpeed_3.setVisibility(View.VISIBLE);
-            tvRunnerSpeed_3.setText("" + game.runner[3].spd_rating);
+            tvRunnerSpeed_3.setText("" + game.runner[3].baseRunning);
         }
         else {
             ivRunner_3.setVisibility(View.INVISIBLE);
@@ -1231,7 +1352,7 @@ public class playball extends Activity {
 
         // defense
         int def = game.pitcher.defense_rating;
-        layers[3] = ContextCompat.getDrawable(this, cardDefense[def]);
+        layers[3] = ContextCompat.getDrawable(this, cardDefense[def-1]);
 
         // position
         int posNum = game.convertPos(game.pitcher.pos);
@@ -1247,9 +1368,6 @@ public class playball extends Activity {
         TextView tvOnDeckName = (TextView) findViewById(R.id.tvOnDeckPlayerName);
         TextView tvInTheHoleBats = (TextView) findViewById(R.id.tvInTheHoleBats);
         TextView tvInTheHoleName = (TextView) findViewById(R.id.tvInTheHolePlayerName);
-
-        String sBats = "";
-        String sName = "";
 
         if(game.teamAtBat==0) {
             if(game.vLineupBatter == 8) {
@@ -1494,27 +1612,27 @@ public class playball extends Activity {
 
             if(total >= 1 && total <= thirdBaseMaxRange) {
                 // 3rd baseman
-                return 5;
+                return 4;
             }
             else if(total > thirdBaseMaxRange && total <= shortstopMaxRange) {
                 // shortstop
-                return 6;
+                return 5;
             }
             else if(total > shortstopMaxRange && total <= pitcherMaxRange) {
                 // pitcher
-                return 1;
+                return 0;
             }
             else if(total > pitcherMaxRange && total <= secondBaseMaxRange) {
                 // 2nd baseman
-                return 4;
+                return 3;
             }
             else if(total > (shortstopMaxRange + 70)) {
                 // pitcher
-                return 1;
+                return 0;
             }
             else {
                 // 1st baseman
-                return 3;
+                return 2;
             }
         }
         else {
@@ -1527,15 +1645,15 @@ public class playball extends Activity {
 
             if(total >= 1 && total <= game.maxHitDirection[0]) {
                 // left field
-                return 7;
+                return 6;
             }
             else if(total >= game.minHitDirection[1] && total <= game.maxHitDirection[1]) {
                 // center field
-                return 8;
+                return 7;
             }
             else {
                 // right field
-                return 9;
+                return 8;
             }
         }
     }

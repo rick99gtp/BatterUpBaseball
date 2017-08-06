@@ -8,7 +8,6 @@ import java.util.Random;
 public class Game {
     Random rn = new Random();
     Player vPitcher, hPitcher;
-    Player vBatter, hBatter;
     Player[] vDefense;
     Player[] hDefense;
     Player batter;
@@ -118,32 +117,24 @@ public class Game {
             runner[i] = null;
     }
 
-    private void clearBase(int base) {
-        runner[base] = null;
-    }
-
-    private void placeRunner(int base, Player player) {
-        runner[base] = player;
-    }
-
     public void nextHalfInning() {
         teamAtBat ^= 1;
     }
 
     public boolean manOnFirst() {
-        if (runner[0] != null)
-            return true;
-        else
-            return false;
-    }
-    public boolean manOnSecond() {
         if (runner[1] != null)
             return true;
         else
             return false;
     }
-    public boolean manOnThird() {
+    public boolean manOnSecond() {
         if (runner[2] != null)
+            return true;
+        else
+            return false;
+    }
+    public boolean manOnThird() {
+        if (runner[3] != null)
             return true;
         else
             return false;

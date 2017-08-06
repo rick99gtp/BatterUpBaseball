@@ -27,8 +27,8 @@ public class Player {
     int _id = 0;
 
     // game stats
-    double gameG, gamePA, gameAB, gameH, gameR, gameRBI, game1B, game2B, game3B, gameHR, gameBB, gameSO, gameHBP, gameSB, gameCS, gameGDP;
-    double gameIP, gameGS, gameER, gameP_R, gameP_BB, gameP_SO, gameP_1B, gameP_2B, gameP_3B, gameP_HR, gameP_HBP, gameP_PA, gameP_H;
+    double gameG, gamePA, gameAB, gameH, gameR, gameRBI, game1B, game2B, game3B, gameHR, gameBB, gameSO, gameHBP, gameSB, gameCS, gameGDP, gamePASSEDBALL;
+    double gameIP, gameGS, gameER, gameP_R, gameP_BB, gameP_SO, gameP_1B, gameP_2B, gameP_3B, gameP_HR, gameP_HBP, gameP_PA, gameP_H, gameWP, gameBALK;
     double gamePO, gameA, gameE, gameFLD_PCT;
     
     // season stats
