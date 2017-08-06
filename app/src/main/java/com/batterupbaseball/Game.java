@@ -119,6 +119,10 @@ public class Game {
 
     public void nextHalfInning() {
         teamAtBat ^= 1;
+
+        if(teamAtBat==0) {
+            inning++;
+        }
     }
 
     public boolean manOnFirst() {

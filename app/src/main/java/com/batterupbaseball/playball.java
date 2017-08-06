@@ -66,6 +66,13 @@ public class playball extends Activity {
                     updateWildPitch();
                     Log.d(TAG, "WILD PITCH");
                 }
+                else {
+                    roll_dice();
+
+                    highlightOutcome();
+                    showResultText();
+                    updateScreen();
+                }
             }
             else if (game.dieResult > 50 && game.dieResult <= 100) {
                 // balk
@@ -76,6 +83,13 @@ public class playball extends Activity {
                     updateBalk();
                     Log.d(TAG, "BALK");
                 }
+                else {
+                    roll_dice();
+
+                    highlightOutcome();
+                    showResultText();
+                    updateScreen();
+                }
             }
             else if(game.dieResult > 100 && game.dieResult <= 150) {
                 // passed ball
@@ -85,6 +99,13 @@ public class playball extends Activity {
                 if(game.dieResult <= passedBallRating) {
                     updatePassedBall();
                     Log.d(TAG, "BALK");
+                }
+                else {
+                    roll_dice();
+
+                    highlightOutcome();
+                    showResultText();
+                    updateScreen();
                 }
             }
             else {
@@ -396,6 +417,7 @@ public class playball extends Activity {
                 player.gameAB++;
 
                 updateBaseRunners();
+                break;
             case 7:
                 // hbp
                 game.pitcher.gameP_HBP += 1;
@@ -708,6 +730,7 @@ public class playball extends Activity {
 
         updateBaseRunners();
 
+        Log.d(TAG, "Batter: " + game.batter.name);
     }
 
     private void setupDefense() {
