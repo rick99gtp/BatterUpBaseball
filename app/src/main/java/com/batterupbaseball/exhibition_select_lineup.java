@@ -30,10 +30,8 @@ public class exhibition_select_lineup extends Activity {
     int[] oppBullpen = new int[8];
     int[] userLineup = new int[9];
     int[] userDefense = new int[9];
-    int[] userBench = new int[6];
     int[] oppLineup = new int[9];
     int[] oppDefense = new int[9];
-    int[] oppBench = new int[6];
     String TAG = "com.batterupbaseball";
     boolean useDH = true;
     String userTeam;
@@ -231,7 +229,6 @@ public class exhibition_select_lineup extends Activity {
         int[] tvPos = {R.id.tvPos1, R.id.tvPos2, R.id.tvPos3, R.id.tvPos4, R.id.tvPos5, R.id.tvPos6, R.id.tvPos7, R.id.tvPos8, R.id.tvPos9};
 
         Cursor cLineup;
-        Cursor cBench;
 
         myDB = openOrCreateDatabase(userSeasonFileName, MODE_PRIVATE, null);
 
@@ -249,14 +246,13 @@ public class exhibition_select_lineup extends Activity {
                 int col = cLineup.getColumnIndex("bat_" + (i+1));
                 userLineup[i] = cLineup.getInt(col);
 
-                // position
                 col = cLineup.getColumnIndex("def_" + (i+1));
-                String pos = cLineup.getString(col);
+                int pos = cLineup.getInt(col);
 
-                userDefense[setPos(pos)] = i;
+                userDefense[pos] = i;
 
                 TextView tPos = (TextView) findViewById(tvPos[i]);
-                tPos.setText(pos);
+                tPos.setText(convertPosToString(pos));
 
                 Cursor cPlayer = myDB.query("players", null, "_id='" + userLineup[i] + "' and team='" + userTeamID + "'", null, null, null, null);
 
@@ -280,27 +276,6 @@ public class exhibition_select_lineup extends Activity {
         }
 
         cLineup.close();
-
-        if(chkDH.isChecked()) {
-            cBench = myDB.query("bench_dh", null, "team_id='" + userTeamID + "'", null, null, null, null);
-        }
-        else {
-            cBench = myDB.query("bench_noDH", null, "team_id='" + userTeamID + "'", null, null, null, null);
-        }
-
-        if(cBench.moveToFirst()) {
-            for (int i = 0; i < 6; i++) {
-                // save bench id's, 9999 = no player-skip
-                int col = cBench.getColumnIndex("bench_" + (i+1));
-                int bPlayer = cBench.getInt(col);
-
-                if(bPlayer !=9999) {
-                    userBench[i] = bPlayer;
-                }
-            }
-        }
-
-        cBench.close();
 
         myDB.close();
     }
@@ -360,10 +335,9 @@ public class exhibition_select_lineup extends Activity {
     }
 
     private void getOppLineup() {
-        Cursor cLineup = null;
-        Cursor cBench = null;
+        Cursor cLineup;
 
-        myDB = openOrCreateDatabase(oppSeasonFileName, MODE_PRIVATE, null);
+        myDB = openOrCreateDatabase(userSeasonFileName, MODE_PRIVATE, null);
 
         CheckBox chkDH = (CheckBox) findViewById(R.id.chkDH);
 
@@ -379,36 +353,14 @@ public class exhibition_select_lineup extends Activity {
                 int col = cLineup.getColumnIndex("bat_" + (i+1));
                 oppLineup[i] = cLineup.getInt(col);
 
-                // position
                 col = cLineup.getColumnIndex("def_" + (i+1));
-                String pos = cLineup.getString(col);
+                int pos = cLineup.getInt(col);
 
-                oppDefense[setPos(pos)] = i;
+                oppDefense[pos] = i;
             }
         }
 
         cLineup.close();
-
-        if(chkDH.isChecked()) {
-            cBench = myDB.query("bench_dh", null, "team_id='" + oppTeamID + "'", null, null, null, null);
-        }
-        else {
-            cBench = myDB.query("bench_noDH", null, "team_id='" + oppTeamID + "'", null, null, null, null);
-        }
-
-        if(cBench.moveToFirst()) {
-            for (int i = 0; i < 6; i++) {
-                // save bench id's, 9999 = no player-skip
-                int col = cBench.getColumnIndex("bench_" + (i+1));
-                int bPlayer = cBench.getInt(col);
-
-                if(bPlayer != 9999) {
-                    oppBench[i] = bPlayer;
-                }
-            }
-        }
-
-        cBench.close();
 
         myDB.close();
     }
@@ -445,5 +397,45 @@ public class exhibition_select_lineup extends Activity {
                 break;
         }
         return posNum;
+    }
+    public String convertPosToString(int pos) {
+        String newPos = "";
+
+        switch(pos) {
+            case 0:
+                newPos = "dh";
+                break;
+            case 1:
+                newPos = "c";
+                break;
+            case 2:
+                newPos = "1b";
+                break;
+            case 3:
+                newPos = "2b";
+                break;
+            case 4:
+                newPos = "3b";
+                break;
+            case 5:
+                newPos = "ss";
+                break;
+            case 6:
+                newPos = "lf";
+                break;
+            case 7:
+                newPos = "cf";
+                break;
+            case 8:
+                newPos = "rf";
+                break;
+            case 9:
+                newPos = "dh";
+                break;
+            case 9999:
+                newPos = "p";
+        }
+
+        return newPos;
     }
 }

@@ -25,8 +25,8 @@ public class playball extends Activity {
     String teamSelected;
     int[] vLineup;
     int[] hLineup;
-    int[] vDefense;
-    int[] hDefense;
+    int[] vDefense = new int[9];
+    int[] hDefense = new int[9];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -550,6 +550,7 @@ public class playball extends Activity {
     }
 
     private void initGame() {
+
         String vSeasonName, hSeasonName;
         String current_year = getResources().getString(R.string.default_db_name);
 
@@ -570,8 +571,19 @@ public class playball extends Activity {
         game.vSeasonName = vSeasonName;
         game.hSeasonName = hSeasonName;
 
+        game.pitcher = new Player();
+        game.batter = new Player();
+        game.vPitcher = new Player();
+        game.hPitcher = new Player();
+        game.hBatter = new Player();
+        game.vBatter = new Player();
+        game.vDefense = new Player[9];
+        game.hDefense = new Player[9];
+
         buildVisTeam(vSeasonName, vTeamID);
         buildHomeTeam(hSeasonName, hTeamID);
+
+        game.pitcher = game.hPitcher;
 
         // show team names on scoreboard
         TextView tvVTeamName = (TextView) findViewById(R.id.tvVisitorTeamName);
@@ -706,10 +718,9 @@ public class playball extends Activity {
                 col1 = cPlayer.getColumnIndex("wild_pitch_rating");
                 thisPlayer.wildPitchRating = cPlayer.getInt(col1);
 
-                col1 = cPlayer.getColumnIndex("value");
-                thisPlayer.value = cPlayer.getInt(col1);
-
                 // player value
+                //col1 = cPlayer.getColumnIndex("value");
+                //thisPlayer.value = cPlayer.getInt(col1);
 
                 // special text
 
@@ -718,6 +729,9 @@ public class playball extends Activity {
                 // stamina
 
                 vTeam.addPlayerToRoster(thisPlayer);
+            }
+            else {
+                rosterComplete = true;
             }
         }
 
@@ -732,8 +746,11 @@ public class playball extends Activity {
     }
 
     private void buildVisDefense() {
+        // get defense from bundle
+        vDefense = bundle.getIntArray("visDefense");
+
         for(int i=0; i<9; i++) {
-            game.vDefense[vDefense[i]] = vTeam.roster.get(i);
+            game.vDefense[vDefense[i]] = vTeam.roster.get(vDefense[i]);
         }
 
         // pitcher's defense
@@ -741,8 +758,12 @@ public class playball extends Activity {
     }
 
     private void buildHomeDefense() {
+        // get defense from bundle
+        hDefense = bundle.getIntArray("homeDefense");
+
         for(int i=0; i<9; i++) {
-            game.hDefense[hDefense[i]] = hTeam.roster.get(i);
+            game.hDefense[hDefense[i]] = hTeam.roster.get(hDefense[i]);
+            Log.d(TAG, "hDefense: " + game.hDefense[hDefense[i]].name);
         }
 
         // pitcher's defense
@@ -880,9 +901,17 @@ public class playball extends Activity {
 
                 hTeam.addPlayerToRoster(thisPlayer);
             }
+            else {
+                rosterComplete = true;
+            }
         }
 
         cPlayer.close();
+
+        // get the pitcher
+        game.hPitcher = hTeam.roster.get(bundle.getInt("homeStarter"));
+
+        buildHomeDefense();
 
         myDB.close();
     }
@@ -1096,7 +1125,7 @@ public class playball extends Activity {
         }
 
         // value
-        layers[1] = ContextCompat.getDrawable(this, cardValue[game.batter.value]);
+        layers[1] = ContextCompat.getDrawable(this, cardValue[0]);
 
         // defense
         layers[3] = ContextCompat.getDrawable(this, cardDefense[game.batter.defense_rating]);
@@ -1198,7 +1227,7 @@ public class playball extends Activity {
         }
 
         // value
-        layers[1] = ContextCompat.getDrawable(this, cardValue[game.pitcher.value]);
+        layers[1] = ContextCompat.getDrawable(this, cardValue[0]);
 
         // defense
         int def = game.pitcher.defense_rating;
