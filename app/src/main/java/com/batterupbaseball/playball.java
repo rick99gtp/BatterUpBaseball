@@ -50,6 +50,7 @@ public class playball extends Activity {
         int balkRating, passedBallRating, wildPitchRating;
 
         if(game.basesOccupied()) {
+            Log.d(TAG, "Bases Occupied");
             balkRating = game.pitcher.balkRating;
             wildPitchRating = game.pitcher.wildPitchRating;
             passedBallRating = game.defense[1].passedBallRating;
@@ -64,9 +65,11 @@ public class playball extends Activity {
 
                 if(game.dieResult <= wildPitchRating) {
                     updateWildPitch();
+                    showResultText();
                     Log.d(TAG, "WILD PITCH");
                 }
                 else {
+                    Log.d(TAG, "No wild pitch, get the result");
                     roll_dice();
 
                     highlightOutcome();
@@ -81,6 +84,7 @@ public class playball extends Activity {
 
                 if(game.dieResult <= balkRating) {
                     updateBalk();
+                    showResultText();
                     Log.d(TAG, "BALK");
                 }
                 else {
@@ -98,7 +102,8 @@ public class playball extends Activity {
 
                 if(game.dieResult <= passedBallRating) {
                     updatePassedBall();
-                    Log.d(TAG, "BALK");
+                    showResultText();
+                    Log.d(TAG, "PASSED BALL");
                 }
                 else {
                     roll_dice();
@@ -126,6 +131,9 @@ public class playball extends Activity {
             showResultText();
             updateScreen();
         }
+
+        updateResult(game.batter);
+        updateScreen();
     }
 
     private void updateWildPitch() {
@@ -144,6 +152,8 @@ public class playball extends Activity {
             moveBaseRunnerFrom(1,1);
             Log.d(TAG, "Runner on 1st goes to 2nd.");
         }
+
+        updateScreen();
     }
 
     private void updateBalk() {
@@ -163,6 +173,8 @@ public class playball extends Activity {
             moveBaseRunnerFrom(1,1);
             Log.d(TAG, "Runner on 1st goes to 2nd.");
         }
+
+        updateScreen();
     }
 
     private void updatePassedBall() {
@@ -181,6 +193,8 @@ public class playball extends Activity {
             moveBaseRunnerFrom(1,1);
             Log.d(TAG, "Runner on 1st goes to 2nd.");
         }
+
+        updateScreen();
     }
 
     private void roll_dice() {
@@ -205,10 +219,7 @@ public class playball extends Activity {
     }
 
     private void checkEndOfInning() {
-        if(game.outs < 3) {
-           nextBatter();
-        }
-        else {
+        if(game.outs == 3) {
             // check for end of game
             if(checkEndOfGame()) {
                 TextView tvResultText = (TextView) findViewById(R.id.tvResult);
@@ -219,7 +230,7 @@ public class playball extends Activity {
                 game.clearTheBases();
                 updateBaseRunners();
                 game.nextHalfInning();
-                nextBatter();
+                updateScreen();
             }
         }
     }
@@ -245,6 +256,7 @@ public class playball extends Activity {
     private void nextBatter() {
         if(game.teamAtBat==0) {
             game.vLineupBatter++;
+            Log.d(TAG, "vLineup" + game.vLineupBatter);
 
             if(game.vLineupBatter > 8) {
                 game.vLineupBatter = 0;
@@ -263,16 +275,23 @@ public class playball extends Activity {
         }
     }
 
+    private void updateTeamHits() {
+        if(game.teamAtBat==0) {
+            game.vHits++;
+        }
+        else {
+            game.hHits++;
+        }
+    }
+
     private void updateResult(Player player) {
         switch(game.resultID) {
             case 1:
                 // singles
+                updateTeamHits();
                 game.pitcher.gameP_H++;
-                Log.d(TAG, "Pitcher Hits Given Up: " + game.pitcher.gameP_H);
                 game.pitcher.gameP_1B++;
-                Log.d(TAG, "Pitcher Singles Given Up: " + game.pitcher.gameP_1B);
                 game.pitcher.gameP_PA++;
-                Log.d(TAG, "Pitcher Plate Appearances: " + game.pitcher.gameP_PA);
 
                 if(game.manOnThird()) {
                     moveBaseRunnerFrom(3,1);
@@ -297,12 +316,10 @@ public class playball extends Activity {
                 break;
             case 2:
                 // doubles
+                updateTeamHits();
                 game.pitcher.gameP_H++;
-                Log.d(TAG, "Pitcher Hits Given Up: " + game.pitcher.gameP_H);
                 game.pitcher.gameP_2B++;
-                Log.d(TAG, "Pitcher Doubles Given Up: " + game.pitcher.gameP_2B);
                 game.pitcher.gameP_PA++;
-                Log.d(TAG, "Pitcher Plate Appearances: " + game.pitcher.gameP_PA);
 
                 if(game.manOnThird()) {
                     moveBaseRunnerFrom(3,1);
@@ -326,12 +343,10 @@ public class playball extends Activity {
                 break;
             case 3:
                 // triples
+                updateTeamHits();
                 game.pitcher.gameP_H++;
-                Log.d(TAG, "Pitcher Hits Given Up: " + game.pitcher.gameP_H);
                 game.pitcher.gameP_3B++;
-                Log.d(TAG, "Pitcher Triples Given Up: " + game.pitcher.gameP_3B);
                 game.pitcher.gameP_PA++;
-                Log.d(TAG, "Pitcher Plate Appearances: " + game.pitcher.gameP_PA);
 
                 if(game.manOnThird()) {
                     moveBaseRunnerFrom(3,1);
@@ -355,13 +370,11 @@ public class playball extends Activity {
                 updateBaseRunners();
                 break;
             case 4:
+                updateTeamHits();
                 // homeruns
                 game.pitcher.gameP_H++;
-                Log.d(TAG, "Pitcher Hits Given Up: " + game.pitcher.gameP_H);
                 game.pitcher.gameP_HR++;
-                Log.d(TAG, "Pitcher Homeruns Given Up: " + game.pitcher.gameP_HR);
                 game.pitcher.gameP_PA++;
-                Log.d(TAG, "Pitcher Plate Appearances: " + game.pitcher.gameP_PA);
 
                 if(game.manOnThird()) {
                     moveBaseRunnerFrom(3,1);
@@ -382,6 +395,7 @@ public class playball extends Activity {
                 player.gameAB++;
                 player.gameR++;
                 game.pitcher.gameP_R++;
+                updateScore(1); // for the batter
 
                 updateBaseRunners();
                 break;
@@ -460,7 +474,7 @@ public class playball extends Activity {
     }
 
     private void moveBaseRunnerFrom(int base, int numBases) {
-        int runs = 0;
+        boolean runScored = false;
 
         if((base + numBases) == 4) {
             // move runner home
@@ -468,13 +482,28 @@ public class playball extends Activity {
             // clear runner at 3rd
             game.runner[base] = null;
             //  increment runs scored
-            runs++;
+            runScored = true;
             // increment runs scored for the player
             game.runner[0].gameR++;
         }
         else {
             game.runner[base+numBases] = game.runner[base];
             game.runner[base] = null;
+        }
+
+        if(runScored) {
+            updateScore(1);
+        }
+    }
+
+    private void updateScore(int runs) {
+        if(game.teamAtBat==0) {
+            game.vRuns += runs;
+            game.vScoreByInning[game.inning-1] += runs;
+        }
+        else {
+            game.hRuns += runs;
+            game.hScoreByInning[game.inning-1] += runs;
         }
     }
 
@@ -1104,7 +1133,6 @@ public class playball extends Activity {
         updateBatterCard();
         updatePitcherCard();
         updateNextBatters();
-        updateResult(game.batter);
         updateStamina();
         updatePossibleOutcomes();
     }

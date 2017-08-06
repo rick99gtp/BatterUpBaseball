@@ -1,8 +1,5 @@
 package com.batterupbaseball;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
-
 import java.util.Random;
 
 public class Game {
@@ -113,7 +110,7 @@ public class Game {
     }
 
     public void clearTheBases() {
-        for(int i=0; i < 3; i++)
+        for(int i=0; i < 4; i++)
             runner[i] = null;
     }
 
