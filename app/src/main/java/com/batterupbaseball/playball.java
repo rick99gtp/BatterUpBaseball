@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import static android.content.ContentValues.TAG;
@@ -44,6 +45,13 @@ public class playball extends Activity {
 
         updateScreen();
 
+        RelativeLayout runnerOn1st = (RelativeLayout) findViewById(R.id.runnerOn1st);
+        runnerOn1st.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     public void getBatterResult(View view) {
@@ -548,7 +556,7 @@ public class playball extends Activity {
             tvHighlight = (TextView) findViewById(R.id.tvResult_1b);
 
             // get random explanation of a single
-            game.resultText = thisName + " singles to " + getHitDirection() + " field.";
+            game.resultText = thisName + " singles to " + getHitDirection() + ".";
             game.resultID = 1;
         }
         else if(foundResult==1) {
@@ -556,14 +564,14 @@ public class playball extends Activity {
             ivHighlight = (ImageView) findViewById(R.id.ivResult_2b);
             tvHighlight = (TextView) findViewById(R.id.tvResult_2b);
 
-            game.resultText = thisName + " doubles to " + getHitDirection() + " field.";
+            game.resultText = thisName + " doubles to " + getHitDirection() + ".";
             game.resultID = 2;
         }
         else if(foundResult==2) {
             // triple
             ivHighlight = (ImageView) findViewById(R.id.ivResult_3b);
             tvHighlight = (TextView) findViewById(R.id.tvResult_3b);
-            game.resultText = thisName + " triples to " + getHitDirection() + " field.";
+            game.resultText = thisName + " triples to " + getHitDirection() + ".";
             game.resultID = 3;
         }
         else if(foundResult==3) {
@@ -638,9 +646,7 @@ public class playball extends Activity {
 
             int outType = getOutType(fielder); // gb, ld, flyball, popup
 
-            getOutResult();
-
-            game.addOuts();
+            getOutResult(outType, fielder);
 
             checkEndOfInning();
         }
@@ -656,34 +662,542 @@ public class playball extends Activity {
 
         int total = (dieRedResult*100) + (dieWhiteResult*10) + dieBlueResult;
 
-        if(fielder >= 1 && fielder <= 6) {
+        Log.d(TAG, "fielder: " + fielder);
+        Log.d(TAG, "total: " + total);
+
+        if(fielder >= 0 && fielder <= 5) {
             if(total >= 1 && total <= 450) {
                 // groundball
-                return 0;
+                roll_dice();
+
+                // soft, med, or hard
+                if(game.dieResult >= 1 && game.dieResult <= game.batter.ballSpeed[0]) {
+                    // slow roller
+                    Log.d(TAG, "slow roller");
+                    return 0;
+                }
+                else if(game.dieResult > game.batter.ballSpeed[0] && game.dieResult <= (game.batter.ballSpeed[0] + game.batter.ballSpeed[1])) {
+                    // normal groundball
+                    Log.d(TAG, "normal groundball");
+                    return 1;
+                }
+                else {
+                    // hard grounder
+                    Log.d(TAG, "hard grounder");
+                    return 2;
+                }
             }
-            else if(total > 450 && total <= 683) {
-                // linedrive (max outs)
-                return 4;
+            else if(total > 450 && total <= 700) {
+                // line drive
+                Log.d(TAG, "line drive");
+                return 3;
             }
-            else if(total > 683 && total <= 710) {
-                // linedrive
-                return 1;
+            else if(total > 700 && total <= 710) {
+                // line drive (max)
+                Log.d(TAG, "line drive (max)");
+                return 99;
             }
             else {
                 // popup
-                return 2;
+                Log.d(TAG, "popup");
+
+                if(fielder==0)
+                    return 1;
+                else
+                    return 10;
             }
         }
         else {
-            return 1;
+            // ball to outfield
+            roll_dice();
+
+            if(game.dieResult >= 1 && game.dieResult <= game.batter.ballSpeed[0]) {
+                // shallow fly ball
+                Log.d(TAG, "shallow fly ball");
+                return 4;
+            }
+            else if(game.dieResult > game.batter.ballSpeed[0] && game.dieResult <= (game.batter.ballSpeed[0] + game.batter.ballSpeed[1])) {
+                // normal fly ball
+                Log.d(TAG, "normal fly ball");
+                return 5;
+            }
+            else {
+                // deep fly ball
+                Log.d(TAG, "deep fly ball");
+                return 6;
+            }
         }
     }
 
-    private void getOutResult() {
+    private void getOutResult(int outType, int fielder) {
+        String hitType = "";
+        String additionalResultText = "";
+
         // get the batter's name
         String thisName = game.batter.name;
 
-        game.resultText = thisName + " hits the ball to " + convertPosToString(getOutDirection());
+        switch(outType) {
+            case 0:
+                hitType = "slow roller"; // gb(c)
+                // any runners on base advance while the batter is thrown out
+                if(!game.basesOccupied()) {
+                    additionalResultText = game.batter.name + " is thrown out at first.";
+                    game.addOuts();
+                }
+                else if(game.manOnThird() && game.defenseInfieldIn) {
+                    additionalResultText = game.batter.name + " is thrown out at first.";
+                    game.addOuts();
+                }
+                else if(game.manOnFirst() && game.manOnThird()) {
+                    additionalResultText = game.batter.name + " is thrown out at first.";
+                    game.addOuts();
+
+                    if(game.outs < 3) {
+                        additionalResultText += game.runner[3].name + " is unable to score on the play.";
+                        additionalResultText += game.runner[1].name + " advances to second on the play.";
+                        moveBaseRunnerFrom(2,1);
+                    }
+                }
+                else if(game.manOnSecond() && game.manOnThird()) {
+                    additionalResultText = game.batter.name + " is thrown out at first.";
+                    game.addOuts();
+
+                    if(game.outs < 3) {
+                        additionalResultText += game.runner[3] + " is unable to score on the play.";
+                        additionalResultText += game.runner[2] + " is unable to advance to third on the play.";
+                    }
+                }
+                else if(game.manOnThird() && game.manOnSecond() && game.manOnFirst()) {
+                    additionalResultText = game.runner[3].name = " is thrown out at home!";
+                    game.addOuts();
+
+                    if(game.outs < 3) {
+                        additionalResultText += game.runner[2].name = " advances to third.";
+                        moveBaseRunnerFrom(2,1);
+                        additionalResultText += game.runner[1].name = " advances to second.";
+                        moveBaseRunnerFrom(1,1);
+                        additionalResultText += game.batter.name = " is safe at first on the fielder's choice.";
+                        moveBatter(1,game.batter);
+                    }
+                }
+                else {
+                    additionalResultText += thisName + " is thrown out at first.";
+                    game.addOuts();
+                    if(game.outs < 3) {
+                        if(game.manOnThird()) {
+                            additionalResultText += game.runner[3].name + " scores on the play!";
+                            moveBaseRunnerFrom(3,1);
+                        }
+                        if(game.manOnSecond()) {
+                            additionalResultText += game.runner[2].name + " advances to third on the play";
+                            moveBaseRunnerFrom(2,1);
+                        }
+                        if(game.manOnFirst()) {
+                            additionalResultText += game.runner[1].name + " advances to second on the play";
+                            moveBaseRunnerFrom(1,1);
+                        }
+                    }
+                }
+                break;
+            case 1:
+                hitType = "groundball"; // gb(b)
+
+                if(game.defenseInfieldIn) {
+                    if(game.manOnThird() && !game.manOnSecond() && !game.manOnFirst()) {
+                        // man on third only - infield in
+                        additionalResultText = game.runner[3].name + " is thrown out trying to score!";
+                        game.addOuts();
+
+                        if(game.outs < 3) {
+                            additionalResultText += game.batter.name + " is safe at first on the fielder's choice.";
+                            moveBatter(1,game.batter);
+                        }
+                    }
+                    else if(game.manOnFirst() && !game.manOnSecond() && game.manOnThird()) {
+                        // 1st and 3rd only - infield in
+                        additionalResultText = game.runner[3].name + " is thrown out trying to score!";
+                        game.addOuts();
+
+                        if(game.outs < 3) {
+                            additionalResultText += game.batter.name + " is safe at first on the fielder's choice.";
+                            moveBatter(1,game.batter);
+                            additionalResultText += game.runner[1].name + " advances to second on the play.";
+                            moveBaseRunnerFrom(1,1);
+                        }
+                    }
+                    else if(!game.manOnFirst() && game.manOnSecond() && game.manOnThird()) {
+                        // 2nd and 3rd - infield in
+                        additionalResultText = game.runner[3].name + " is thrown out trying to score!";
+                        game.addOuts();
+
+                        if(game.outs < 3) {
+                            additionalResultText += game.batter.name + " is safe at first on the fielder's choice.";
+                            moveBatter(1,game.batter);
+                            additionalResultText += game.runner[2].name + " advances to third on the play.";
+                            moveBaseRunnerFrom(2,1);
+                        }
+                    }
+                    else if(game.manOnFirst() && game.manOnSecond() && game.manOnThird()) {
+                        // bases loaded - infield in
+                        additionalResultText = game.runner[3].name + " is thrown out trying to score!";
+                        game.addOuts();
+
+                        if(game.outs < 3) {
+                            additionalResultText += game.batter.name + " is safe at first on the fielder's choice.";
+                            moveBatter(1,game.batter);
+                            additionalResultText += game.runner[2].name + " advances to third on the play.";
+                            moveBaseRunnerFrom(2,1);
+                            additionalResultText += game.runner[1].name + " advances to second on the play.";
+                            moveBaseRunnerFrom(1,1);
+                        }
+                    }
+                }
+                else {
+                    // infield back
+                    if(!game.basesOccupied()) {
+                        additionalResultText = thisName + " is thrown out at first.";
+                        game.addOuts();
+                    }
+                    else if(game.manOnThird()) {
+                        if(game.manOnSecond() && game.manOnFirst()) {
+                            // bases loaded
+
+                            if (game.outs == 2) {
+                                additionalResultText = game.runner[1].name + " is thrown out at second.";
+                                game.addOuts();
+                            } else {
+                                additionalResultText = game.runner[1].name + " is thrown out at second.";
+                                additionalResultText += "All other runners advance one base on the fielder's choice.";
+                                game.addOuts();
+
+                                moveBaseRunnerFrom(3, 1);
+                                moveBaseRunnerFrom(2, 1);
+                                moveBatter(1, game.batter);
+                            }
+                        }
+                        else if(game.manOnSecond()) {
+                            if(fielder==3 || fielder==5) {
+                                if(game.outs==2) {
+                                    additionalResultText = game.batter.name + " is thrown out at first.";
+                                    game.addOuts();
+                                }
+                                else {
+                                    additionalResultText = game.batter.name + " is thrown out at first.";
+                                    additionalResultText += game.runner[3].name + " scores from third!";
+                                    additionalResultText += game.runner[2].name + " goes to third.";
+                                    game.addOuts();
+
+                                    moveBaseRunnerFrom(3,1);
+                                    moveBaseRunnerFrom(2,1);
+                                }
+                            }
+                            else {
+                                additionalResultText = game.batter.name + " is thrown out at first.";
+                                additionalResultText += "The runners are unable to advance.";
+                                game.addOuts();
+                            }
+                        }
+                        else if(game.manOnFirst()) {
+                            if(game.outs==2) {
+                                additionalResultText = game.runner[1].name + " is thrown out at second.";
+                                game.addOuts();
+                            }
+                            else {
+                                additionalResultText = game.runner[1].name + " is thrown out at second.";
+                                additionalResultText += game.runner[3].name + " scores from third!";
+                                game.addOuts();
+                                moveBatter(1,game.batter);
+                            }
+                        }
+                        else {
+                            if(fielder==3 || fielder==5) {
+                                if(game.outs==2) {
+                                    additionalResultText = game.batter.name + " is thrown out at first.";
+                                    game.addOuts();
+                                }
+                                else {
+                                    additionalResultText = game.batter.name + " is thrown out at first.";
+                                    additionalResultText += game.runner[3].name + " scores from third!";
+
+                                    game.addOuts();
+                                    moveBaseRunnerFrom(3,1);
+                                }
+                            }
+                            else {
+                                additionalResultText = game.batter.name + " is thrown out at first.";
+                                additionalResultText += "The runners are unable to advance.";
+                                game.addOuts();
+                            }
+                        }
+                    }
+                    else if (game.manOnSecond()) {
+                        if(game.manOnFirst()) {
+                            if(game.outs==2) {
+                                additionalResultText = game.runner[1].name + " is thrown out at second.";
+                                additionalResultText += game.runner[2].name + " goes to third.";
+                                game.addOuts();
+                                moveBatter(1,game.batter);
+                                moveBaseRunnerFrom(2,1);
+                            }
+                            else {
+                                additionalResultText = game.runner[1].name + " is thrown out at second.";
+                                game.addOuts();
+                                additionalResultText += game.runner[2].name + " goes to third.";
+                                moveBaseRunnerFrom(2,1);
+                            }
+                        }
+                        else {
+                            if(fielder==2 || fielder==3) {
+                                if(game.outs==2) {
+                                    additionalResultText = game.batter.name + " is thrown out at first.";
+                                }
+                                else {
+                                    additionalResultText = game.batter.name + " is thrown out at first.";
+                                    game.addOuts();
+                                    additionalResultText += game.runner[2].name + " goes to third.";
+                                    moveBaseRunnerFrom(2,1);
+                                }
+
+                            }
+                            else {
+                                additionalResultText = game.batter.name + " is thrown out at first.";
+                                game.addOuts();
+                                additionalResultText += game.runner[2].name + " is unable to advance to third.";
+                            }
+                        }
+                    }
+                    else if(game.manOnFirst()) {
+                        if(game.outs==2) {
+                            additionalResultText = game.runner[1].name + " is thrown out at second.";
+                            game.addOuts();
+                        }
+                        else {
+                            additionalResultText = game.runner[1].name + " is thrown out second.";
+                            game.addOuts();
+                            additionalResultText += game.batter.name + " is safe at first on the fielder's choice.";
+                            moveBatter(1,game.batter);
+                        }
+                    }
+                }
+                break;
+            case 2:
+                hitType = "hard grounder"; // gb(a)
+                if(game.defenseInfieldIn) {
+                    if(game.manOnThird()) {
+                        if(game.manOnFirst() && game.manOnSecond()) {
+                            // bases loaded - infield in
+                            if(game.outs == 2) {
+                                additionalResultText = game.batter.name + " is thrown out at first.";
+                                game.addOuts();
+                            }
+                            else {
+                                additionalResultText = game.runner[3].name + " is thrown out at home!";
+                                game.addOuts();
+                                additionalResultText += game.batter.name + " is thrown out at first for a double play!";
+                                game.addOuts();
+
+                                if(game.outs < 3) {
+                                    additionalResultText += game.runner[2].name + " advances to third on the play.";
+                                    moveBaseRunnerFrom(2,1);
+                                    additionalResultText += game.runner[1].name + " advances to second on the play.";
+                                    moveBaseRunnerFrom(1,1);
+                                }
+                            }
+                        }
+                        else if(game.manOnSecond()) {
+                            // 2nd and 3rd - infield in
+                            additionalResultText = game.batter.name + " is thrown out at first.";
+                            game.addOuts();
+                        }
+                        else if(game.manOnFirst()) {
+                            // 1st and 3rd - infield in
+                            additionalResultText = game.batter.name + " is thrown out at first.";
+                            game.addOuts();
+
+                            if(game.outs < 3) {
+                                additionalResultText += game.runner[3].name + " is unable to score on the play.";
+                                additionalResultText += game.runner[1].name + " advances to second on the play.";
+                                moveBaseRunnerFrom(1,1);
+                            }
+
+                        }
+                        else {
+                            additionalResultText = game.batter.name + " is thrown out at first.";
+                            game.addOuts();
+
+                            if(game.outs < 3) {
+                                additionalResultText += game.runner[3].name + " is unable to score on the play.";
+                            }
+                        }
+                    }
+                }
+                else if(!game.basesOccupied()) {
+                    // bases empty
+                    additionalResultText = game.batter.name + " is thronw out at first.";
+                    game.addOuts();
+                }
+                else if(game.manOnThird()) {
+                    if(game.manOnSecond() && game.manOnFirst()) {
+                        // bases loaded
+                        if(game.outs==2) {
+                            additionalResultText = game.batter.name + " is thrown out at first.";
+                            game.addOuts();
+                        }
+                        else {
+                            additionalResultText = game.batter.name + " grounds into a 6-4-3 double play!";
+                            game.addOuts();
+                            game.addOuts();
+
+                            if(game.outs==2) {
+                                additionalResultText += game.runner[3].name + " scores from third!";
+                                moveBaseRunnerFrom(3,1);
+                                additionalResultText += game.runner[2].name + " advances to third.";
+                                moveBaseRunnerFrom(2,1);
+                                game.clearBase(1);
+                            }
+                        }
+                    }
+                    else if(game.manOnSecond()) {
+                        if(fielder==3 || fielder==5) {
+                            if(game.outs==2) {
+                                additionalResultText = game.batter.name + " is thrown out at first.";
+                                game.addOuts();
+                            }
+                            else {
+                                additionalResultText = game.batter.name + " is thrown out at first.";
+                                game.addOuts();
+                                additionalResultText += game.runner[2].name + " advances to third on the play.";
+                                moveBaseRunnerFrom(2,1);
+                            }
+                        }
+                        else {
+                            if(game.outs==2) {
+                                additionalResultText = game.batter.name = " is thrown out at first.";
+                                game.addOuts();
+                            }
+                            else {
+                                additionalResultText = game.batter.name = " is thrown out at first.";
+                                game.addOuts();
+                                additionalResultText += game.runner[2].name = " is unable to go to third on the play.";
+                            }
+                        }
+                    }
+                    else if(game.manOnFirst()) {
+                        if(game.outs==2) {
+                            additionalResultText = game.batter.name + " is thrown out at first.";
+                            game.addOuts();
+                        }
+                        else {
+                            additionalResultText = game.batter.name + " grounds into a 6-4-3 double play!";
+                            game.addOuts();
+                            game.addOuts();
+
+                            if(game.outs==2) {
+                                additionalResultText += game.runner[3].name + " scores from third!";
+                                moveBaseRunnerFrom(3,1);
+                                game.clearBase(1);
+                            }
+                        }
+                    }
+                    else {
+                        // only a man on 3rd
+                        if(fielder == 3 || fielder == 5) {
+                            if(game.outs==2) {
+                                additionalResultText = game.batter.name + " is thrown out at first.";
+                                game.addOuts();
+                            }
+                            else {
+                                additionalResultText = game.batter.name + " is thrown out at first.";
+                                game.addOuts();
+                                additionalResultText += game.runner[3].name + " scores from third!";
+                                moveBaseRunnerFrom(3,1);
+                            }
+                        }
+                        else {
+                            additionalResultText = game.batter.name + " is thronw out at first.";
+                            game.addOuts();
+                            additionalResultText += game.runner[3].name + " is unable to score on the play.";
+                        }
+                    }
+                }
+                else if(game.manOnSecond()) {
+                    if(game.manOnFirst()) {
+                        // men on 1st and 2nd
+                        if(game.outs == 2){
+                            additionalResultText = game.batter.name + " is thrown out at first.";
+                            game.addOuts();
+                        }
+                        else {
+                            additionalResultText = game.batter.name + " grounds into a 6-4-3 double play!";
+                            game.addOuts();
+                            game.addOuts();
+
+                            if(game.outs==2) {
+                                additionalResultText = game.runner[2].name + " advances to third on the play.";
+                                moveBaseRunnerFrom(2,1);
+                            }
+                        }
+                    }
+                    else {
+                        if(game.outs == 2) {
+                            additionalResultText = game.batter.name + " is thrown out at first.";
+                            game.addOuts();
+                        }
+                        else {
+                            if(fielder == 2 || fielder == 3) {
+                                additionalResultText = game.batter.name + " is thrown out at first.";
+                                game.addOuts();
+                                additionalResultText += game.runner[2].name + " advances to third on the play.";
+                                moveBaseRunnerFrom(2,1);
+                            }
+                            else {
+                                additionalResultText = game.batter.name + " is thrown out at first.";
+                                game.addOuts();
+                                additionalResultText += game.runner[2].name = " is unable to advance to third on the play.";
+                            }
+                        }
+                    }
+                }
+                else if(game.manOnFirst()) {
+                    if(game.outs==2) {
+                        additionalResultText = game.batter.name + " is thrown out at first.";
+                        game.addOuts();
+                    }
+                    else {
+                        additionalResultText = game.batter.name + " grounds into a 6-4-3 double play!";
+                        game.addOuts();
+                        game.addOuts();
+                    }
+                }
+                break;
+            case 3:
+                hitType = "line drive";
+                game.addOuts();
+                break;
+            case 4:
+                hitType = "shallow fly ball"; // fb(c)
+                break;
+            case 5:
+                hitType = "fly ball"; // fb(b)
+                break;
+            case 6:
+                hitType = "deep fly ball"; // fb(a)
+                break;
+            case 10:
+                hitType = "popup";
+                break;
+            case 99:
+                hitType = "line drive (max)"; // max outs
+                // call another method to determine just how many outs and which baserunners are out
+                break;
+        }
+
+        game.resultText = thisName + " hits a " + hitType + " to " + convertPosToString(fielder);
+        game.resultText += ".  " + additionalResultText;
+
+        showResultText();
+        updateScreen();
+
     }
 
     private String convertPosToString(int pos) {
@@ -1135,6 +1649,18 @@ public class playball extends Activity {
         updateNextBatters();
         updateStamina();
         updatePossibleOutcomes();
+        updatePitcherHoldRating();
+        updateCatcherHoldRunners();
+    }
+
+    private void updateCatcherHoldRunners() {
+        TextView tvCatcherHoldRunners = (TextView) findViewById(R.id.tvCatcherHoldRunners);
+        tvCatcherHoldRunners.setText("Hold Runners: " + game.defense[1].rsb);
+    }
+
+    private void updatePitcherHoldRating() {
+        TextView tvPitcherHoldRating = (TextView) findViewById(R.id.tvPitcherHoldRating);
+        tvPitcherHoldRating.setText("Hold Runners: " + game.pitcher.hold_rating);
     }
 
     private void updateInning() {

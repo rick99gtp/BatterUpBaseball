@@ -12,6 +12,7 @@ public class Game {
     Player[] defense;
     Player onDeck;
     Player inTheHole;
+    boolean defenseInfieldIn = false;
 
     Die die1, die2, die3;
     int inning = 1;
@@ -146,6 +147,10 @@ public class Game {
             return true;
 
         return false;
+    }
+
+    public void clearBase(int base) {
+        runner[base] = null;
     }
 
 }

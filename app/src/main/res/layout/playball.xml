@@ -636,12 +636,25 @@
 
                     </RelativeLayout>
 
-                    <View
+                    <RelativeLayout
                         android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/tvPitcherHoldRating"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:textColor="#ff0000"
+                            android:textStyle="bold"
+                            android:textSize="10sp"
+                            tools:text="Hold Runners: 99"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/runnerOn1st"
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="match_parent">
@@ -677,11 +690,22 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent" />
 
-                    <ImageView
-                        android:id="@+id/ivHomePlate"
+                    <RelativeLayout
                         android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/tvCatcherHoldRunners"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:textColor="#ff0000"
+                            android:textStyle="bold"
+                            android:textSize="10sp"
+                            tools:text="Hold Runners: 99"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </RelativeLayout>
 
                     <View
                         android:layout_weight="1"
@@ -806,6 +830,7 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:textSize="10sp"
                 android:id="@+id/tvResult"
                 tools:text="Result of die roll."
                 android:layout_width="match_parent"
