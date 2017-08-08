@@ -687,14 +687,32 @@ public class playball extends Activity {
                     return 2;
                 }
             }
-            else if(total > 450 && total <= 700) {
+            else if(total > 450 && total <= 600) {
                 // line drive
+                Log.d(TAG, "line drive");
+                if(fielder == 0) {
+                    return 1;
+                }
+                else {
+                    return 3;
+                }
+            }
+            else if(total > 600 && total <=610) {
                 Log.d(TAG, "line drive");
                 return 3;
             }
+            else if(total >610 && total <= 700) {
+                Log.d(TAG, "line drive");
+                if(fielder == 0) {
+                    return 1;
+                }
+                else {
+                    return 3;
+                }
+            }
             else if(total > 700 && total <= 710) {
                 // line drive (max)
-                Log.d(TAG, "line drive (max)");
+                Log.d(TAG, "line drive/groudnball (max)");
                 return 99;
             }
             else {
@@ -1133,7 +1151,7 @@ public class playball extends Activity {
                             game.addOuts();
 
                             if(game.outs==2) {
-                                additionalResultText = game.runner[2].name + " advances to third on the play.";
+                                additionalResultText += game.runner[2].name + " advances to third on the play.";
                                 moveBaseRunnerFrom(2,1);
                             }
                         }
@@ -1176,19 +1194,238 @@ public class playball extends Activity {
                 break;
             case 4:
                 hitType = "shallow fly ball"; // fb(c)
+                game.addOuts();
+                if(game.basesOccupied()) {
+                    additionalResultText = "The baserunners are unable to advance.";
+                }
                 break;
             case 5:
                 hitType = "fly ball"; // fb(b)
+                game.addOuts();
+                if(game.outs < 3) {
+                    if(game.manOnThird()) {
+                        additionalResultText = game.runner[3].name + " tags from third and scores!";
+                        moveBaseRunnerFrom(3,1);
+                        checkEndOfGame();
+                    }
+                }
                 break;
             case 6:
                 hitType = "deep fly ball"; // fb(a)
+                game.addOuts();
+                if(game.outs < 3) {
+                    if(game.manOnThird()) {
+                        additionalResultText = game.runner[3].name + " tags from third and scores!";
+                        moveBaseRunnerFrom(3,1);
+                        checkEndOfGame();
+                    }
+                    if(game.manOnSecond()) {
+                        additionalResultText += game.runner[2].name + " tags from second and advances to third.";
+                        moveBaseRunnerFrom(2,1);
+                    }
+                    if(game.manOnFirst()) {
+                        additionalResultText += game.runner[1].name + " tags from first and advances to second.";
+                        moveBaseRunnerFrom(1,1);
+                    }
+                }
                 break;
             case 10:
                 hitType = "popup";
+                game.addOuts();
                 break;
             case 99:
-                hitType = "line drive (max)"; // max outs
-                // call another method to determine just how many outs and which baserunners are out
+                if(!game.basesOccupied()) {
+                    //lineout to fielder
+                    hitType = "lineout";
+                    game.addOuts();
+                }
+                else if(game.manOnThird()) {
+                    if(game.manOnSecond() && game.manOnFirst()) {
+                        // bases loaded
+                        if(game.outs == 0) {
+                            // possibility of a triple play
+                            roll_dice();
+
+                            if(game.dieResult <= 350) {
+
+                                if(fielder==5) {
+                                    // triple play groundout
+                                    hitType = "hard line drive";
+                                    additionalResultText = " He makes the catch.";
+                                    additionalResultText += game.defense[5].name + " flips to second for the second out.";
+                                    game.addOuts();
+                                    game.addOuts();
+                                    additionalResultText += "And on to first base for a TRIPLE PLAY!";
+                                    game.addOuts();
+                                }
+                                else if(fielder==3) {
+                                    hitType = "hard line drive";
+                                    additionalResultText = game.defense[3].name + "He catches the ball and doubles off the runner on second base for the second out.";
+                                    additionalResultText += "He throws to first for the TRIPLE PLAY!";
+                                    game.addOuts();
+                                    game.addOuts();
+                                    game.addOuts();
+                                }
+                                else {
+                                    // triple play groundout
+                                    hitType = "hard groundball";
+                                    additionalResultText = game.defense[4].name + " tags third for one out.";
+                                    game.addOuts();
+                                    additionalResultText += " He throws to second for the second out!";
+                                    game.addOuts();
+                                    additionalResultText += "And on to first base for a TRIPLE PLAY!";
+                                    game.addOuts();
+                                }
+                            }
+                            else {
+                                // double play
+                                hitType = "hard line drive";
+                                additionalResultText = game.defense[fielder].name + " throws to second base for a double play";
+                                game.addOuts();
+                                game.addOuts();
+                                game.clearBase(2);
+                            }
+                        }
+                        else if(game.outs==1) {
+                            // double play
+                            hitType = "hard line drive";
+                            additionalResultText = game.defense[fielder].name + " throws to second base for a double play";
+                            game.addOuts();
+                            game.addOuts();
+                        }
+                        else {
+                            hitType = "hard line drive";
+                            game.addOuts();
+                        }
+                    }
+                    else if(game.manOnSecond()) {
+                        if(game.outs < 2) {
+                            // double play
+                            hitType = "hard line drive";
+                            additionalResultText = game.defense[fielder].name + " throws to third base for a double play";
+                            game.addOuts();
+                            game.addOuts();
+                            game.clearBase(3);
+                        }
+                        else {
+                            hitType = "hard line drive";
+                            game.addOuts();
+                        }
+                    }
+                    else if(game.manOnFirst()) {
+                        if(game.outs < 2) {
+                            // double play
+                            hitType = "hard line drive";
+                            additionalResultText = game.defense[fielder].name + " throws to third base for a double play";
+                            game.addOuts();
+                            game.addOuts();
+                            game.clearBase(3);
+                        }
+                        else {
+                            hitType = "hard line drive";
+                            game.addOuts();
+                        }
+                    }
+                    else {
+                        // only a runner on third - double play
+                        if(game.outs < 2) {
+                            // double play
+                            hitType = "hard line drive";
+                            additionalResultText = game.defense[fielder].name + " throws to third base for a double play";
+                            game.addOuts();
+                            game.addOuts();
+                            game.clearBase(3);
+                        }
+                        else {
+                            hitType = "hard line drive";
+                            game.addOuts();
+                        }
+                    }
+                }
+                else if(game.manOnSecond()) {
+                    if (game.manOnFirst()) {
+                        if (game.outs == 0) {
+                            // possibility of a triple play
+                            roll_dice();
+
+                            if (game.dieResult <= 350) {
+
+                                if (fielder == 5) {
+                                    // triple play groundout
+                                    hitType = "hard line drive";
+                                    additionalResultText = game.defense[5].name + " catches the ball and flips to second for two outs.";
+                                    game.addOuts();
+                                    game.addOuts();
+                                    additionalResultText += "And on to first base for a TRIPLE PLAY!";
+                                    game.addOuts();
+                                } else if (fielder == 3) {
+                                    hitType = "hard line drive";
+                                    additionalResultText = game.defense[3].name + "He catches the ball and doubles off the runner on second base for the second out.";
+                                    additionalResultText = "He throws to first for the TRIPLE PLAY!";
+                                    game.addOuts();
+                                    game.addOuts();
+                                    game.addOuts();
+                                } else {
+                                    // triple play groundout
+                                    hitType = "hard groundball";
+                                    additionalResultText = game.defense[4].name + " tags third for one out.";
+                                    game.addOuts();
+                                    additionalResultText += " He throws to second for the second out!";
+                                    game.addOuts();
+                                    additionalResultText += "And on to first base for a TRIPLE PLAY!";
+                                    game.addOuts();
+                                }
+                            }
+                            else {
+                                // double play
+                                hitType = "hard line drive";
+                                additionalResultText = game.defense[fielder].name + " throws to second base for a double play";
+                                game.addOuts();
+                                game.addOuts();
+                                game.clearBase(2);
+                            }
+                        }
+                        else if (game.outs == 1) {
+                            // double play
+                            hitType = "hard line drive";
+                            additionalResultText = game.defense[fielder].name + " throws to second base for a double play";
+                            game.addOuts();
+                            game.addOuts();
+                        }
+                        else {
+                            hitType = "hard line drive";
+                            game.addOuts();
+                        }
+                    }
+                    else {
+                        if(game.outs < 2) {
+                            // double play
+                            hitType = "hard line drive";
+                            additionalResultText = game.defense[fielder].name + " throws to second base for a double play";
+                            game.addOuts();
+                            game.addOuts();
+                        }
+                        else {
+                            hitType = "hard line drive";
+                            game.addOuts();
+                        }
+                    }
+                }
+                else if(game.manOnFirst()) {
+                    if(game.outs < 2) {
+                        // double play
+                        // double play
+                        hitType = "hard line drive";
+                        additionalResultText = game.defense[fielder].name + " throws to second base for a double play";
+                        game.addOuts();
+                        game.addOuts();
+                    }
+                    else {
+                        hitType = "hard line drive";
+                        game.addOuts();
+                    }
+                }
+
                 break;
         }
 
