@@ -13,8 +13,13 @@ public class Game {
     Player onDeck;
     Player inTheHole;
     boolean defenseInfieldIn = false;
+    int userTeam = 0;
 
     Die die1, die2, die3;
+    int dieRedResult = 0;
+    int dieWhiteResult = 0;
+    int dieBlueResult = 0;
+
     int inning = 1;
     int teamAtBat = 0;
     int vRuns = 0;
@@ -113,14 +118,6 @@ public class Game {
     public void clearTheBases() {
         for(int i=0; i < 4; i++)
             runner[i] = null;
-    }
-
-    public void nextHalfInning() {
-        teamAtBat ^= 1;
-
-        if(teamAtBat==0) {
-            inning++;
-        }
     }
 
     public boolean manOnFirst() {

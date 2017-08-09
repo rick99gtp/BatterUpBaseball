@@ -19,7 +19,9 @@ public class Player {
     int sac_bunt, spd_rating, avoid_dp, hold_rating, rsb, vsl_rating, vsr_rating, con_rating, pwr_rating;
     String special_text;
     String role; // starter, bullpen, bench
-    int stamina;
+    int staminaMax;
+    int staminaCurrent;
+    int staminaRunsGivenUpThisInning; // for every run beyond the 1st, -1 to stamina
     int balkRating;
     int wildPitchRating;
     int passedBallRating;

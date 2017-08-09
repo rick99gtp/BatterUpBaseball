@@ -49,7 +49,15 @@ public class playball extends Activity {
         runnerOn1st.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if(game.teamAtBat == game.userTeam) {
+                    // show popup window
+                    // show baserunner stealing rating, pitcher's hold rating
+                    // adjustment if runner is held
+                    // catcher's arm rating
+                    // show final success rate to roll UNDER to be safe
+                    // show steal 2nd button
+                    // show cancel button
+                }
             }
         });
     }
@@ -73,16 +81,13 @@ public class playball extends Activity {
 
                 if(game.dieResult <= wildPitchRating) {
                     updateWildPitch();
-                    showResultText();
                     Log.d(TAG, "WILD PITCH");
                 }
                 else {
-                    Log.d(TAG, "No wild pitch, get the result");
+                    Log.d(TAG, "No wild pitch, use the original result");
                     roll_dice();
 
                     highlightOutcome();
-                    showResultText();
-                    updateScreen();
                 }
             }
             else if (game.dieResult > 50 && game.dieResult <= 100) {
@@ -92,15 +97,12 @@ public class playball extends Activity {
 
                 if(game.dieResult <= balkRating) {
                     updateBalk();
-                    showResultText();
                     Log.d(TAG, "BALK");
                 }
                 else {
                     roll_dice();
 
                     highlightOutcome();
-                    showResultText();
-                    updateScreen();
                 }
             }
             else if(game.dieResult > 100 && game.dieResult <= 150) {
@@ -110,34 +112,34 @@ public class playball extends Activity {
 
                 if(game.dieResult <= passedBallRating) {
                     updatePassedBall();
-                    showResultText();
                     Log.d(TAG, "PASSED BALL");
                 }
                 else {
                     roll_dice();
+                    show_dice_roll();
 
                     highlightOutcome();
-                    showResultText();
-                    updateScreen();
                 }
             }
             else {
                 roll_dice();
 
+                show_dice_roll();
                 highlightOutcome();
-                showResultText();
-                updateScreen();
             }
+
+            showResultText();
         }
         else {
             roll_dice();
+            show_dice_roll();
+
             Log.d(TAG, "Runner on 1st: " + game.manOnFirst());
             Log.d(TAG, "Runner on 2nd: " + game.manOnSecond());
             Log.d(TAG, "Runner on 3rd: " + game.manOnThird());
 
             highlightOutcome();
             showResultText();
-            updateScreen();
         }
 
         updateResult(game.batter);
@@ -151,6 +153,11 @@ public class playball extends Activity {
         if(game.manOnThird()) {
             moveBaseRunnerFrom(3,1);
             game.resultText += " " + game.runner[0].name + " scores!";
+            game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+            if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                game.pitcher.staminaCurrent -= 1;
+            }
         }
         if(game.manOnSecond()) {
             moveBaseRunnerFrom(2,1);
@@ -171,6 +178,11 @@ public class playball extends Activity {
         if(game.manOnThird()) {
             moveBaseRunnerFrom(3,1);
             game.resultText += " " + game.runner[0].name + " scores!";
+            game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+            if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                game.pitcher.staminaCurrent -= 1;
+            }
         }
         if(game.manOnSecond()) {
             moveBaseRunnerFrom(2,1);
@@ -192,6 +204,11 @@ public class playball extends Activity {
         if(game.manOnThird()) {
             moveBaseRunnerFrom(3,1);
             game.resultText += " " + game.runner[0].name + " scores!";
+            game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+            if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                game.pitcher.staminaCurrent -= 1;
+            }
         }
         if(game.manOnSecond()) {
             moveBaseRunnerFrom(2,1);
@@ -205,30 +222,36 @@ public class playball extends Activity {
         updateScreen();
     }
 
-    private void roll_dice() {
+    private void show_dice_roll() {
         int[] dieImageRed = {R.drawable.red_die_0, R.drawable.red_die_1, R.drawable.red_die_2, R.drawable.red_die_3, R.drawable.red_die_4, R.drawable.red_die_5, R.drawable.red_die_6, R.drawable.red_die_7, R.drawable.red_die_8, R.drawable.red_die_9};
         int[] dieImageWhite = {R.drawable.white_die_0, R.drawable.white_die_1, R.drawable.white_die_2, R.drawable.white_die_3, R.drawable.white_die_4, R.drawable.white_die_5, R.drawable.white_die_6, R.drawable.white_die_7, R.drawable.white_die_8, R.drawable.white_die_9};
         int[] dieImageBlue = {R.drawable.blue_die_0, R.drawable.blue_die_1, R.drawable.blue_die_2, R.drawable.blue_die_3, R.drawable.blue_die_4, R.drawable.blue_die_5, R.drawable.blue_die_6, R.drawable.blue_die_7, R.drawable.blue_die_8, R.drawable.blue_die_9};
 
-        int dieRedResult = game.rollDie();
-        int dieWhiteResult = game.rollDie();
-        int dieBlueResult = game.rollDie();
-
         ImageView ivRedDie = (ImageView) findViewById(R.id.ivDie_1);
-        ivRedDie.setImageResource(dieImageRed[dieRedResult]);
+        ivRedDie.setImageResource(dieImageRed[game.dieRedResult]);
 
         ImageView ivWhiteDie = (ImageView) findViewById(R.id.ivDie_2);
-        ivWhiteDie.setImageResource(dieImageWhite[dieWhiteResult]);
+        ivWhiteDie.setImageResource(dieImageWhite[game.dieWhiteResult]);
 
         ImageView ivBlueDie = (ImageView) findViewById(R.id.ivDie_3);
-        ivBlueDie.setImageResource(dieImageBlue[dieBlueResult]);
+        ivBlueDie.setImageResource(dieImageBlue[game.dieBlueResult]);
 
-        game.dieResult = (dieRedResult*100) + (dieWhiteResult*10) + dieBlueResult;
+    }
+
+    private void roll_dice() {
+        game.dieRedResult = game.rollDie();
+        game.dieWhiteResult = game.rollDie();
+        game.dieBlueResult = game.rollDie();
+
+        game.dieResult = (game.dieRedResult*100) + (game.dieWhiteResult*10) + game.dieBlueResult;
     }
 
     private void checkEndOfInning() {
         if(game.outs == 3) {
             // check for end of game
+            game.pitcher.staminaCurrent -= 1;
+            game.pitcher.staminaRunsGivenUpThisInning = 0;
+
             if(checkEndOfGame()) {
                 TextView tvResultText = (TextView) findViewById(R.id.tvResult);
                 tvResultText.setText("Game Over");
@@ -237,9 +260,21 @@ public class playball extends Activity {
                 game.outs=0;
                 game.clearTheBases();
                 updateBaseRunners();
-                game.nextHalfInning();
+                nextHalfInning();
                 updateScreen();
             }
+        }
+    }
+
+    private void nextHalfInning() {
+        game.teamAtBat ^= 1;
+
+        if(game.teamAtBat==0) {
+            game.inning++;
+            game.pitcher = game.hPitcher;
+        }
+        else {
+            game.pitcher = game.vPitcher;
         }
     }
 
@@ -300,11 +335,17 @@ public class playball extends Activity {
                 game.pitcher.gameP_H++;
                 game.pitcher.gameP_1B++;
                 game.pitcher.gameP_PA++;
+                game.pitcher.staminaCurrent -= 1;
 
                 if(game.manOnThird()) {
                     moveBaseRunnerFrom(3,1);
                     player.gameRBI++;
                     game.pitcher.gameP_R++;
+                    game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+                    if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                        game.pitcher.staminaCurrent -= 1;
+                    }
                 }
                 if(game.manOnSecond()) {
                     moveBaseRunnerFrom(2,1);
@@ -328,10 +369,16 @@ public class playball extends Activity {
                 game.pitcher.gameP_H++;
                 game.pitcher.gameP_2B++;
                 game.pitcher.gameP_PA++;
+                game.pitcher.staminaCurrent -= 1;
 
                 if(game.manOnThird()) {
                     moveBaseRunnerFrom(3,1);
                     player.gameRBI++;
+                    game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+                    if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                        game.pitcher.staminaCurrent -= 1;
+                    }
                 }
                 if(game.manOnSecond()) {
                     moveBaseRunnerFrom(2,2);
@@ -355,11 +402,17 @@ public class playball extends Activity {
                 game.pitcher.gameP_H++;
                 game.pitcher.gameP_3B++;
                 game.pitcher.gameP_PA++;
+                game.pitcher.staminaCurrent -= 1;
 
                 if(game.manOnThird()) {
                     moveBaseRunnerFrom(3,1);
                     player.gameRBI++;
                     game.pitcher.gameP_R++;
+                    game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+                    if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                        game.pitcher.staminaCurrent -= 1;
+                    }
                 }
                 if(game.manOnSecond()) {
                     moveBaseRunnerFrom(2,2);
@@ -383,11 +436,17 @@ public class playball extends Activity {
                 game.pitcher.gameP_H++;
                 game.pitcher.gameP_HR++;
                 game.pitcher.gameP_PA++;
+                game.pitcher.staminaCurrent -= 1;
 
                 if(game.manOnThird()) {
                     moveBaseRunnerFrom(3,1);
                     player.gameRBI++;
                     game.pitcher.gameP_R++;
+                    game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+                    if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                        game.pitcher.staminaCurrent -= 1;
+                    }
                 }
                 if(game.manOnSecond()) {
                     moveBaseRunnerFrom(2,2);
@@ -413,6 +472,7 @@ public class playball extends Activity {
                 Log.d(TAG, "Pitcher Walks Given Up: " + game.pitcher.gameP_BB);
                 game.pitcher.gameP_PA++;
                 Log.d(TAG, "Pitcher Plate Appearances: " + game.pitcher.gameP_PA);
+                game.pitcher.staminaCurrent -= 1;
 
                 if(game.manOnThird()) {
                     if(game.manOnSecond() && game.manOnFirst()) {
@@ -421,6 +481,11 @@ public class playball extends Activity {
                         moveBaseRunnerFrom(2,1);
                         moveBaseRunnerFrom(1,1);
                         game.pitcher.gameP_R++;
+                        game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+                        if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                            game.pitcher.staminaCurrent -= 1;
+                        }
                     }
                 }
                 if(game.manOnSecond()) {
@@ -446,6 +511,7 @@ public class playball extends Activity {
                 Log.d(TAG, "Batters hit by pitch: " + game.pitcher.gameP_HBP);
                 game.pitcher.gameP_PA++;
                 Log.d(TAG, "Pitcher Plate Appearances: " + game.pitcher.gameP_PA);
+                game.pitcher.staminaCurrent -= 1;
 
                 if(game.manOnThird()) {
                     if(game.manOnSecond() && game.manOnFirst()) {
@@ -454,6 +520,11 @@ public class playball extends Activity {
                         moveBaseRunnerFrom(2,1);
                         moveBaseRunnerFrom(1,1);
                         game.pitcher.gameP_R++;
+                        game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+                        if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                            game.pitcher.staminaCurrent -= 1;
+                        }
                     }
                 }
                 if(game.manOnSecond()) {
@@ -805,6 +876,11 @@ public class playball extends Activity {
                         if(game.manOnThird()) {
                             additionalResultText += game.runner[3].name + " scores on the play!";
                             moveBaseRunnerFrom(3,1);
+                            game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+                            if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                                game.pitcher.staminaCurrent -= 1;
+                            }
                         }
                         if(game.manOnSecond()) {
                             additionalResultText += game.runner[2].name + " advances to third on the play";
@@ -907,6 +983,11 @@ public class playball extends Activity {
 
                                     moveBaseRunnerFrom(3,1);
                                     moveBaseRunnerFrom(2,1);
+                                    game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+                                    if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                                        game.pitcher.staminaCurrent -= 1;
+                                    }
                                 }
                             }
                             else {
@@ -939,6 +1020,11 @@ public class playball extends Activity {
 
                                     game.addOuts();
                                     moveBaseRunnerFrom(3,1);
+                                    game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+                                    if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                                        game.pitcher.staminaCurrent -= 1;
+                                    }
                                 }
                             }
                             else {
@@ -1069,6 +1155,11 @@ public class playball extends Activity {
                             if(game.outs==2) {
                                 additionalResultText += game.runner[3].name + " scores from third!";
                                 moveBaseRunnerFrom(3,1);
+                                game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+                                if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                                    game.pitcher.staminaCurrent -= 1;
+                                }
                                 additionalResultText += game.runner[2].name + " advances to third.";
                                 moveBaseRunnerFrom(2,1);
                                 game.clearBase(1);
@@ -1114,6 +1205,11 @@ public class playball extends Activity {
                                 additionalResultText += game.runner[3].name + " scores from third!";
                                 moveBaseRunnerFrom(3,1);
                                 game.clearBase(1);
+                                game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+                                if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                                    game.pitcher.staminaCurrent -= 1;
+                                }
                             }
                         }
                     }
@@ -1129,6 +1225,11 @@ public class playball extends Activity {
                                 game.addOuts();
                                 additionalResultText += game.runner[3].name + " scores from third!";
                                 moveBaseRunnerFrom(3,1);
+                                game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+                                if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                                    game.pitcher.staminaCurrent -= 1;
+                                }
                             }
                         }
                         else {
@@ -1195,28 +1296,41 @@ public class playball extends Activity {
             case 4:
                 hitType = "shallow fly ball"; // fb(c)
                 game.addOuts();
-                if(game.basesOccupied()) {
-                    additionalResultText = "The baserunners are unable to advance.";
+
+                if(game.outs < 3) {
+                    if (game.basesOccupied()) {
+                        additionalResultText = "The baserunners are unable to advance.";
+                    }
                 }
                 break;
             case 5:
-                hitType = "fly ball"; // fb(b)
+                hitType = "deep fly ball"; // fb(b)
                 game.addOuts();
                 if(game.outs < 3) {
                     if(game.manOnThird()) {
                         additionalResultText = game.runner[3].name + " tags from third and scores!";
                         moveBaseRunnerFrom(3,1);
+                        game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+                        if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                            game.pitcher.staminaCurrent -= 1;
+                        }
                         checkEndOfGame();
                     }
                 }
                 break;
             case 6:
-                hitType = "deep fly ball"; // fb(a)
+                hitType = "deep fly ball to the warning track"; // fb(a)
                 game.addOuts();
                 if(game.outs < 3) {
                     if(game.manOnThird()) {
                         additionalResultText = game.runner[3].name + " tags from third and scores!";
                         moveBaseRunnerFrom(3,1);
+                        game.pitcher.staminaRunsGivenUpThisInning += 1;
+
+                        if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
+                            game.pitcher.staminaCurrent -= 1;
+                        }
                         checkEndOfGame();
                     }
                     if(game.manOnSecond()) {
@@ -1473,10 +1587,12 @@ public class playball extends Activity {
         teamSelected = prefs.getString("USER_TEAM", "V");
 
         if(teamSelected.equals("V")) {
+            game.userTeam = 0;
             vSeasonName = prefs.getString("userSeasonFileName", current_year);
             hSeasonName = prefs.getString("oppSeasonFileName", current_year);
         }
         else {
+            game.userTeam = 1;
             vSeasonName = prefs.getString("oppSeasonFileName", current_year);
             hSeasonName = prefs.getString("userSeasonFileName", current_year);
         }
@@ -1509,8 +1625,6 @@ public class playball extends Activity {
         game.inTheHole = vTeam.roster.get(vLineup[2]);
 
         updateBaseRunners();
-
-        Log.d(TAG, "Batter: " + game.batter.name);
     }
 
     private void setupDefense() {
@@ -1652,6 +1766,9 @@ public class playball extends Activity {
                 // role
 
                 // stamina
+                col1 = cPlayer.getColumnIndex("stamina");
+                thisPlayer.staminaMax = cPlayer.getInt(col1);
+                thisPlayer.staminaCurrent = thisPlayer.staminaMax;
 
                 vTeam.addPlayerToRoster(thisPlayer);
             }
@@ -1823,6 +1940,9 @@ public class playball extends Activity {
                 // role
 
                 // stamina
+                col1 = cPlayer.getColumnIndex("stamina");
+                thisPlayer.staminaMax = cPlayer.getInt(col1);
+                thisPlayer.staminaCurrent = thisPlayer.staminaMax;
 
                 hTeam.addPlayerToRoster(thisPlayer);
             }
@@ -2225,28 +2345,9 @@ public class playball extends Activity {
         ImageView ivStamina = (ImageView) findViewById(R.id.ivStamina);
         ClipDrawable drawable = (ClipDrawable) ivStamina.getBackground();
 
-        int iStamina = 0; // progress
-        int pStamina = 0; // pitcher
-        int gStamina = 0; // game
+        float iStamina = (((float)game.pitcher.staminaCurrent / game.pitcher.staminaMax)*10000); // 10000 = maximum, 0 = minimum
 
-        if(game.teamAtBat==0) {
-            pStamina = game.hPitcher.stamina;
-            gStamina = game.hStamina;
-        }
-        else {
-            pStamina = game.vPitcher.stamina;
-            gStamina = game.vStamina;
-        }
-
-        if(pStamina==0) {
-            pStamina = 1;
-        }
-
-        iStamina = ((gStamina / pStamina) * 10000);
-
-        iStamina = 5000;
-
-        drawable.setLevel(iStamina);
+        drawable.setLevel((int)iStamina);
 
     }
 

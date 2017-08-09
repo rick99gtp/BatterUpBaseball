@@ -863,13 +863,6 @@
                     android:layout_height="match_parent"/>
 
                 <ImageView
-                    android:id="@+id/ivStaminaBG"
-                    android:layout_gravity="right"
-                    android:background="@drawable/stamina_bar_bg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-
-                <ImageView
                     android:layout_gravity="right"
                     android:id="@+id/ivStamina"
                     android:background="@drawable/clip_stamina"
