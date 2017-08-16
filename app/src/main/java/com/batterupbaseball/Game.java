@@ -31,8 +31,7 @@ public class Game {
     int outs = 0;
     int[] vScoreByInning = new int[10];
     int[] hScoreByInning = new int[10];
-    int vStamina = 0;
-    int hStamina = 0;
+
     int dieResult = 0;
 
     int[] minHitDirection = new int[3];

@@ -578,6 +578,7 @@
                         android:layout_height="match_parent" />
 
                     <RelativeLayout
+                        android:id="@+id/runnerOn2nd"
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="match_parent">
@@ -614,6 +615,7 @@
                     android:orientation="horizontal">
 
                     <RelativeLayout
+                        android:id="@+id/runnerOn3rd"
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="match_parent">
@@ -702,7 +704,7 @@
                             android:textColor="#ff0000"
                             android:textStyle="bold"
                             android:textSize="10sp"
-                            tools:text="Hold Runners: 99"
+                            tools:text="Arm Rating: 99"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </RelativeLayout>
@@ -846,11 +848,10 @@
             android:orientation="vertical"
             android:layout_height="match_parent">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+                android:layout_weight="1">
 
                 <TextView
                     android:layout_gravity="left"
@@ -863,13 +864,20 @@
                     android:layout_height="match_parent"/>
 
                 <ImageView
-                    android:layout_gravity="right"
+                    android:background="@drawable/stamina_bar_bg"
+                    android:layout_toRightOf="@id/tvStamina"
+                    android:id="@+id/ivStaminaBG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+
+                <ImageView
+                    android:layout_toRightOf="@id/tvStamina"
                     android:id="@+id/ivStamina"
                     android:background="@drawable/clip_stamina"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <android.support.v7.widget.CardView
                 android:layout_marginTop="3dp"

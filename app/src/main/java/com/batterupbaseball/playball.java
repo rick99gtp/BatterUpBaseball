@@ -1,6 +1,9 @@
 package com.batterupbaseball;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,15 +13,17 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import static android.content.ContentValues.TAG;
 
-public class playball extends Activity {
+public class playball extends Activity implements View.OnClickListener {
     Game game;
     Bundle bundle;
     Team vTeam, hTeam;
@@ -29,10 +34,15 @@ public class playball extends Activity {
     int[] vDefense = new int[9];
     int[] hDefense = new int[9];
 
+    String runnerText;
+    int runnerSelected;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.playball);
+
+        final Context context = this;
 
         bundle = new Bundle();
         bundle = getIntent().getExtras();
@@ -46,20 +56,79 @@ public class playball extends Activity {
         updateScreen();
 
         RelativeLayout runnerOn1st = (RelativeLayout) findViewById(R.id.runnerOn1st);
-        runnerOn1st.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(game.teamAtBat == game.userTeam) {
-                    // show popup window
-                    // show baserunner stealing rating, pitcher's hold rating
-                    // adjustment if runner is held
-                    // catcher's arm rating
-                    // show final success rate to roll UNDER to be safe
-                    // show steal 2nd button
-                    // show cancel button
+        RelativeLayout runnerOn2nd = (RelativeLayout) findViewById(R.id.runnerOn2nd);
+        RelativeLayout runnerOn3rd = (RelativeLayout) findViewById(R.id.runnerOn3rd);
+
+        runnerOn1st.setOnClickListener(this);
+        runnerOn2nd.setOnClickListener(this);
+        runnerOn3rd.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        TextView tvRunner;
+        switch(v.getId()) {
+            case R.id.runnerOn1st:
+                runnerText = "Runner on 1st";
+                runnerSelected = 1;
+                break;
+            case R.id.runnerOn2nd:
+                runnerText = "Runner on 2nd";
+                runnerSelected = 2;
+                break;
+            case R.id.runnerOn3rd:
+                runnerText = "Runner on 3rd";
+                runnerSelected = 3;
+                break;
+        }
+
+        if(game.teamAtBat == game.userTeam) {
+            // custom dialog
+            DisplayMetrics metrics = getResources().getDisplayMetrics();
+            int width = metrics.widthPixels;
+            int height = metrics.heightPixels;
+
+            final Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.base_stealing);
+            dialog.getWindow().setLayout((6 * width)/7, (4 * height)/5);
+
+            // set the custom dialog components - text, image and button
+            tvRunner = (TextView) dialog.findViewById(R.id.tvRunner);
+            tvRunner.setText(runnerText);
+
+            TextView tvSpeed = (TextView) dialog.findViewById(R.id.tvDialogSpeed);
+            tvSpeed.setText("" + game.runner[runnerSelected].baseRunning);
+
+            TextView tvName = (TextView) dialog.findViewById(R.id.tvDialogRunnerName);
+            tvName.setText(game.runner[runnerSelected].name);
+
+            Button stealButton = (Button) dialog.findViewById(R.id.btnSteal);
+            // if button is clicked, close the custom dialog
+            stealButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
                 }
-            }
-        });
+            });
+
+            Button cancelButton = (Button) dialog.findViewById(R.id.btnCancel);
+            // if button is clicked, close the custom dialog
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+            // show popup window
+            // show baserunner stealing rating, pitcher's hold rating
+            // adjustment if runner is held
+            // catcher's arm rating
+            // show final success rate to roll UNDER to be safe
+            // show steal 2nd button
+            // show cancel button
+        }
     }
 
     public void getBatterResult(View view) {
@@ -158,6 +227,11 @@ public class playball extends Activity {
             if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
                 game.pitcher.staminaCurrent -= 1;
             }
+            if(checkEndOfGame()) {
+                TextView tvResultText = (TextView) findViewById(R.id.tvResult);
+                tvResultText.setText("Game Over");
+                Log.d(TAG, "GAME OVER");
+            }
         }
         if(game.manOnSecond()) {
             moveBaseRunnerFrom(2,1);
@@ -182,6 +256,11 @@ public class playball extends Activity {
 
             if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
                 game.pitcher.staminaCurrent -= 1;
+            }
+            if(checkEndOfGame()) {
+                TextView tvResultText = (TextView) findViewById(R.id.tvResult);
+                tvResultText.setText("Game Over");
+                Log.d(TAG, "GAME OVER");
             }
         }
         if(game.manOnSecond()) {
@@ -208,6 +287,11 @@ public class playball extends Activity {
 
             if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
                 game.pitcher.staminaCurrent -= 1;
+            }
+            if(checkEndOfGame()) {
+                TextView tvResultText = (TextView) findViewById(R.id.tvResult);
+                tvResultText.setText("Game Over");
+                Log.d(TAG, "GAME OVER");
             }
         }
         if(game.manOnSecond()) {
@@ -255,6 +339,7 @@ public class playball extends Activity {
             if(checkEndOfGame()) {
                 TextView tvResultText = (TextView) findViewById(R.id.tvResult);
                 tvResultText.setText("Game Over");
+                Log.d(TAG, "GAME OVER");
             }
             else {
                 game.outs=0;
@@ -360,8 +445,6 @@ public class playball extends Activity {
                 player.game1B++;
                 player.gamePA++;
                 player.gameAB++;
-
-                updateBaseRunners();
                 break;
             case 2:
                 // doubles
@@ -393,8 +476,6 @@ public class playball extends Activity {
                 player.game2B++;
                 player.gamePA++;
                 player.gameAB++;
-
-                updateBaseRunners();
                 break;
             case 3:
                 // triples
@@ -427,8 +508,6 @@ public class playball extends Activity {
                 player.game3B++;
                 player.gamePA++;
                 player.gameAB++;
-
-                updateBaseRunners();
                 break;
             case 4:
                 updateTeamHits();
@@ -463,8 +542,6 @@ public class playball extends Activity {
                 player.gameR++;
                 game.pitcher.gameP_R++;
                 updateScore(1); // for the batter
-
-                updateBaseRunners();
                 break;
             case 5:
                 // walks
@@ -502,8 +579,6 @@ public class playball extends Activity {
                 player.gameBB++;
                 player.gamePA++;
                 player.gameAB++;
-
-                updateBaseRunners();
                 break;
             case 7:
                 // hbp
@@ -541,10 +616,10 @@ public class playball extends Activity {
                 player.gameHBP++;
                 player.gamePA++;
 
-                updateBaseRunners();
                 break;
         }
 
+        updateBaseRunners();
         nextBatter();
     }
 
@@ -881,6 +956,11 @@ public class playball extends Activity {
                             if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
                                 game.pitcher.staminaCurrent -= 1;
                             }
+                            if(checkEndOfGame()) {
+                                TextView tvResultText = (TextView) findViewById(R.id.tvResult);
+                                tvResultText.setText("Game Over");
+                                Log.d(TAG, "GAME OVER");
+                            }
                         }
                         if(game.manOnSecond()) {
                             additionalResultText += game.runner[2].name + " advances to third on the play";
@@ -988,6 +1068,11 @@ public class playball extends Activity {
                                     if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
                                         game.pitcher.staminaCurrent -= 1;
                                     }
+                                    if(checkEndOfGame()) {
+                                        TextView tvResultText = (TextView) findViewById(R.id.tvResult);
+                                        tvResultText.setText("Game Over");
+                                        Log.d(TAG, "GAME OVER");
+                                    }
                                 }
                             }
                             else {
@@ -1006,6 +1091,11 @@ public class playball extends Activity {
                                 additionalResultText += game.runner[3].name + " scores from third!";
                                 game.addOuts();
                                 moveBatter(1,game.batter);
+                                if(checkEndOfGame()) {
+                                    TextView tvResultText = (TextView) findViewById(R.id.tvResult);
+                                    tvResultText.setText("Game Over");
+                                    Log.d(TAG, "GAME OVER");
+                                }
                             }
                         }
                         else {
@@ -1024,6 +1114,11 @@ public class playball extends Activity {
 
                                     if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
                                         game.pitcher.staminaCurrent -= 1;
+                                    }
+                                    if(checkEndOfGame()) {
+                                        TextView tvResultText = (TextView) findViewById(R.id.tvResult);
+                                        tvResultText.setText("Game Over");
+                                        Log.d(TAG, "GAME OVER");
                                     }
                                 }
                             }
@@ -1137,7 +1232,7 @@ public class playball extends Activity {
                 }
                 else if(!game.basesOccupied()) {
                     // bases empty
-                    additionalResultText = game.batter.name + " is thronw out at first.";
+                    additionalResultText = game.batter.name + " is thrown out at first.";
                     game.addOuts();
                 }
                 else if(game.manOnThird()) {
@@ -1163,6 +1258,11 @@ public class playball extends Activity {
                                 additionalResultText += game.runner[2].name + " advances to third.";
                                 moveBaseRunnerFrom(2,1);
                                 game.clearBase(1);
+                                if(checkEndOfGame()) {
+                                    TextView tvResultText = (TextView) findViewById(R.id.tvResult);
+                                    tvResultText.setText("Game Over");
+                                    Log.d(TAG, "GAME OVER");
+                                }
                             }
                         }
                     }
@@ -1210,6 +1310,11 @@ public class playball extends Activity {
                                 if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
                                     game.pitcher.staminaCurrent -= 1;
                                 }
+                                if(checkEndOfGame()) {
+                                    TextView tvResultText = (TextView) findViewById(R.id.tvResult);
+                                    tvResultText.setText("Game Over");
+                                    Log.d(TAG, "GAME OVER");
+                                }
                             }
                         }
                     }
@@ -1230,10 +1335,15 @@ public class playball extends Activity {
                                 if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
                                     game.pitcher.staminaCurrent -= 1;
                                 }
+                                if(checkEndOfGame()) {
+                                    TextView tvResultText = (TextView) findViewById(R.id.tvResult);
+                                    tvResultText.setText("Game Over");
+                                    Log.d(TAG, "GAME OVER");
+                                }
                             }
                         }
                         else {
-                            additionalResultText = game.batter.name + " is thronw out at first.";
+                            additionalResultText = game.batter.name + " is thrown out at first.";
                             game.addOuts();
                             additionalResultText += game.runner[3].name + " is unable to score on the play.";
                         }
@@ -1315,7 +1425,14 @@ public class playball extends Activity {
                         if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
                             game.pitcher.staminaCurrent -= 1;
                         }
-                        checkEndOfGame();
+                        if(checkEndOfGame()) {
+                            TextView tvResultText = (TextView) findViewById(R.id.tvResult);
+                            tvResultText.setText("Game Over");
+                            Log.d(TAG, "GAME OVER");
+                        }
+                    }
+                    else if(game.basesOccupied()) {
+                        additionalResultText = "The baserunner(s) are unable to advance.";
                     }
                 }
                 break;
@@ -1331,7 +1448,11 @@ public class playball extends Activity {
                         if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
                             game.pitcher.staminaCurrent -= 1;
                         }
-                        checkEndOfGame();
+                        if(checkEndOfGame()) {
+                            TextView tvResultText = (TextView) findViewById(R.id.tvResult);
+                            tvResultText.setText("Game Over");
+                            Log.d(TAG, "GAME OVER");
+                        }
                     }
                     if(game.manOnSecond()) {
                         additionalResultText += game.runner[2].name + " tags from second and advances to third.";
@@ -1528,7 +1649,6 @@ public class playball extends Activity {
                 else if(game.manOnFirst()) {
                     if(game.outs < 2) {
                         // double play
-                        // double play
                         hitType = "hard line drive";
                         additionalResultText = game.defense[fielder].name + " throws to second base for a double play";
                         game.addOuts();
@@ -1548,7 +1668,6 @@ public class playball extends Activity {
 
         showResultText();
         updateScreen();
-
     }
 
     private String convertPosToString(int pos) {
@@ -2660,4 +2779,5 @@ public class playball extends Activity {
 
         return name;
     }
+
 }
