@@ -25,6 +25,10 @@
     <string name="steal3rdbase">Runner On 2nd</string>
     <string name="stealhome">Runner On 3rd</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="throws_a_wild_pitch"> throws a wild pitch!</string>
+    <string name="scores"> scores!</string>
+    <string name="is_called_for_a_balk"> is called for a balk!</string>
+    <string name="for_a_passed_ball"> for a passed ball!</string>
+    <string name="do_not_steal">Do not Steal</string>
+    <string name="pinch_runner">Pinch Runner</string>
 </resources>

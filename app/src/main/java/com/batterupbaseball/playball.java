@@ -1,6 +1,7 @@
 package com.batterupbaseball;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,13 +10,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -34,8 +39,9 @@ public class playball extends Activity implements View.OnClickListener {
     int[] vDefense = new int[9];
     int[] hDefense = new int[9];
 
-    String runnerText;
-    int runnerSelected;
+        int runnerSelected;
+
+    int[] ivBaserunner = {R.id.ivBaserunner_1, R.id.ivBaserunner_2, R.id.ivBaserunner_3};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,72 +68,82 @@ public class playball extends Activity implements View.OnClickListener {
         runnerOn1st.setOnClickListener(this);
         runnerOn2nd.setOnClickListener(this);
         runnerOn3rd.setOnClickListener(this);
+
     }
 
     @Override
     public void onClick(View v) {
-        TextView tvRunner;
-        switch(v.getId()) {
-            case R.id.runnerOn1st:
-                runnerText = "Runner on 1st";
-                runnerSelected = 1;
-                break;
-            case R.id.runnerOn2nd:
-                runnerText = "Runner on 2nd";
-                runnerSelected = 2;
-                break;
-            case R.id.runnerOn3rd:
-                runnerText = "Runner on 3rd";
-                runnerSelected = 3;
-                break;
-        }
+
+        String runnerText = "";
+        String stealText = "";
 
         if(game.teamAtBat == game.userTeam) {
-            // custom dialog
-            DisplayMetrics metrics = getResources().getDisplayMetrics();
-            int width = metrics.widthPixels;
-            int height = metrics.heightPixels;
+            switch(v.getId()) {
+                case R.id.runnerOn1st:
+                    runnerText = "Runner on 1st";
+                    stealText = "Steal 2nd";
+                    runnerSelected = 1;
+                    break;
+                case R.id.runnerOn2nd:
+                    runnerText = "Runner on 2nd";
+                    stealText = "Steal 3rd";
+                    runnerSelected = 2;
+                    break;
+                case R.id.runnerOn3rd:
+                    runnerText = "Runner on 3rd";
+                    stealText = "Steal Home";
+                    runnerSelected = 3;
+                    break;
+            }
 
             final Dialog dialog = new Dialog(this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.base_stealing);
-            dialog.getWindow().setLayout((6 * width)/7, (4 * height)/5);
+            dialog.getWindow().setBackgroundDrawableResource(R.color.semiTransparent);
+            dialog.show();
 
-            // set the custom dialog components - text, image and button
-            tvRunner = (TextView) dialog.findViewById(R.id.tvRunner);
-            tvRunner.setText(runnerText);
+            TextView stealButton = (TextView) dialog.findViewById(R.id.tvDialogSteal);
 
-            TextView tvSpeed = (TextView) dialog.findViewById(R.id.tvDialogSpeed);
-            tvSpeed.setText("" + game.runner[runnerSelected].baseRunning);
+            if(game.runnerStealing[runnerSelected-1])
+                stealButton.setText(R.string.do_not_steal);
+            else
+                stealButton.setText(stealText + " " + game.runner[runnerSelected].stealing);
 
-            TextView tvName = (TextView) dialog.findViewById(R.id.tvDialogRunnerName);
-            tvName.setText(game.runner[runnerSelected].name);
+            TextView tvBase = (TextView) dialog.findViewById(R.id.tvBaserunnerName);
+            tvBase.setText(runnerText);
 
-            Button stealButton = (Button) dialog.findViewById(R.id.btnSteal);
-            // if button is clicked, close the custom dialog
             stealButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog.dismiss();
+                    // runner attempts to steal the next base
+                    if(game.runnerStealing[runnerSelected-1]) {
+                        game.runnerStealing[runnerSelected-1] = false;
+                        ImageView thisBaseRunner = (ImageView) findViewById(ivBaserunner[runnerSelected-1]);
+                        thisBaseRunner.setImageResource(R.drawable.baserunner);
+                        dialog.dismiss();
+                    }
+                    else {
+                        game.runnerStealing[runnerSelected-1] = true;
+                        // change image to runner stealing
+                        ImageView thisBaseRunner = (ImageView) findViewById(ivBaserunner[runnerSelected-1]);
+                        thisBaseRunner.setImageResource(R.drawable.baserunner_stealing);
+
+                        // if there is a runner that is forced to run, then set them to stealing
+
+                        dialog.dismiss();
+                    }
                 }
             });
 
-            Button cancelButton = (Button) dialog.findViewById(R.id.btnCancel);
-            // if button is clicked, close the custom dialog
-            cancelButton.setOnClickListener(new View.OnClickListener() {
+            TextView pinchRunner = (TextView) dialog.findViewById(R.id.tvDialogPinchRunner);
+            pinchRunner.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View view) {
+                    // show pinch runner dialog
+                    // dismiss this dialog
                     dialog.dismiss();
                 }
             });
-
-            dialog.show();
-            // show popup window
-            // show baserunner stealing rating, pitcher's hold rating
-            // adjustment if runner is held
-            // catcher's arm rating
-            // show final success rate to roll UNDER to be safe
-            // show steal 2nd button
-            // show cancel button
         }
     }
 
@@ -216,12 +232,12 @@ public class playball extends Activity implements View.OnClickListener {
     }
 
     private void updateWildPitch() {
-        game.resultText = game.pitcher.name + " throws a wild pitch!";
+        game.resultText = game.pitcher.name + getString(R.string.throws_a_wild_pitch);
         game.pitcher.gameWP++;
 
         if(game.manOnThird()) {
             moveBaseRunnerFrom(3,1);
-            game.resultText += " " + game.runner[0].name + " scores!";
+            game.resultText += " " + game.runner[0].name + getString(R.string.scores);
             game.pitcher.staminaRunsGivenUpThisInning += 1;
 
             if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
@@ -246,12 +262,12 @@ public class playball extends Activity implements View.OnClickListener {
     }
 
     private void updateBalk() {
-        game.resultText = game.pitcher.name + " is called for a balk!";
+        game.resultText = game.pitcher.name + getString(R.string.is_called_for_a_balk);
         game.pitcher.gameBALK++;
 
         if(game.manOnThird()) {
             moveBaseRunnerFrom(3,1);
-            game.resultText += " " + game.runner[0].name + " scores!";
+            game.resultText += " " + game.runner[0].name + getString(R.string.scores);
             game.pitcher.staminaRunsGivenUpThisInning += 1;
 
             if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
@@ -277,12 +293,12 @@ public class playball extends Activity implements View.OnClickListener {
     }
 
     private void updatePassedBall() {
-        game.resultText = "The ball gets passed " + game.defense[1].name + " for a passed ball!";
+        game.resultText = "The ball gets passed " + game.defense[1].name + getString(R.string.for_a_passed_ball);
         game.defense[1].gamePASSEDBALL++;
 
         if(game.manOnThird()) {
             moveBaseRunnerFrom(3,1);
-            game.resultText += " " + game.runner[0].name + " scores!";
+            game.resultText += " " + game.runner[0].name + getString(R.string.scores);
             game.pitcher.staminaRunsGivenUpThisInning += 1;
 
             if(game.pitcher.staminaRunsGivenUpThisInning > 1) {
@@ -1748,10 +1764,11 @@ public class playball extends Activity implements View.OnClickListener {
 
     private void setupDefense() {
         if(game.teamAtBat==0) {
-            game.defense = game.vDefense;
+            game.defense = game.hDefense;
         }
         else {
-            game.defense = game.hDefense;
+            game.defense = game.vDefense;
+            Log.d(TAG, "" + game.defense[1].name);
         }
     }
 
@@ -1911,7 +1928,7 @@ public class playball extends Activity implements View.OnClickListener {
         vDefense = bundle.getIntArray("visDefense");
 
         for(int i=0; i<9; i++) {
-            game.vDefense[vDefense[i]] = vTeam.roster.get(vDefense[i]);
+            game.vDefense[i] = vTeam.roster.get(vDefense[i]);
         }
 
         // pitcher's defense
@@ -1923,8 +1940,7 @@ public class playball extends Activity implements View.OnClickListener {
         hDefense = bundle.getIntArray("homeDefense");
 
         for(int i=0; i<9; i++) {
-            game.hDefense[hDefense[i]] = hTeam.roster.get(hDefense[i]);
-            Log.d(TAG, "hDefense: " + game.hDefense[hDefense[i]].name);
+            game.hDefense[i] = hTeam.roster.get(hDefense[i]);
         }
 
         // pitcher's defense
@@ -2131,7 +2147,7 @@ public class playball extends Activity implements View.OnClickListener {
 
     private void updateCatcherHoldRunners() {
         TextView tvCatcherHoldRunners = (TextView) findViewById(R.id.tvCatcherHoldRunners);
-        tvCatcherHoldRunners.setText("Hold Runners: " + game.defense[1].rsb);
+        tvCatcherHoldRunners.setText("Arm Rating: " + game.defense[1].rsb);
     }
 
     private void updatePitcherHoldRating() {
@@ -2326,7 +2342,7 @@ public class playball extends Activity implements View.OnClickListener {
             // runner on 1st
             ivRunner_1.setVisibility(View.VISIBLE);
             tvRunnerSpeed_1.setVisibility(View.VISIBLE);
-            tvRunnerSpeed_1.setText("" + game.runner[1].baseRunning);
+            tvRunnerSpeed_1.setText("" + game.runner[1].baseRunning + " / " + game.runner[1].stealing);
         }
         else {
             ivRunner_1.setVisibility(View.INVISIBLE);
@@ -2337,7 +2353,7 @@ public class playball extends Activity implements View.OnClickListener {
             // runner on 2nd
             ivRunner_2.setVisibility(View.VISIBLE);
             tvRunnerSpeed_2.setVisibility(View.VISIBLE);
-            tvRunnerSpeed_2.setText("" + game.runner[2].baseRunning);
+            tvRunnerSpeed_2.setText("" + game.runner[2].baseRunning + " / " + game.runner[2].stealing);
         }
         else {
             ivRunner_2.setVisibility(View.INVISIBLE);
@@ -2348,7 +2364,7 @@ public class playball extends Activity implements View.OnClickListener {
             // runner on 3rd
             ivRunner_3.setVisibility(View.VISIBLE);
             tvRunnerSpeed_3.setVisibility(View.VISIBLE);
-            tvRunnerSpeed_3.setText("" + game.runner[3].baseRunning);
+            tvRunnerSpeed_3.setText("" + game.runner[3].baseRunning + " / " + game.runner[3].stealing);
         }
         else {
             ivRunner_3.setVisibility(View.INVISIBLE);

@@ -53,6 +53,9 @@ public class exhibition_select_lineup extends Activity {
         getOppSeasonFileName();
         getOpponentPitcher();
         getUserLineup();
+        for(int i=0; i<9; i++) {
+            Log.d(TAG, "User Defense: " + userDefense[i]);
+        }
         getUserBullpen();
         getOppBullpen();
 
@@ -249,7 +252,7 @@ public class exhibition_select_lineup extends Activity {
                 col = cLineup.getColumnIndex("def_" + (i+1));
                 int pos = cLineup.getInt(col);
 
-                userDefense[pos] = i;
+                userDefense[pos] = userLineup[i];
 
                 TextView tPos = (TextView) findViewById(tvPos[i]);
                 tPos.setText(convertPosToString(pos));
@@ -356,7 +359,7 @@ public class exhibition_select_lineup extends Activity {
                 col = cLineup.getColumnIndex("def_" + (i+1));
                 int pos = cLineup.getInt(col);
 
-                oppDefense[pos] = i;
+                oppDefense[pos] = oppLineup[i];
             }
         }
 

@@ -32,6 +32,10 @@ public class Game {
     int[] vScoreByInning = new int[10];
     int[] hScoreByInning = new int[10];
 
+    boolean[] runnerHeld = {false, false, false};
+
+    boolean[] runnerStealing = new boolean[3];
+
     int dieResult = 0;
 
     int[] minHitDirection = new int[3];

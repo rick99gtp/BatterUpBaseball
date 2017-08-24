@@ -561,10 +561,10 @@
             card_view:cardElevation="8dp">
 
             <LinearLayout
-                android:background="@drawable/infield_bases"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@drawable/infield_bases"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -573,38 +573,38 @@
                     android:orientation="horizontal">
 
                     <View
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
 
                     <RelativeLayout
                         android:id="@+id/runnerOn2nd"
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
 
                         <ImageView
-                            android:src="@drawable/baserunner"
                             android:id="@+id/ivBaserunner_2"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"
+                            android:src="@drawable/baserunner" />
 
                         <TextView
                             android:id="@+id/tvBaserunnerSpeed_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="true"
                             android:textColor="#ff0000"
                             android:textStyle="bold"
-                            tools:text="99"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            tools:text="99" />
 
                     </RelativeLayout>
 
                     <View
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
 
                 </LinearLayout>
 
@@ -616,66 +616,66 @@
 
                     <RelativeLayout
                         android:id="@+id/runnerOn3rd"
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
 
                         <ImageView
-                            android:src="@drawable/baserunner"
                             android:id="@+id/ivBaserunner_3"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"
+                            android:src="@drawable/baserunner" />
 
                         <TextView
                             android:id="@+id/tvBaserunnerSpeed_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="true"
                             android:textColor="#ff0000"
                             android:textStyle="bold"
-                            tools:text="99"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            tools:text="99" />
 
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
 
                         <TextView
                             android:id="@+id/tvPitcherHoldRating"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="true"
                             android:textColor="#ff0000"
-                            android:textStyle="bold"
                             android:textSize="10sp"
-                            tools:text="Hold Runners: 99"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:textStyle="bold"
+                            tools:text="Hold Runners: 99" />
                     </RelativeLayout>
 
                     <RelativeLayout
                         android:id="@+id/runnerOn1st"
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
 
                         <ImageView
-                            android:src="@drawable/baserunner"
                             android:id="@+id/ivBaserunner_1"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"
+                            android:src="@drawable/baserunner" />
 
                         <TextView
                             android:id="@+id/tvBaserunnerSpeed_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="true"
                             android:textColor="#ff0000"
                             android:textStyle="bold"
-                            tools:text="99"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            tools:text="99" />
 
                     </RelativeLayout>
 
@@ -688,43 +688,43 @@
                     android:orientation="horizontal">
 
                     <View
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
 
                     <RelativeLayout
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
 
                         <TextView
                             android:id="@+id/tvCatcherHoldRunners"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="true"
                             android:textColor="#ff0000"
-                            android:textStyle="bold"
                             android:textSize="10sp"
-                            tools:text="Arm Rating: 99"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:textStyle="bold"
+                            tools:text="Arm Rating: 99" />
                     </RelativeLayout>
 
                     <View
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
 
                 </LinearLayout>
             </LinearLayout>
 
             <TextView
-                android:layout_gravity="bottom|right"
-                android:textSize="20sp"
-                android:textStyle="bold"
                 android:id="@+id/tvOuts"
-                android:text="0 Outs"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:text="0 Outs"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
         </android.support.v7.widget.CardView>
 
