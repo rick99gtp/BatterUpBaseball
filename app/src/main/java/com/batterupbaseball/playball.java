@@ -71,6 +71,14 @@ public class playball extends Activity implements View.OnClickListener {
 
     }
 
+    public void myMethod(View pView) {
+        TextView stealBase = (TextView) findViewById(R.id.stealBase);
+        TextView pinchRunner = (TextView) findViewById(R.id.tvPinchRunner);
+
+        stealBase.setVisibility(View.INVISIBLE);
+        pinchRunner.setVisibility(View.INVISIBLE);
+    }
+
     @Override
     public void onClick(View v) {
 
@@ -95,53 +103,51 @@ public class playball extends Activity implements View.OnClickListener {
                     runnerSelected = 3;
                     break;
             }
-
+/*
             final Dialog dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.base_stealing);
             dialog.getWindow().setBackgroundDrawableResource(R.color.semiTransparent);
             dialog.show();
+*/
 
-            TextView stealButton = (TextView) dialog.findViewById(R.id.tvDialogSteal);
+            final TextView stealButton = (TextView) findViewById(R.id.stealBase);
+            final TextView pinchRunner = (TextView) findViewById(R.id.tvPinchRunner);
+
+            stealButton.setVisibility(View.VISIBLE);
+            pinchRunner.setVisibility(View.VISIBLE);
 
             if(game.runnerStealing[runnerSelected-1])
                 stealButton.setText(R.string.do_not_steal);
             else
                 stealButton.setText(stealText + " " + game.runner[runnerSelected].stealing);
 
-            TextView tvBase = (TextView) dialog.findViewById(R.id.tvBaserunnerName);
-            tvBase.setText(runnerText);
-
             stealButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // runner attempts to steal the next base
                     if(game.runnerStealing[runnerSelected-1]) {
                         game.runnerStealing[runnerSelected-1] = false;
                         ImageView thisBaseRunner = (ImageView) findViewById(ivBaserunner[runnerSelected-1]);
                         thisBaseRunner.setImageResource(R.drawable.baserunner);
-                        dialog.dismiss();
                     }
                     else {
                         game.runnerStealing[runnerSelected-1] = true;
                         // change image to runner stealing
                         ImageView thisBaseRunner = (ImageView) findViewById(ivBaserunner[runnerSelected-1]);
                         thisBaseRunner.setImageResource(R.drawable.baserunner_stealing);
-
-                        // if there is a runner that is forced to run, then set them to stealing
-
-                        dialog.dismiss();
                     }
+
+                    stealButton.setVisibility(View.INVISIBLE);
+                    pinchRunner.setVisibility(View.INVISIBLE);
                 }
             });
 
-            TextView pinchRunner = (TextView) dialog.findViewById(R.id.tvDialogPinchRunner);
             pinchRunner.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     // show pinch runner dialog
                     // dismiss this dialog
-                    dialog.dismiss();
+                    //dialog.dismiss();
                 }
             });
         }

@@ -533,212 +533,244 @@
         </android.support.v7.widget.CardView>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/llMiddle"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
-        android:orientation="horizontal">
+        android:layout_weight="4">
 
-        <ImageView
-            android:id="@+id/ivBatterCard"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/llMiddle"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            android:scaleType="fitXY"
-            android:src="@drawable/card_vsl_as_right" />
+            android:layout_weight="4"
+            android:orientation="horizontal">
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/bases"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="2"
-            card_view:cardCornerRadius="4dp"
-            card_view:cardElevation="8dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/ivBatterCard"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/infield_bases"
-                android:orientation="vertical">
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:src="@drawable/card_vsl_as_right" />
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/bases"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="2"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="8dp"
+                android:onClick="myMethod">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    android:background="@drawable/infield_bases"
+                    android:orientation="vertical">
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
 
-                    <RelativeLayout
-                        android:id="@+id/runnerOn2nd"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:id="@+id/ivBaserunner_2"
-                            android:layout_width="match_parent"
+                        <View
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:src="@drawable/baserunner" />
+                            android:layout_weight="1" />
 
-                        <TextView
-                            android:id="@+id/tvBaserunnerSpeed_2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:textColor="#ff0000"
-                            android:textStyle="bold"
-                            tools:text="99" />
+                        <RelativeLayout
+                            android:id="@+id/runnerOn2nd"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
 
-                    </RelativeLayout>
+                            <ImageView
+                                android:id="@+id/ivBaserunner_2"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/baserunner" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                            <TextView
+                                android:id="@+id/tvBaserunnerSpeed_2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_centerHorizontal="true"
+                                android:textColor="#ff0000"
+                                android:textStyle="bold"
+                                tools:text="99" />
 
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <RelativeLayout
+                            android:id="@+id/runnerOn3rd"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:id="@+id/ivBaserunner_3"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/baserunner" />
+
+                            <TextView
+                                android:id="@+id/tvBaserunnerSpeed_3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_centerHorizontal="true"
+                                android:textColor="#ff0000"
+                                android:textStyle="bold"
+                                tools:text="99" />
+
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/stealBase"
+                                android:visibility="invisible"
+                                android:background="@color/semiTransparent"
+                                android:textColor="#ffffff"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:layout_weight="2"
+                                android:text="Steal 2nd"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp" />
+
+                            <TextView
+                                android:id="@+id/tvPitcherHoldRating"
+                                android:gravity="center_horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:textColor="#ff0000"
+                                android:textSize="10sp"
+                                android:textStyle="bold"
+                                tools:text="Hold Runners: 99" />
+
+                            <TextView
+                                android:id="@+id/tvPinchRunner"
+                                android:visibility="invisible"
+                                android:background="@color/semiTransparent"
+                                android:textColor="#ffffff"
+                                android:gravity="center"
+                                android:textSize="12sp"
+                                android:text="Pinch Runner"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="2"/>
+                        </LinearLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/runnerOn1st"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:id="@+id/ivBaserunner_1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/baserunner" />
+
+                            <TextView
+                                android:id="@+id/tvBaserunnerSpeed_1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_centerHorizontal="true"
+                                android:textColor="#ff0000"
+                                android:textStyle="bold"
+                                tools:text="99" />
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:id="@+id/tvCatcherHoldRunners"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_centerHorizontal="true"
+                                android:textColor="#ff0000"
+                                android:textSize="10sp"
+                                android:textStyle="bold"
+                                tools:text="Arm Rating: 99" />
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tvOuts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:text="0 Outs"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-                    <RelativeLayout
-                        android:id="@+id/runnerOn3rd"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
+            </android.support.v7.widget.CardView>
 
-                        <ImageView
-                            android:id="@+id/ivBaserunner_3"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/baserunner" />
-
-                        <TextView
-                            android:id="@+id/tvBaserunnerSpeed_3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:textColor="#ff0000"
-                            android:textStyle="bold"
-                            tools:text="99" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:id="@+id/tvPitcherHoldRating"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:textColor="#ff0000"
-                            android:textSize="10sp"
-                            android:textStyle="bold"
-                            tools:text="Hold Runners: 99" />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/runnerOn1st"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:id="@+id/ivBaserunner_1"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/baserunner" />
-
-                        <TextView
-                            android:id="@+id/tvBaserunnerSpeed_1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:textColor="#ff0000"
-                            android:textStyle="bold"
-                            tools:text="99" />
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:id="@+id/tvCatcherHoldRunners"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:textColor="#ff0000"
-                            android:textSize="10sp"
-                            android:textStyle="bold"
-                            tools:text="Arm Rating: 99" />
-                    </RelativeLayout>
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
-
-                </LinearLayout>
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvOuts"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:text="0 Outs"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-        </android.support.v7.widget.CardView>
-
-        <ImageView
-            android:id="@+id/ivPitcherCard"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            android:scaleType="fitXY"
-            android:src="@drawable/pitcher_card_vsr_as_right" />
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/ivPitcherCard"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:src="@drawable/pitcher_card_vsr_as_right" />
+        </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
