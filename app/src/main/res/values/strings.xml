@@ -31,4 +31,10 @@
     <string name="for_a_passed_ball"> for a passed ball!</string>
     <string name="do_not_steal">Do not Steal</string>
     <string name="pinch_runner">Pinch Runner</string>
+    <string name="steal_home">Steal Home</string>
+    <string name="runner_on_3rd">Runner on 3rd</string>
+    <string name="steal_3rd">Steal 3rd</string>
+    <string name="runner_on_2nd">Runner on 2nd</string>
+    <string name="steal_2nd">Steal 2nd</string>
+    <string name="runner_on_1st">Runner on 1st</string>
 </resources>

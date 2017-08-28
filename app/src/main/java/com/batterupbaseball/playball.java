@@ -71,58 +71,47 @@ public class playball extends Activity implements View.OnClickListener {
 
     }
 
-    public void myMethod(View pView) {
-        TextView stealBase = (TextView) findViewById(R.id.stealBase);
-        TextView pinchRunner = (TextView) findViewById(R.id.tvPinchRunner);
-
-        stealBase.setVisibility(View.INVISIBLE);
-        pinchRunner.setVisibility(View.INVISIBLE);
-    }
-
     @Override
     public void onClick(View v) {
 
-        String runnerText = "";
         String stealText = "";
 
         if(game.teamAtBat == game.userTeam) {
             switch(v.getId()) {
                 case R.id.runnerOn1st:
-                    runnerText = "Runner on 1st";
-                    stealText = "Steal 2nd";
+                    stealText = getString(R.string.steal_2nd);
                     runnerSelected = 1;
                     break;
                 case R.id.runnerOn2nd:
-                    runnerText = "Runner on 2nd";
-                    stealText = "Steal 3rd";
+                    stealText = getString(R.string.steal_3rd);
                     runnerSelected = 2;
                     break;
                 case R.id.runnerOn3rd:
-                    runnerText = "Runner on 3rd";
-                    stealText = "Steal Home";
+                    stealText = getString(R.string.steal_home);
                     runnerSelected = 3;
                     break;
             }
-/*
+
             final Dialog dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.base_stealing);
-            dialog.getWindow().setBackgroundDrawableResource(R.color.semiTransparent);
+
+            TextView tvRunnerName = (TextView) dialog.findViewById(R.id.tvBaserunnerName);
+            tvRunnerName.setText(game.runner[runnerSelected].name);
+
+            final TextView tvStealBase = (TextView) dialog.findViewById(R.id.tvDialogSteal);
+            tvStealBase.setText(stealText);
+
+            final TextView tvPinchRunner = (TextView) dialog.findViewById(R.id.tvDialogPinchRunner);
+
             dialog.show();
-*/
-
-            final TextView stealButton = (TextView) findViewById(R.id.stealBase);
-            final TextView pinchRunner = (TextView) findViewById(R.id.tvPinchRunner);
-
-            stealButton.setVisibility(View.VISIBLE);
-            pinchRunner.setVisibility(View.VISIBLE);
 
             if(game.runnerStealing[runnerSelected-1])
-                stealButton.setText(R.string.do_not_steal);
+                tvStealBase.setText(R.string.do_not_steal);
             else
-                stealButton.setText(stealText + " " + game.runner[runnerSelected].stealing);
+                tvStealBase.setText(stealText + " " + game.runner[runnerSelected].stealing);
 
-            stealButton.setOnClickListener(new View.OnClickListener() {
+            tvStealBase.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(game.runnerStealing[runnerSelected-1]) {
@@ -137,17 +126,16 @@ public class playball extends Activity implements View.OnClickListener {
                         thisBaseRunner.setImageResource(R.drawable.baserunner_stealing);
                     }
 
-                    stealButton.setVisibility(View.INVISIBLE);
-                    pinchRunner.setVisibility(View.INVISIBLE);
+                    dialog.dismiss();
                 }
             });
 
-            pinchRunner.setOnClickListener(new View.OnClickListener() {
+            tvPinchRunner.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     // show pinch runner dialog
                     // dismiss this dialog
-                    //dialog.dismiss();
+                    dialog.dismiss();
                 }
             });
         }
@@ -2344,6 +2332,10 @@ public class playball extends Activity implements View.OnClickListener {
         TextView tvRunnerSpeed_2 = (TextView) findViewById(R.id.tvBaserunnerSpeed_2);
         TextView tvRunnerSpeed_3 = (TextView) findViewById(R.id.tvBaserunnerSpeed_3);
 
+        for(int i=0; i<3; i++) {
+            game.runnerStealing[i] = false;
+        }
+
         if(game.manOnFirst()) {
             // runner on 1st
             ivRunner_1.setVisibility(View.VISIBLE);
@@ -2376,6 +2368,15 @@ public class playball extends Activity implements View.OnClickListener {
             ivRunner_3.setVisibility(View.INVISIBLE);
             tvRunnerSpeed_3.setVisibility(View.INVISIBLE);
         }
+
+        // make sure all runners have stealing turned off
+        ImageView ivRunner1 = (ImageView) findViewById(R.id.ivBaserunner_1);
+        ImageView ivRunner2 = (ImageView) findViewById(R.id.ivBaserunner_2);
+        ImageView ivRunner3 = (ImageView) findViewById(R.id.ivBaserunner_3);
+
+        ivRunner1.setImageResource(R.drawable.baserunner);
+        ivRunner2.setImageResource(R.drawable.baserunner);
+        ivRunner3.setImageResource(R.drawable.baserunner);
     }
 
     private void updatePitcherCard() {
