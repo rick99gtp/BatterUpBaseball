@@ -114,16 +114,63 @@ public class playball extends Activity implements View.OnClickListener {
             tvStealBase.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ImageView thisBaseRunner = (ImageView) findViewById(ivBaserunner[runnerSelected-1]);
+
                     if(game.runnerStealing[runnerSelected-1]) {
-                        game.runnerStealing[runnerSelected-1] = false;
-                        ImageView thisBaseRunner = (ImageView) findViewById(ivBaserunner[runnerSelected-1]);
-                        thisBaseRunner.setImageResource(R.drawable.baserunner);
+                        if(runnerSelected == 1) {
+                            // runner on 1st IS not stealing
+                            game.runnerStealing[runnerSelected-1] = false;
+                            thisBaseRunner.setImageResource(R.drawable.baserunner);
+                        }
+                        else if(runnerSelected == 2) {
+                            // check to make sure the runner on 1st base isn't stealing
+                            if(!game.runnerStealing[0]){
+                                // runner on 1st IS not stealing
+                                game.runnerStealing[runnerSelected-1] = false;
+                                thisBaseRunner.setImageResource(R.drawable.baserunner);
+                            }
+                        }
+                        else if(runnerSelected == 3) {
+                            if(!game.runnerStealing[1]) {
+                                // runner on 1st IS not stealing
+                                game.runnerStealing[runnerSelected-1] = false;
+                                thisBaseRunner.setImageResource(R.drawable.baserunner);
+                            }
+                        }
+
                     }
                     else {
                         game.runnerStealing[runnerSelected-1] = true;
                         // change image to runner stealing
-                        ImageView thisBaseRunner = (ImageView) findViewById(ivBaserunner[runnerSelected-1]);
+                        thisBaseRunner = (ImageView) findViewById(ivBaserunner[runnerSelected-1]);
                         thisBaseRunner.setImageResource(R.drawable.baserunner_stealing);
+
+                        if(runnerSelected == 1) {
+                            if(game.manOnSecond()) {
+                                ImageView secondBaseRunner = (ImageView) findViewById(R.id.ivBaserunner_2);
+                                secondBaseRunner.setImageResource(R.drawable.baserunner_stealing);
+
+                                game.runnerStealing[1] = true;
+
+                                if(game.manOnThird()) {
+                                    // bases loaded, everyone runs
+                                    ImageView thirdBaseRunner = (ImageView) findViewById(R.id.ivBaserunner_3);
+                                    thirdBaseRunner.setImageResource(R.drawable.baserunner_stealing);
+
+                                    game.runnerStealing[2] = true;
+                                }
+                            }
+                        }
+                        else if(runnerSelected == 2) {
+                            // check runner on 3rd
+                            if(game.manOnThird()) {
+                                // runner on 3rd, he runs too
+                                ImageView thirdBaseRunner = (ImageView) findViewById(R.id.ivBaserunner_3);
+                                thirdBaseRunner.setImageResource(R.drawable.baserunner_stealing);
+
+                                game.runnerStealing[2] = true;
+                            }
+                        }
                     }
 
                     dialog.dismiss();
