@@ -1,27 +1,20 @@
 package com.batterupbaseball;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ClipDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -109,7 +102,7 @@ public class playball extends Activity implements View.OnClickListener {
             if(game.runnerStealing[runnerSelected-1])
                 tvStealBase.setText(R.string.do_not_steal);
             else
-                tvStealBase.setText(stealText + " " + game.runner[runnerSelected].stealing);
+                tvStealBase.setText(stealText + " " + game.runner[runnerSelected].spd_rating);
 
             tvStealBase.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -141,6 +134,7 @@ public class playball extends Activity implements View.OnClickListener {
                     }
                     else {
                         game.runnerStealing[runnerSelected-1] = true;
+                        Log.v("STEALING DEBUG", "game.runnerStealing = true");
                         // change image to runner stealing
                         thisBaseRunner = (ImageView) findViewById(ivBaserunner[runnerSelected-1]);
                         thisBaseRunner.setImageResource(R.drawable.baserunner_stealing);
@@ -190,8 +184,99 @@ public class playball extends Activity implements View.OnClickListener {
 
     public void getBatterResult(View view) {
         int balkRating, passedBallRating, wildPitchRating;
+        boolean rollForSteal = false;
+        double stealRating = 0.0;
+        double stealThirdMod = .04;
+        double stealSecondMod = 0.0;
+        double runnerHeldMod = 0.05;
+        double leftHandedPitcherMod = .05;
+        double goodJumpMod = -.1;
+        double slideStepMod = .1;
+        double badPitchMod = -.1;
+        double badThrowMod = -.1;
+        double goodThrowMod = .1;
 
-        if(game.basesOccupied()) {
+        // if user is instructing runners to steal
+        for(int i=0; i<3; i++) {
+            if(game.runnerStealing[i]) {
+                rollForSteal = true;
+            }
+        }
+
+        if(rollForSteal) {
+            Log.v(TAG, "Roll For Steal");
+            roll_dice();
+
+            if(game.runnerStealing[2]) {
+                // stealing home
+            }
+            else if(game.runnerStealing[1]) {
+                // stealing third
+                Log.v(TAG, "Runner Attempts to Steal Third!");
+                Log.v(TAG, "Base stealRating: " + game.runner[2].spd_rating);
+                stealRating = game.runner[2].spd_rating + stealThirdMod;
+                Log.v(TAG, "stealRating-stealThirdMod: " + stealRating);
+
+                if(game.runnerHeld[1]) {
+                    // runner held on second
+                    Log.v(TAG, "Runner is held on second.");
+                    stealRating += runnerHeldMod;
+                    Log.v(TAG, "" + stealRating);
+                }
+
+                if(game.pitcher.pThrows.equals("l")) {
+                    Log.v(TAG, "Pitcher throws left.");
+                    // pitcher is left-handed
+                    stealRating += leftHandedPitcherMod;
+                    Log.v(TAG, "" + stealRating);
+                }
+
+                roll_dice();
+                if(game.dieResult <= 500) {
+                    // good jump
+                    Log.v(TAG, "Good Jump!");
+                    stealRating += goodJumpMod;
+                    Log.v(TAG, "" + stealRating);
+                }
+
+                roll_dice();
+                if(game.dieResult <= 300) {
+                    // slide step
+                    Log.v(TAG, "Slide Step!");
+                    stealRating += slideStepMod;
+                    Log.v(TAG, "" + stealRating);
+                }
+                else if(game.dieResult >=700) {
+                    // bad pitch
+                    Log.v(TAG, "Bad Pitch for catcher!");
+                    stealRating += badPitchMod;
+                    Log.v(TAG, "" + stealRating);
+                }
+
+                roll_dice();
+                if(game.dieResult <=300) {
+                    // bad throw by catcher
+                    Log.v(TAG, "Bad throw by catcher!");
+                    stealRating += badThrowMod;
+                    Log.v(TAG, "" + stealRating);
+                }
+                else if(game.dieResult >=700) {
+                    // great throw by catcher
+                    Log.v(TAG, "Great throw by catcher");
+                    stealRating += goodThrowMod;
+                    Log.v(TAG, "" + stealRating);
+                }
+
+                if(game.runnerStealing[0]) {
+                    // runner moves up to second with the double steal
+                    moveBaseRunnerFrom(1,1);
+                }
+            }
+            else if(game.runnerStealing[0]) {
+                // stealing second
+            }
+        }
+        else if(game.basesOccupied()) {
             Log.d(TAG, "Bases Occupied");
             balkRating = game.pitcher.balkRating;
             wildPitchRating = game.pitcher.wildPitchRating;
@@ -1883,9 +1968,6 @@ public class playball extends Activity implements View.OnClickListener {
                 col1 = cPlayer.getColumnIndex("baserunning");
                 thisPlayer.baseRunning = cPlayer.getInt(col1);
 
-                col1 = cPlayer.getColumnIndex("stealing");
-                thisPlayer.stealing = cPlayer.getInt(col1);
-
                 col1 = cPlayer.getColumnIndex("avoid_dp");
                 thisPlayer.avoid_dp = cPlayer.getInt(col1);
 
@@ -1916,8 +1998,11 @@ public class playball extends Activity implements View.OnClickListener {
                 col1 = cPlayer.getColumnIndex("pb_rating");
                 thisPlayer.passedBallRating = cPlayer.getInt(col1);
 
-                col1 = cPlayer.getColumnIndex("speed_rating");
-                thisPlayer.spd_rating = cPlayer.getInt(col1);
+                col1 = cPlayer.getColumnIndex("spd_rating");
+                thisPlayer.spd_rating = cPlayer.getDouble(col1);
+                //thisPlayer.speed_rating = (double)((cPlayer.getInt(col1)) * .01);
+
+                Log.v(TAG, "spd_rating: " + thisPlayer.spd_rating);
 
                 col1 = cPlayer.getColumnIndex("con_rating");
                 thisPlayer.con_rating = cPlayer.getInt(col1);
@@ -2058,9 +2143,6 @@ public class playball extends Activity implements View.OnClickListener {
                 col1 = cPlayer.getColumnIndex("baserunning");
                 thisPlayer.baseRunning = cPlayer.getInt(col1);
 
-                col1 = cPlayer.getColumnIndex("stealing");
-                thisPlayer.stealing = cPlayer.getInt(col1);
-
                 col1 = cPlayer.getColumnIndex("avoid_dp");
                 thisPlayer.avoid_dp = cPlayer.getInt(col1);
 
@@ -2091,8 +2173,8 @@ public class playball extends Activity implements View.OnClickListener {
                 col1 = cPlayer.getColumnIndex("pb_rating");
                 thisPlayer.passedBallRating = cPlayer.getInt(col1);
 
-                col1 = cPlayer.getColumnIndex("speed_rating");
-                thisPlayer.spd_rating = cPlayer.getInt(col1);
+                col1 = cPlayer.getColumnIndex("spd_rating");
+                thisPlayer.spd_rating = cPlayer.getDouble(col1);
 
                 col1 = cPlayer.getColumnIndex("con_rating");
                 thisPlayer.con_rating = cPlayer.getInt(col1);

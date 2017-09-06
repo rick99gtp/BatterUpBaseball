@@ -34,7 +34,7 @@ public class Game {
 
     boolean[] runnerHeld = {false, false, false};
 
-    boolean[] runnerStealing = new boolean[3];
+    boolean[] runnerStealing = {false, false, false};
 
     int dieResult = 0;
 
