@@ -186,11 +186,11 @@ public class playball extends Activity implements View.OnClickListener {
         int balkRating, passedBallRating, wildPitchRating;
         boolean rollForSteal = false;
         double stealRating = 0.0;
+        double batteryStealRating = 0.0;
         double stealThirdMod = .04;
         double stealSecondMod = 0.0;
         double runnerHeldMod = 0.05;
         double leftHandedPitcherMod = .05;
-        double goodJumpMod = -.1;
         double slideStepMod = .1;
         double badPitchMod = -.1;
         double badThrowMod = -.1;
@@ -213,8 +213,13 @@ public class playball extends Activity implements View.OnClickListener {
             else if(game.runnerStealing[1]) {
                 // stealing third
                 Log.v(TAG, "Runner Attempts to Steal Third!");
+                roll_dice();
+                double rndNum = (game.dieResult * .0001) - .05;
+                game.runner[2].spd_rating += rndNum;
                 Log.v(TAG, "Base stealRating: " + game.runner[2].spd_rating);
+
                 stealRating = game.runner[2].spd_rating + stealThirdMod;
+
                 Log.v(TAG, "stealRating-stealThirdMod: " + stealRating);
 
                 if(game.runnerHeld[1]) {
@@ -231,22 +236,20 @@ public class playball extends Activity implements View.OnClickListener {
                     Log.v(TAG, "" + stealRating);
                 }
 
+                // jump
                 roll_dice();
-                if(game.dieResult <= 500) {
-                    // good jump
-                    Log.v(TAG, "Good Jump!");
-                    stealRating += goodJumpMod;
-                    Log.v(TAG, "" + stealRating);
-                }
+                rndNum = (game.dieResult * .0001) - .05;
+                stealRating += rndNum;
+                Log.v(TAG, "" + stealRating);
 
                 roll_dice();
-                if(game.dieResult <= 300) {
+                if(game.dieResult <= 250) {
                     // slide step
                     Log.v(TAG, "Slide Step!");
                     stealRating += slideStepMod;
                     Log.v(TAG, "" + stealRating);
                 }
-                else if(game.dieResult >=700) {
+                else if(game.dieResult >= 750) {
                     // bad pitch
                     Log.v(TAG, "Bad Pitch for catcher!");
                     stealRating += badPitchMod;
@@ -254,17 +257,44 @@ public class playball extends Activity implements View.OnClickListener {
                 }
 
                 roll_dice();
-                if(game.dieResult <=300) {
+                if(game.dieResult <= 250) {
                     // bad throw by catcher
                     Log.v(TAG, "Bad throw by catcher!");
                     stealRating += badThrowMod;
                     Log.v(TAG, "" + stealRating);
                 }
-                else if(game.dieResult >=700) {
+                else if(game.dieResult >= 750) {
                     // great throw by catcher
                     Log.v(TAG, "Great throw by catcher");
                     stealRating += goodThrowMod;
                     Log.v(TAG, "" + stealRating);
+                }
+
+                roll_dice();
+
+                // get pitcher's stealRating
+                batteryStealRating = game.pitcher.hold_rating;
+                Log.v(TAG, "Pitcher Steal Rating: " + batteryStealRating);
+                roll_dice();
+                rndNum = (game.dieResult * .0001) - .05;
+                batteryStealRating += rndNum;
+
+                Log.v(TAG, "Pitcher Steal Rating (modified): " + batteryStealRating);
+
+                // get catcher's stealRating
+                batteryStealRating += game.defense[1].rsb;
+                roll_dice();
+                rndNum = (game.dieResult * .0001) - .05;
+                batteryStealRating += rndNum;
+                Log.v(TAG, "Battery Steal Rating: " + batteryStealRating);
+
+                // is the runner safe or out?
+                if(stealRating < batteryStealRating) {
+                    // successful steal
+                    Log.v(TAG, "RUNNER IS SAFE!");
+                }
+                else {
+                    Log.v(TAG, "RUNNER IS THROWN OUT!");
                 }
 
                 if(game.runnerStealing[0]) {
@@ -1972,10 +2002,10 @@ public class playball extends Activity implements View.OnClickListener {
                 thisPlayer.avoid_dp = cPlayer.getInt(col1);
 
                 col1 = cPlayer.getColumnIndex("hold_rating");
-                thisPlayer.hold_rating = cPlayer.getInt(col1);
+                thisPlayer.hold_rating = cPlayer.getDouble(col1);
 
                 col1 = cPlayer.getColumnIndex("rsb");
-                thisPlayer.rsb = cPlayer.getInt(col1);
+                thisPlayer.rsb = cPlayer.getDouble(col1);
 
                 col1 = cPlayer.getColumnIndex("arm_rating");
                 thisPlayer.arm_rating = cPlayer.getInt(col1);
@@ -2147,10 +2177,10 @@ public class playball extends Activity implements View.OnClickListener {
                 thisPlayer.avoid_dp = cPlayer.getInt(col1);
 
                 col1 = cPlayer.getColumnIndex("hold_rating");
-                thisPlayer.hold_rating = cPlayer.getInt(col1);
+                thisPlayer.hold_rating = cPlayer.getDouble(col1);
 
                 col1 = cPlayer.getColumnIndex("rsb");
-                thisPlayer.rsb = cPlayer.getInt(col1);
+                thisPlayer.rsb = cPlayer.getDouble(col1);
 
                 col1 = cPlayer.getColumnIndex("arm_rating");
                 thisPlayer.arm_rating = cPlayer.getInt(col1);

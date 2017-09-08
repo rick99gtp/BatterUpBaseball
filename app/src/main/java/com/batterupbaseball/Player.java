@@ -16,8 +16,8 @@ public class Player {
     int value;
 
     String pBats, pThrows, name, pos;
-    int sac_bunt, avoid_dp, hold_rating, rsb, vsl_rating, vsr_rating, con_rating, pwr_rating;
-    double spd_rating;
+    int sac_bunt, avoid_dp, vsl_rating, vsr_rating, con_rating, pwr_rating;
+    double spd_rating, hold_rating, rsb;
     String special_text;
     String role; // starter, bullpen, bench
     int staminaMax;
