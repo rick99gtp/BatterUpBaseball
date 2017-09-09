@@ -182,19 +182,90 @@ public class playball extends Activity implements View.OnClickListener {
         }
     }
 
+    private double getRunnerStealRating(int fromBase) {
+        double runnerRating;
+        double stealThirdMod = 0.12;
+        double stealHomeMod = .34;
+        double runnerHeldMod = 0.05;
+        double leftHandedPitcherMod = .05;
+
+        runnerRating = game.runner[fromBase].spd_rating;
+        roll_dice();
+        double rndNum = (game.dieResult * .0001) - .05;
+        runnerRating += rndNum;
+        Log.v(TAG, "Base stealRating: " + runnerRating);
+
+        if(fromBase==1) {
+            if(game.pitcher.pThrows.equals("l")) {
+                Log.v(TAG, "Pitcher throws left.");
+                // pitcher is left-handed
+                runnerRating += leftHandedPitcherMod;
+                Log.v(TAG, "" + runnerRating);
+            }
+        }
+        if(fromBase==2) {
+            runnerRating += stealThirdMod;
+            Log.v(TAG, "Stealing third: " + runnerRating);
+        }
+        if(fromBase==3) {
+            runnerRating += stealHomeMod;
+            Log.v(TAG, "Stealing home: " + runnerRating);
+        }
+
+        if(game.runnerHeld[fromBase-1]) {
+            Log.v(TAG, "Runner is being held.");
+            runnerRating += runnerHeldMod;
+            Log.v(TAG, "" + runnerRating);
+        }
+
+        // jump
+        roll_dice();
+        rndNum = ((game.dieResult * .0001)*2) - .1;
+        Log.v(TAG, "JUMP RndNUM" + rndNum);
+        runnerRating += rndNum;
+        Log.v(TAG, "with jump: " + runnerRating);
+
+        // slide step or bad pitch
+        roll_dice();
+        rndNum = ((game.dieResult * .0001)*2) - .1;
+        runnerRating += rndNum;
+        Log.v(TAG, "with slide step or bad pich: " + runnerRating);
+
+        // bad throw or great throw
+        roll_dice();
+        rndNum = ((game.dieResult * .0001)*2) - .1;
+        runnerRating += rndNum;
+        Log.v(TAG, "with bad throw or good throw" + runnerRating);
+
+        return runnerRating;
+    }
+
+    private double getBatteryStealRating() {
+        double rndNum = 0.0;
+        double batteryRating = 0.0;
+
+        // pitcher first
+        batteryRating = game.pitcher.hold_rating;
+        roll_dice();
+        rndNum = (game.dieResult * .0001) - .05;
+        batteryRating += rndNum;
+
+        // catcher next
+        batteryRating += game.defense[1].rsb;
+        roll_dice();
+        rndNum = (game.dieResult * .0001) - .05;
+        batteryRating += rndNum;
+
+        // send result back
+        Log.v(TAG, "BatteryRating: " + batteryRating);
+        return batteryRating;
+    }
+
     public void getBatterResult(View view) {
         int balkRating, passedBallRating, wildPitchRating;
         boolean rollForSteal = false;
         double stealRating = 0.0;
         double batteryStealRating = 0.0;
-        double stealThirdMod = .04;
-        double stealSecondMod = 0.0;
-        double runnerHeldMod = 0.05;
-        double leftHandedPitcherMod = .05;
-        double slideStepMod = .1;
-        double badPitchMod = -.1;
-        double badThrowMod = -.1;
-        double goodThrowMod = .1;
 
         // if user is instructing runners to steal
         for(int i=0; i<3; i++) {
@@ -209,102 +280,100 @@ public class playball extends Activity implements View.OnClickListener {
 
             if(game.runnerStealing[2]) {
                 // stealing home
+                stealRating = getRunnerStealRating(3);
+
+                batteryStealRating = getBatteryStealRating();
+
+                if(stolenBase(stealRating, batteryStealRating)) {
+                    Log.v(TAG, "Runner is SAFE!");
+                    game.runner[3].gameSB += 1;
+                    moveBaseRunnerFrom(3, 1);
+
+                    if(game.runnerStealing[1]) {
+                        game.runner[2].gameSB += 1;
+                        moveBaseRunnerFrom(2,1);
+                    }
+
+                    if(game.runnerStealing[0]) {
+                        game.runner[1].gameSB += 1;
+                        moveBaseRunnerFrom(1,1);
+                    }
+                }
+                else {
+                    Log.v(TAG, "Runner is OUT!");
+                    game.runner[3].gameCS += 1;
+                    game.addOuts();
+                    game.clearBase(3);
+
+                    checkEndOfInning();
+
+                    if(game.outs < 3) {
+                        if(game.runnerStealing[1]) {
+                            game.runner[2].gameSB += 1;
+                            moveBaseRunnerFrom(2,1);
+                        }
+
+                        if(game.runnerStealing[0]) {
+                            game.runner[1].gameSB += 1;
+                            moveBaseRunnerFrom(1,1);
+                        }
+                    }
+                }
             }
             else if(game.runnerStealing[1]) {
                 // stealing third
-                Log.v(TAG, "Runner Attempts to Steal Third!");
-                roll_dice();
-                double rndNum = (game.dieResult * .0001) - .05;
-                game.runner[2].spd_rating += rndNum;
-                Log.v(TAG, "Base stealRating: " + game.runner[2].spd_rating);
+                stealRating = getRunnerStealRating(2);
 
-                stealRating = game.runner[2].spd_rating + stealThirdMod;
+                batteryStealRating = getBatteryStealRating();
 
-                Log.v(TAG, "stealRating-stealThirdMod: " + stealRating);
+                if(stolenBase(stealRating, batteryStealRating)) {
+                    Log.v(TAG, "Runner is SAFE!");
+                    game.runner[2].gameSB += 1;
+                    moveBaseRunnerFrom(2,1);
 
-                if(game.runnerHeld[1]) {
-                    // runner held on second
-                    Log.v(TAG, "Runner is held on second.");
-                    stealRating += runnerHeldMod;
-                    Log.v(TAG, "" + stealRating);
-                }
-
-                if(game.pitcher.pThrows.equals("l")) {
-                    Log.v(TAG, "Pitcher throws left.");
-                    // pitcher is left-handed
-                    stealRating += leftHandedPitcherMod;
-                    Log.v(TAG, "" + stealRating);
-                }
-
-                // jump
-                roll_dice();
-                rndNum = (game.dieResult * .0001) - .05;
-                stealRating += rndNum;
-                Log.v(TAG, "" + stealRating);
-
-                roll_dice();
-                if(game.dieResult <= 250) {
-                    // slide step
-                    Log.v(TAG, "Slide Step!");
-                    stealRating += slideStepMod;
-                    Log.v(TAG, "" + stealRating);
-                }
-                else if(game.dieResult >= 750) {
-                    // bad pitch
-                    Log.v(TAG, "Bad Pitch for catcher!");
-                    stealRating += badPitchMod;
-                    Log.v(TAG, "" + stealRating);
-                }
-
-                roll_dice();
-                if(game.dieResult <= 250) {
-                    // bad throw by catcher
-                    Log.v(TAG, "Bad throw by catcher!");
-                    stealRating += badThrowMod;
-                    Log.v(TAG, "" + stealRating);
-                }
-                else if(game.dieResult >= 750) {
-                    // great throw by catcher
-                    Log.v(TAG, "Great throw by catcher");
-                    stealRating += goodThrowMod;
-                    Log.v(TAG, "" + stealRating);
-                }
-
-                roll_dice();
-
-                // get pitcher's stealRating
-                batteryStealRating = game.pitcher.hold_rating;
-                Log.v(TAG, "Pitcher Steal Rating: " + batteryStealRating);
-                roll_dice();
-                rndNum = (game.dieResult * .0001) - .05;
-                batteryStealRating += rndNum;
-
-                Log.v(TAG, "Pitcher Steal Rating (modified): " + batteryStealRating);
-
-                // get catcher's stealRating
-                batteryStealRating += game.defense[1].rsb;
-                roll_dice();
-                rndNum = (game.dieResult * .0001) - .05;
-                batteryStealRating += rndNum;
-                Log.v(TAG, "Battery Steal Rating: " + batteryStealRating);
-
-                // is the runner safe or out?
-                if(stealRating < batteryStealRating) {
-                    // successful steal
-                    Log.v(TAG, "RUNNER IS SAFE!");
+                    if(game.runnerStealing[0]) {
+                        game.runner[1].gameSB += 1;
+                        moveBaseRunnerFrom(1,1);
+                    }
                 }
                 else {
-                    Log.v(TAG, "RUNNER IS THROWN OUT!");
-                }
+                    Log.v(TAG, "Runner is OUT!");
+                    game.runner[2].gameCS += 1;
+                    game.addOuts();
+                    game.clearBase(2);
 
-                if(game.runnerStealing[0]) {
-                    // runner moves up to second with the double steal
-                    moveBaseRunnerFrom(1,1);
+                    checkEndOfInning();
+
+                    if(game.outs < 3) {
+                        if(game.runnerStealing[0]) {
+                            game.runner[1].gameSB += 1;
+                            moveBaseRunnerFrom(1,1);
+                        }
+                    }
                 }
             }
             else if(game.runnerStealing[0]) {
                 // stealing second
+                stealRating = getRunnerStealRating(1);
+
+                batteryStealRating = getBatteryStealRating();
+
+                if (stolenBase(stealRating, batteryStealRating)) {
+                    Log.v(TAG, "Runner is SAFE!");
+                    game.runner[1].gameSB += 1;
+                    moveBaseRunnerFrom(1,1);
+                }
+                else {
+                    Log.v(TAG, "Runner is OUT!");
+                    game.outs += 1;
+                    game.runner[1].gameCS += 1;
+                    game.clearBase(1);
+
+                    checkEndOfInning();
+                }
             }
+
+            updateBaseRunners();
         }
         else if(game.basesOccupied()) {
             Log.d(TAG, "Bases Occupied");
@@ -370,6 +439,7 @@ public class playball extends Activity implements View.OnClickListener {
             }
 
             showResultText();
+            updateResult(game.batter);
         }
         else {
             roll_dice();
@@ -381,10 +451,19 @@ public class playball extends Activity implements View.OnClickListener {
 
             highlightOutcome();
             showResultText();
+
+            updateResult(game.batter);
         }
 
-        updateResult(game.batter);
         updateScreen();
+    }
+
+    private boolean stolenBase(double runnerRating, double batteryRating) {
+
+        if(runnerRating < batteryRating)
+            return true;
+        else
+            return false;
     }
 
     private void updateWildPitch() {
