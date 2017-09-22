@@ -19,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import static android.content.ContentValues.TAG;
 
 public class playball extends Activity implements View.OnClickListener {
@@ -62,6 +64,70 @@ public class playball extends Activity implements View.OnClickListener {
         runnerOn2nd.setOnClickListener(this);
         runnerOn3rd.setOnClickListener(this);
 
+    }
+
+    public void batterOptions(View v) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.batter_options);
+
+        TextView tvPinchHitter = (TextView) dialog.findViewById(R.id.tvPinchHitter);
+        TextView tvSacrificeBunt = (TextView) dialog.findViewById(R.id.tvSacrificeBunt);
+        TextView tvHitAndRun = (TextView) dialog.findViewById(R.id.tvHitAndRun);
+        TextView tvSqueezePlay = (TextView) dialog.findViewById(R.id.tvSqueezePlay);
+
+        if(game.outs==2) {
+            tvSacrificeBunt.setEnabled(false);
+            tvSqueezePlay.setEnabled(false);
+        }
+        else {
+            if(game.manOnThird()) {
+                tvSacrificeBunt.setEnabled(false);
+                tvSqueezePlay.setEnabled(true);
+            }
+            else if(game.basesOccupied()) {
+                tvSacrificeBunt.setEnabled(true);
+                tvSqueezePlay.setEnabled(false);
+            }
+        }
+
+        tvPinchHitter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        tvSacrificeBunt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+
+                if(game.sacrificeBunt)
+                    game.sacrificeBunt = false;
+                else {
+                    game.sacrificeBunt = true;
+                    game.hitAndRun = false;
+                }
+            }
+        });
+
+        tvHitAndRun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                game.sacrificeBunt = false;
+            }
+        });
+
+        tvSqueezePlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     @Override
@@ -374,6 +440,15 @@ public class playball extends Activity implements View.OnClickListener {
             }
 
             updateBaseRunners();
+        }
+        else if(game.sacrificeBunt) {
+            // get bunting rating
+            // if infield is in, +1 bunting rating
+            // max bunting rating is 5
+
+        }
+        else if(game.hitAndRun) {
+
         }
         else if(game.basesOccupied()) {
             Log.d(TAG, "Bases Occupied");

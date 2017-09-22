@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:textSize="24sp"
+        android:gravity="center_horizontal"
+        android:text="@string/batter_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:padding="10dp"
+        android:textSize="24sp"
+        android:gravity="center_horizontal"
+        android:id="@+id/tvPinchHitter"
+        android:text="@string/pinch_hitter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:padding="10dp"
+        android:textSize="24sp"
+        android:gravity="center_horizontal"
+        android:id="@+id/tvSacrificeBunt"
+        android:text="@string/sacrifice_bunt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:padding="10dp"
+        android:textSize="24sp"
+        android:gravity="center_horizontal"
+        android:id="@+id/tvHitAndRun"
+        android:text="@string/hit_and_run"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:padding="10dp"
+        android:textSize="24sp"
+        android:gravity="center_horizontal"
+        android:id="@+id/tvSqueezePlay"
+        android:text="@string/squeeze_play"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

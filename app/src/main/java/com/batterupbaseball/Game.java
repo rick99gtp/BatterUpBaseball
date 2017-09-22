@@ -13,6 +13,8 @@ public class Game {
     Player onDeck;
     Player inTheHole;
     boolean defenseInfieldIn = false;
+    boolean sacrificeBunt = false;
+    boolean hitAndRun = false;
     int userTeam = 0;
 
     Die die1, die2, die3;
